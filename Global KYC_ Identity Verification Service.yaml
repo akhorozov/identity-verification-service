@@ -1,0 +1,5427 @@
+openapi: 3.0.1
+info:
+  title: 'Global KYC: Identity Verification Service'
+  description: >-
+    A real-time “As a Service” API enabling banking institutions or businesses
+    to verify consumers identity during account opening. The service simplifies
+    due diligence processes for CIP and KYC workflows; streamlines compliance
+    with rules orchestration across IDV, Document ID, Fraud and Watchlist
+    Screening. Global KYC also provides a single pane transaction manager with
+    reporting and a dashboard.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.30
+servers:
+  - url: https://api-gw2-uat.fisglobal.com/rest/consumers-verification/v1
+  - url: http://api-gw2-prod1.fisglobal.com/rest/consumers-verification/v1
+security:
+  - default: []
+paths:
+  /consumers-verification:
+    get:
+      tags:
+        - Consumers Verification
+      summary: Get updated response of consumer verification callout
+      description: >-
+        Receives updated overall response of original callout based on
+        transactionId
+      operationId: consumerVerificationStatus
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+        - $ref: '#/components/parameters/transactionid'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '500':
+          description: Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /consumers-verification
+      method: GET
+    post:
+      tags:
+        - Consumers Verification
+      summary: Consumer verification callout
+      description: >-
+        A real-time “As a Service” API enabling banking institutions or
+        businesses to verify consumers identity during account opening. The
+        service simplifies due diligence processes for CIP and KYC workflows;
+        streamlines compliance with rules orchestration across IDV, Document ID,
+        Fraud and Watchlist Screening. Global KYC also provides a single pane
+        transaction manager with reporting and a dashboard.
+      operationId: consumerVerification
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '500':
+          description: Internal Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /consumers-verification
+      method: POST
+  /consumers-verification/commentstatus-update:
+    post:
+      tags:
+        - Consumers Verification
+      summary: update status and coment endpoint
+      description: >-
+        Allows user to update the status of a specific transaction and/or add a
+        comment to a specific transaction.
+      operationId: commentStatusUpdate
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentStatusRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UpdateStatusErrorResponse'
+        '500':
+          description: Internal Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /consumers-verification/commentstatus-update
+      method: POST
+  /business-verification:
+    get:
+      tags:
+        - Business Verification
+      summary: Get updated response of business verification callout
+      description: >-
+        Receives updated overall response of original callout based on
+        transactionId
+      operationId: businessVerificationStatus
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+        - $ref: '#/components/parameters/transactionid'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '500':
+          description: Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /business-verification
+      method: GET
+    post:
+      tags:
+        - Business Verification
+      summary: Business verification callout
+      description: >-
+        A real-time “As a Service” API enabling banking institutions or
+        businesses to verify consumers identity during account opening. The
+        service simplifies due diligence processes for CIP and KYC workflows;
+        streamlines compliance with rules orchestration across IDV, Document ID,
+        Fraud and Watchlist Screening. Global KYC also provides a single pane
+        transaction manager with reporting and a dashboard.
+      operationId: businessVerification
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionResponse'
+        '500':
+          description: Internal Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /business-verification
+      method: POST
+  /health:
+    get:
+      tags:
+        - Health Check
+      summary: Get updated response of application and database health
+      description: >-
+        Receives response on the status of the database and if the application
+        itself is running
+      operationId: healthCheck
+      parameters:
+        - $ref: '#/components/parameters/uuid'
+      responses:
+        '200':
+          description: OK
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponse'
+        '400':
+          description: Bad Request
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponse'
+        '500':
+          description: Server Error
+          headers:
+            uuid:
+              $ref: '#/components/headers/uuid'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthcheckResponse'
+      security:
+        - default: []
+      x-throttling-tier: Unlimited
+      x-auth-type: Application & Application User
+      path: /health
+      method: GET
+components:
+  schemas:
+    UpdateCommentStatusRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/Status'
+    SubscriptionRequest:
+      required:
+        - consumerDetails
+        - customer
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/RequestCustomer'
+        consumerDevice:
+          $ref: '#/components/schemas/ConsumerDevice'
+        actionQuestions:
+          $ref: '#/components/schemas/ActionQuestions'
+        consumerDetails:
+          $ref: '#/components/schemas/ConsumerDetails'
+        businessDetails:
+          $ref: '#/components/schemas/BusinessDetails'
+        consumerMultiFactorAuthentication:
+          $ref: '#/components/schemas/ConsumerMultiFactorAuthentication'
+        feedback:
+          $ref: '#/components/schemas/RequestFeedback'
+    SubscriptionResponse:
+      type: object
+      properties:
+        finalResult:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: final result of callout
+          example: Pass
+        transactionId:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: transaction ID
+          example: '8798456465651651654'
+        requestedVia:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: Requested via?
+          example: GKYC API v.1.0
+        ruleIdExecuted:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: rule ID executed
+          example: '5'
+        ruleNameExecuted:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: rule name executed
+          example: Rule 1
+        ruleRevisionExecuted:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: rule revision executed
+          example: '1'
+        htmlSummary:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: html summary of results
+          example: html string...
+        inputResponse:
+          $ref: '#/components/schemas/InputResponseObject'
+        subRuleResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: list of sub rule transaction ids executed
+          items:
+            $ref: '#/components/schemas/SubRuleResponseObject'
+        watchListResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: watchList Response array
+          items:
+            $ref: '#/components/schemas/WatchListResponseArrayObject'
+        documentVerificationResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: documentVerification Response array
+          items:
+            $ref: '#/components/schemas/DocumentVerificationResponseArrayObject'
+        identityVerificationResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: identityVerification Response array
+          items:
+            $ref: '#/components/schemas/IdentityVerificationResponseArrayObject'
+        fraudChexScreeningResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: fraudChex Response array
+          items:
+            $ref: '#/components/schemas/FraudChexResponseArrayObject'
+        deviceProfilingResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: deviceProfiling Response array
+          items:
+            $ref: '#/components/schemas/DeviceProfilingResponseArrayObject'
+        riskScreeningResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: riskScreening Response array
+          items:
+            $ref: '#/components/schemas/RiskScreeningResponseArrayObject'
+        notificationResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: notifications Response array
+          items:
+            $ref: '#/components/schemas/NotificationsResponseArrayObject'
+        multiFactorAuthenticationResponse:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: multiFactorAuthenticationResponse Response array
+          items:
+            $ref: '#/components/schemas/MultiFactorAuthenticationResponse'
+        comments:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: an array of comments
+          items:
+            $ref: '#/components/schemas/Comments'
+        actionResults:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: >-
+            an array of action results related to action questions sent in the
+            GKYC request
+          items:
+            $ref: '#/components/schemas/ActionResults'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: Subscription response
+    InputResponseObject:
+      type: object
+      properties:
+        result:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: result of watch list callout
+          example: fail
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        deliveryStatus:
+          maximum: 10
+          minimum: 0
+          type: string
+          description: Delivery Status
+          example: Sent
+        timedOut:
+          maximum: 20
+          minimum: 0
+          type: string
+          description: Has transaction Timed out
+          example: 'False'
+        link:
+          maximum: 50
+          minimum: 0
+          type: string
+          description: Link to consumer form
+          example: >-
+            https://gkyc-test.mendixcloud.com/link/consumer?LinkID=J0RGaBoTzkycl37o
+      description: InputResponse object
+    SubRuleResponseObject:
+      type: object
+      properties:
+        subRuleTransactionId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: sub rule transaction id
+          example: fd160633-f697-40a4-a0dc-9efa187ob52
+      description: Sub rule response object
+    WatchListResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: WatchList (US)
+        customerId:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: customerId of client
+          example: '100000'
+        result:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: result of watch list callout
+          example: fail
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        watchListReporter:
+          $ref: '#/components/schemas/watchListReporter'
+        watchListResults:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: watchList Results array
+          items:
+            $ref: '#/components/schemas/WatchListArrayObject'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: watchListResponse object
+    DocumentVerificationResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: IDV
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: final result of callout
+          example: pending
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        clientId:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: client Id
+          example: 8b6409a3-7525-4584-a0f1-b2de2d5a08f6
+        sessionId:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: session Id
+          example: Kx1w5GO
+        verificationUrl:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: url to DocId UI
+          example: https://dev.docidui.com?session_id=Kx1w5GO
+        verificationCompletedAt:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Timestamp in which verification was completed in UTC
+          example: '2021-06-04'
+        expirationDate:
+          maxLength: 36
+          minLength: 0
+          pattern: '^[a-zA-Z0-9-.: ]{0,36}$'
+          type: string
+          description: when the url expires
+          format: date
+        hasConsistentData:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: is data consistent?
+          example: 'YES'
+        configuration:
+          $ref: '#/components/schemas/Configuration'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        started:
+          type: boolean
+          description: request started?
+          example: true
+        completed:
+          type: boolean
+          description: request completed?
+          example: false
+        passed:
+          type: boolean
+          description: request passed?
+          example: false
+        processed:
+          type: boolean
+          description: request processed?
+          example: true
+        skippedAt:
+          type: string
+          description: skipped at timestamp
+          example: '2021-06-04T15:14:19.0039180Z'
+        currentStep:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Current step running
+          example: BASIC_INFO
+        steps:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: steps array
+          items:
+            $ref: '#/components/schemas/StepsArrayObject'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: documentVerification Response object
+    IdentityVerificationResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: IDV
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: result of IDV callout
+          example: fail
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        TransactionRecordID:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: TransactionId for Trulioo request
+          example: d4b7b999-d8aa-4193-91f4-6ae800f6af70
+        recordStatus:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Status of Trulioo request
+          example: match
+        validationsResult:
+          $ref: '#/components/schemas/ValidationsResult'
+        ssnValidation:
+          $ref: '#/components/schemas/SsnValidation'
+        altInformation:
+          $ref: '#/components/schemas/AltInformation'
+        advancedSSN:
+          $ref: '#/components/schemas/advancedSSN'
+        comments:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: IDV comments
+          example: Comments Here
+        consumerDataAlert:
+          $ref: '#/components/schemas/ConsumerDataAlert'
+        customer:
+          $ref: '#/components/schemas/customer'
+        businessResults:
+          $ref: '#/components/schemas/BusinessResults'
+        principleResults:
+          $ref: '#/components/schemas/BizChexPeopleResult'
+        authSgnr2Results:
+          $ref: '#/components/schemas/BizChexPeopleResult'
+        authSgnr3Results:
+          $ref: '#/components/schemas/BizChexPeopleResult'
+        authSgnr4Results:
+          $ref: '#/components/schemas/BizChexPeopleResult'
+        authSgnr5Results:
+          $ref: '#/components/schemas/BizChexPeopleResult'
+        ruleObject:
+          $ref: '#/components/schemas/RuleObject'
+        txtReport:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: Text report in HTML format
+          example: <!DOCTYPE HTML PUBLIC......
+        DatasourceResults:
+          $ref: '#/components/schemas/DatasourceResults'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: identityVerification Response object
+    FraudChexResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: Fraud
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: final result of callout
+          example: Pass
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        customerId:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: customer Id
+          example: '85697859'
+        score:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: fraud check score
+          example: 900
+        keyDrivers:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: keyDrivers array
+          items:
+            $ref: '#/components/schemas/KeyDriversArrayObject'
+        messages:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: messages array
+          items:
+            $ref: '#/components/schemas/FraudMessagesArrayObject'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: fraudChexScreening Response object
+    DeviceProfilingResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: Device Profiling
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: final result of callout
+          example: Pass
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        requestId:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: requestId
+          example: a515b117-335d-47c4-a094-c6b7a2c649ed
+        sessionId:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: sessionId
+          example: qtk88cqfni54jkb50s2hvul6qq
+        reviewStatus:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: review status
+          example: pass
+        summaryRiskScore:
+          maxLength: 4
+          minLength: 0
+          type: string
+          description: summary risk score
+          example: '-10'
+        riskRating:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: risk rating of consumer
+          example: low
+        tmxRiskRating:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: tmx risk rating of consumer
+          example: neutral
+        unknownSession:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: is this an unknown session
+          example: 'yes'
+        consentID:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: consentID passed by client
+          example: 9783454AFDB69NH34
+        consentTimeStamp:
+          maxLength: 45
+          minLength: 0
+          type: string
+          description: consentTimeStamp passed by client when ConsentID was created
+          example: '2022-02-01T15:15:36.878Z'
+        policy:
+          maxLength: 45
+          minLength: 0
+          type: string
+          description: policy used in callout
+          example: default
+        reasons:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: reasons array
+          items:
+            $ref: '#/components/schemas/Reasons'
+        emailage:
+          $ref: '#/components/schemas/Emailage'
+        lineCheck:
+          $ref: '#/components/schemas/LineCheck'
+        simChangeCheck:
+          $ref: '#/components/schemas/SimChangeCheck'
+        identityMatch:
+          $ref: '#/components/schemas/IdentityMatch'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: deviceProfiling response object
+    RiskScreeningResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: RiskScreening
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: final result of callout
+          example: Pass
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        accountAcceptanceText:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: account acceptance text
+          example: Pass
+        qualifileNotPerformedCd:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: qualifile Not Performed Code
+          example: Pass
+        qualifileScore:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: qualifile score returned
+          example: '350'
+        reasonCode:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: reason code
+          example: '111'
+        reasonText:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: reason text
+          example: INSUFFICIENT DATA FOUND
+        reasonCode2:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: reason code
+          example: '111'
+        reasonText2:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: reason text
+          example: INSUFFICIENT DATA FOUND
+        reasonCode3:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: reason code
+          example: '111'
+        reasonText3:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: reason text
+          example: INSUFFICIENT DATA FOUND
+        reasonCode4:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: reason code
+          example: '111'
+        reasonText4:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: reason text
+          example: INSUFFICIENT DATA FOUND
+        reasonCode5:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: reason code
+          example: '111'
+        reasonText5:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: reason text
+          example: INSUFFICIENT DATA FOUND
+        creditBureauId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau id
+          example: EFFX
+        creditBureauReason:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau reason
+          example: Info
+        creditBureauReason2:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau reason
+          example: Info
+        creditBureauReason3:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau reason
+          example: Info
+        creditBureauReason4:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau reason
+          example: Info
+        creditBureauReason5:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: credit bureau reason
+          example: Info
+        txtReport:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: html of report
+          example: html string
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+        complianceDocuments:
+          $ref: '#/components/schemas/complianceDocumentsResponse'
+      description: riskScreening response object
+    NotificationsResponseArrayObject:
+      type: object
+      properties:
+        product:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: product run
+          example: Notification
+        order:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        messages:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: watchList Results array
+          items:
+            $ref: '#/components/schemas/MessagesArrayObject'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: watchListResponse object
+    MultiFactorAuthenticationResponse:
+      type: object
+      properties:
+        product:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: product that was run
+          example: MFA
+        result:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: result of transaction
+          example: Pass
+        order:
+          maxLength: 3
+          minLength: 0
+          type: integer
+          description: order product was run in
+          example: 1
+        stepSequence:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: order this step was run
+          example: 1
+        otpValid:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: otp a valid value
+          example: 'True'
+        attemptsRemainingCount:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: how many otp attempts left
+          example: '3'
+        timeLimitExceeded:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Time to life expired?
+          example: 'Yes'
+        idaDecision:
+          $ref: '#/components/schemas/IdaDecision'
+        idaQuestions:
+          $ref: '#/components/schemas/IdaQuestions'
+        details:
+          $ref: '#/components/schemas/ErrorDetails'
+      description: MultiFactorAuthenticationResponse object
+    Comments:
+      type: object
+      properties:
+        Previous Status:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Previous status of transaction
+          example: Pass/Fail/Review
+        Updated Status:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Updated status of transaction
+          example: Pass/Fail/Review
+        Current Status:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Current status of transaction
+          example: Pass/Fail/Review
+        Previous Assignment:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Previous person assigned to this transaction
+          example: Front office
+        Updated Assignment:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Updated person assigned to this transaction
+          example: Front office
+        Reason:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Reason
+          example: Sample Reason
+        Message:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Message
+          example: Sample Message
+        User:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: The person that created the comment
+          example: BackOffice
+        Timestamp:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Creation Timestamp
+          example: '2021-06-04T15:14:19.0039180 Z'
+      description: Comments
+    Reasons:
+      type: object
+      properties:
+        negativeImpactReasons:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: negative impact reasons array
+          items:
+            $ref: '#/components/schemas/NegativeImpactReasonsArrayObject'
+      description: Reasons object
+    NegativeImpactReasonsArrayObject:
+      type: object
+      properties:
+        score:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: score
+          example: '0'
+        ruleID:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: rule id
+          example: '1'
+        reason:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: negative impact reason
+          example: some reason
+      description: negative impact reasons array object
+    Emailage:
+      type: object
+      properties:
+        daysSinceFirstSeen:
+          type: integer
+          description: Number of days since first seen
+        domainDetails:
+          type: string
+          description: Details on the domain
+          example: Low
+        domainRiskLevel:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: domain Risk Level
+          example: Low
+        domainRiskLevelId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: domain Risk Level Id
+          example: '4'
+        eaAdvice:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Advice
+          example: Fraud Review
+        eaAdviceId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Advice Id
+          example: '1'
+        eaReason:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Reason
+          example: Email Enumeration for Industry
+        eaReasonId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Reason Id
+          example: '55'
+        eaRiskBand:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Risk Band
+          example: Fraud Score 800 to 899
+        eaRiskBandId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Risk Band Id
+          example: '5'
+        eaScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Score
+          example: '804'
+        eaStatusId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: ea Status Id
+          example: '3'
+        emailExists:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: does email Exist
+          example: 'No'
+        emailToIpConfidence:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: email To Ip Confidence
+          example: '50'
+        fraudRisk:
+          type: string
+          description: Risk of Fraud
+          example: Low
+      description: Emailage object
+    LineCheck:
+      type: object
+      properties:
+        responseId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: responseId
+          example: 6496849684CBAF87A3
+        serviceProvider:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: serviceProvider
+          example: Verizon Wireless
+        serviceType:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: serviceType
+          example: Mobile
+        countryCode:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: countryCode
+          example: US
+      description: LineCheck object
+    SimChangeCheck:
+      type: object
+      properties:
+        responseId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: responseId
+          example: 6496849684CBAF87A3
+        changeDetected:
+          maxLength: 2
+          minLength: 0
+          type: string
+          description: changeDetected
+          example: 'Y'
+      description: SimChangeCheck object
+    IdentityMatch:
+      type: object
+      properties:
+        responseId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: responseId
+          example: 6496849684CBAF87A3
+        firstNameScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: firstNameScore
+          example: '10'
+        lastNameScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: lastNameScore
+          example: '10'
+        streetAddressScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: streetAddressScore
+          example: '10'
+        cityScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: cityScore
+          example: '10'
+        stateScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: stateScore
+          example: '0'
+        postalCodeScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: postalCodeScore
+          example: '10'
+        countryCodeScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: countryCodeScore
+          example: '0'
+        dateOfBirthScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: dateOfBirthScore
+          example: '10'
+        nationalIdScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: nationalIdScore
+          example: '10'
+        dataSource:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: dataSource
+          example: CARRIER
+        identityScore:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: identityScore
+          example: '90'
+      description: IdentityMatch object
+    HealthcheckResponse:
+      required:
+        - db
+        - ping
+        - status
+      type: object
+      properties:
+        status:
+          maxLength: 4
+          minLength: 0
+          type: string
+          description: Overall status of application
+          example: UP
+        db:
+          maxLength: 4
+          minLength: 0
+          type: string
+          description: Status of application database
+          example: UP
+        ping:
+          maxLength: 4
+          minLength: 0
+          type: string
+          description: Status code from httpResponse
+          example: UP
+      description: Healthcheck response object
+    RequestCustomer:
+      required:
+        - customerId
+        - ruleId
+      type: object
+      properties:
+        customerId:
+          maxLength: 200
+          minLength: 1
+          pattern: '''[A-Za-z0-9-]{1,10}'
+          type: string
+          description: CustomerId represents the customer
+          example: '99999999'
+        ruleId:
+          maxLength: 8
+          minLength: 1
+          pattern: '[0-9]{1,10}'
+          type: string
+          description: CustomerId represents the customer
+          example: '1'
+      description: requestCustomer object
+    RequestFeedback:
+      required:
+        - feedbackStatus
+        - transactionId
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: TransactionId represents the transaction
+          example: 0b29a136-6dfd-4f86-80f7-43d56ae3e011
+        feedbackStatus:
+          type: string
+          description: Status of the account for that transaction
+          example: Account Opened
+        feedbackSubmittedBy:
+          type: string
+          description: Name of individual who submitted the feedback
+          example: Mark Marsupial
+        feedbackChannel:
+          type: string
+          description: Name of channel feedback was submitted through
+          example: Mark Marsupial
+        feedbackNotes:
+          type: string
+          description: Additional notes concerning transaction feedback
+          example: This account is approved
+      description: requestFeedback object
+    ConsumerDevice:
+      type: object
+      properties:
+        sessionId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Represents the session of the customers device
+          example: qtk88cqfni54jkb50s2hvul6qq
+        iPAddress:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Represents the ipAdress of the customers device
+          example: 192.168.1.1
+        webSessionId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Represents the web session of the customers device
+          example: qtk88cqfni54jkb50s2hvul6qq
+      description: consumerDevice object
+    QuestionName:
+      maxLength: 200
+      minLength: 0
+      type: string
+      description: Represents the Action Question Name
+      example: Q1
+    Value:
+      maxLength: 200
+      minLength: 0
+      type: string
+      description: Represents the Action Question Value
+      example: V2
+    MantlQuestions:
+      type: object
+      properties:
+        QuestionName:
+          $ref: '#/components/schemas/QuestionName'
+        Value:
+          $ref: '#/components/schemas/Value'
+      description: MantlQuestions object that holds a questionName and value
+    ActionQuestions:
+      type: array
+      description: array of the mantl question and value pairs
+      items:
+        $ref: '#/components/schemas/MantlQuestions'
+    ActionResults:
+      type: array
+      description: >-
+        an array of action results related to the action questions sent in the
+        GKYC request
+      items:
+        $ref: '#/components/schemas/output'
+    output:
+      maxLength: 500
+      minLength: 0
+      type: string
+      description: action results related to the action questions sent in the GKYC request
+      example: Output X Recommended
+    ConsumerDetails:
+      required:
+        - firstName
+        - lastName
+      type: object
+      properties:
+        consumerId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: ConsumerId represents the consumer
+          example: '123454585'
+        govtNbr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Government number of consumer
+          example: '666993415'
+        firstName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First name of consumer
+          example: Jimmy
+        middleName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Middle name of consumer
+          example: John
+        lastName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last name of consumer
+          example: Smith
+        address:
+          $ref: '#/components/schemas/Address'
+        dateOfBirth:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Dob of consumer. Must be in the past (MMddyyyy)
+          format: date
+        emailAddress:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Email of consumer
+          example: test@abc.com
+        phoneNumber:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Contact phone number of consumer
+          example: '+18659657897'
+        deliveryPreference:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Message delivery preference of consumer
+          example: EMAIL
+        consentID:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Consent ID used in Phone Verification vendor calls
+          example: 9783471AFDB69NH34
+        consentTimeStamp:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: >-
+            Consent timestamp used in Phone Verification vendor calls that
+            require consent
+          example: '2022-02-01T15:15:36.878Z'
+        bankAccountNumber:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Bank account number
+          example: '03299391'
+        routingSortCode:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Routing sort code
+          example: 09-01-27
+        idNumber:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: The ID's unique ID identifier
+          example: K47-00-0000
+        idType:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Type of ID used for Request
+          example: License
+        idIssuer:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Issuing body of the ID
+          example: Fl
+        existingCustomer:
+          type: boolean
+          description: Represent whether customer already exist or not
+        consumerMedia:
+          $ref: '#/components/schemas/ConsumerMedia'
+      description: consumerDetails object
+    BusinessDetails:
+      type: object
+      properties:
+        busInq:
+          $ref: '#/components/schemas/BusInq'
+        prncplOwnrInq:
+          $ref: '#/components/schemas/PrncplOwnrInq'
+        authSgnr2Inq:
+          $ref: '#/components/schemas/AuthSgnr2Inq'
+        authSgnr3Inq:
+          $ref: '#/components/schemas/AuthSgnr3Inq'
+        authSgnr4Inq:
+          $ref: '#/components/schemas/AuthSgnr4Inq'
+        authSgnr5Inq:
+          $ref: '#/components/schemas/AuthSgnr5Inq'
+        jurisdictionOfIncorporation:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The jurisdiction of incorporation
+          example: North Carolina
+      description: business details object
+    ConsumerMedia:
+      type: object
+      properties:
+        complianceDocuments:
+          $ref: '#/components/schemas/complianceDocuments'
+        proofOfLivenessVideoUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: >-
+            Path to proof of liveliness video. Video file types: video/webm,
+            video/mp4, video/quicktime, video/x-msvideo
+          example: https://pathToPol.com/polvideo.mp4
+        proofOfLifePhotoUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: >-
+            Path to proof of life photo. Image file types: image/jpeg,
+            image/jpg, image/png
+          example: https://pathToPol.com/polPhoto.png
+        proofOfLifePhotoBase64:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: Base64 encoded proof of life photo
+          example: Base64 encoded string
+        backOfIDBarcodeUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: >-
+            Path to back of id image. Image file types: image/jpeg, image/jpg,
+            image/png
+          example: https://pathToBarcodce.com/barcode.png
+        backOfIDBarcodeBase64:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: 'Base64 encoded back of id image. '
+          example: Base64 encoded string
+        frontOfIDUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: >-
+            Path to front of id image. Image file types: image/jpeg, image/jpg,
+            image/png
+          example: https://pathToFrontOfId.com/frontOfId.jpg
+        frontOfIDBase64:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: Base64 encoded front of id image
+          example: Base64 encoded string
+      description: consumerMedia object
+    complianceDocuments:
+      type: array
+      description: Array of documents that can be uploaded during API callout to GKYC
+      items:
+        $ref: '#/components/schemas/DocumentUploads'
+    DocumentUploads:
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Name of uploaded document
+          example: File agreement
+        documentBase64:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: Base64 encoded of uploaded document
+          example: Base64 encoded string
+      description: DocumentUpload object that holds a document name and base64value
+    ConsumerMultiFactorAuthentication:
+      type: object
+      properties:
+        transactionId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Transactionid from initial transaction
+          example: bc335f59-3618-486f-8e75-8026256c49b3
+        verificationCode:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: verification code from OTP
+          example: '123456'
+        ansIda:
+          $ref: '#/components/schemas/AnsIda'
+      description: ConsumerMultiFactorAuthentication object
+    AnsIda:
+      type: object
+      properties:
+        answer1QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 1
+          example: '88674562'
+        answer1ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 1
+          example: '04792578'
+        answer2QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 2
+          example: '88674562'
+        answer2ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 2
+          example: '04792578'
+        answer3QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 3
+          example: '88674562'
+        answer3ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 3
+          example: '04792578'
+        answer4QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 4
+          example: '88674562'
+        answer4ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 4
+          example: '04792578'
+        answer5QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 5
+          example: '88674562'
+        answer5ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 5
+          example: '04792578'
+        answer6QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 6
+          example: '88674562'
+        answer6ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 6
+          example: '04792578'
+        answer7QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 7
+          example: '88674562'
+        answer7ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 7
+          example: '04792578'
+        answer8QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 8
+          example: '88674562'
+        answer8ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 8
+          example: '04792578'
+        answer9QuestionId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: questionId for question 9
+          example: '88674562'
+        answer9ResponseId:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: responseId for question 9
+          example: '04792578'
+        quizId:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: quizId
+          example: DISC:PEN:2148536917
+        transId:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: transId
+          example: '3941185452'
+      description: ansIda object
+    Address:
+      type: object
+      properties:
+        houseNumberName:
+          maxLength: 30
+          minLength: 0
+          pattern: ^[a-zA-Z0-9-'áéíóúñ ]{0,30}$
+          type: string
+          description: house number or name
+          example: '123'
+        streetName:
+          maxLength: 30
+          minLength: 0
+          pattern: ^[a-zA-Z0-9-'áéíóúñ ]{0,30}$
+          type: string
+          description: street name
+          example: Main Street
+        addressTwoOrUnit:
+          maxLength: 30
+          minLength: 0
+          pattern: ^[a-zA-Z0-9-'áéíóúñ ]{0,30}$
+          type: string
+          description: apartment or unit number
+          example: Apt. 8
+        country:
+          maxLength: 2
+          minLength: 0
+          pattern: ^[a-zA-Z]{0,2}$
+          type: string
+          description: Country in ISO-3166 Alpha 2
+          example: US
+        city:
+          maxLength: 30
+          minLength: 0
+          pattern: ^[a-zA-Z-'. áéíóúñ]{0,30}$
+          type: string
+          description: city
+          example: Minneapolis
+        state:
+          maxLength: 30
+          minLength: 0
+          pattern: ^[a-zA-Z0-9-''áéíóúñ ]{0,30}$
+          type: string
+          description: >-
+            state. EU countries you need to pass EU as the country and a
+            specific country code (eg. DE, NL, FR) in the state_code. Canada
+            documents work similar to US, where provinces are passed in state.
+          example: Texas
+        postalCode:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[a-zA-Z0-9- ]{0,10}$
+          type: string
+          description: postal code
+          example: '66109'
+      description: address object
+    BusInq:
+      type: object
+      properties:
+        busDteOfEstblmnt:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date in which the business was established
+          example: '31102021'
+        dunsNumber:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: DUNS Number
+          example: '4565466'
+        businessRegistrationNumber:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Business registration number
+          example: '31102021'
+        busNme:
+          maxLength: 200
+          minLength: 1
+          pattern: '[^a-zA-Z0-9 &\-\"\+\$\#\!\.\,\?\/\*]'
+          type: string
+          description: Name of the business
+          example: Rattana Vichai Company LTD
+        busTyp:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: The type of business
+          example: '05'
+        busWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number of the business
+          example: '7759641220'
+        govtNbr:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Government Identification Number for the business
+          example: '879989433'
+        govtNbrTyp:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Type of Government Identification Number
+          example: '1'
+        busInqCurAddr:
+          $ref: '#/components/schemas/BusInqCurAddr'
+        busInqPrevAddr:
+          $ref: '#/components/schemas/BusInqPrevAddr'
+      description: Business Information Object
+    BusInqCurAddr:
+      type: object
+      properties:
+        busInqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: USA
+        busInqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city of business
+          example: Austin
+        busInqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state of business
+          example: TX
+        busInqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address of business
+          example: 167 Main Street
+        busInqCurAddrTwoUnit:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current second address or unit of business
+          example: Apt 2
+        busInqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code of business
+          example: '89310'
+        busInqNbrOfMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        busInqNbrOfYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address of business
+    BusInqPrevAddr:
+      type: object
+      properties:
+        busInqNbrOfMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        busInqNbrOfYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        busInqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        busInqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city of business
+          example: '31102021'
+        busInqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state of business
+          example: NY
+        busInqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address of business
+          example: 2658 Stateville Road
+        busInqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous address of business object
+    PrncplOwnrInq:
+      type: object
+      properties:
+        prncplOwnrInqDrvrLicNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Driver's License Number
+          example: 11NHA00486
+        prncplOwnrInqDrvrLicSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Driver's License State
+          example: NH
+        prncplOwnrInqDteOfBrth:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date of Birth
+          example: '04011901'
+        prncplOwnrInqGovtNbr:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Government number
+          example: '879969585'
+        prncplOwnrInqHmPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Home Phone
+          example: '2285331533'
+        prncplOwnrInqWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number
+          example: '2285331538'
+        prncplOwnrSgnrTyp:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Type of authorized signer
+          example: '02'
+        prncplOwnrInqPrevAddr:
+          $ref: '#/components/schemas/PrncplOwnrInqPrevAddr'
+        prncplOwnrInqNme:
+          $ref: '#/components/schemas/PrncplOwnrInqNme'
+        prncplOwnrInqCurAddr:
+          $ref: '#/components/schemas/PrncplOwnrInqCurAddr'
+      description: Additional Authorized Signer
+    PrncplOwnrInqPrevAddr:
+      type: object
+      properties:
+        prncplOwnrInqNbrMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        prncplOwnrInqNbrYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        prncplOwnrInqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        prncplOwnrInqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city
+          example: '31102021'
+        prncplOwnrInqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state
+          example: NY
+        prncplOwnrInqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address
+          example: 2658 Stateville Road
+        prncplOwnrInqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous Address object
+    PrncplOwnrInqCurAddr:
+      type: object
+      properties:
+        prncplOwnrInqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        prncplOwnrInqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city
+          example: Fitzwilliam
+        prncplOwnrInqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state
+          example: NH
+        prncplOwnrInqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address
+          example: 481 Royalston Rd
+        prncplOwnrInqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code
+          example: '03447'
+        prncplOwnrInqNbrMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        prncplOwnrInqNbrYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address
+    PrncplOwnrInqNme:
+      type: object
+      properties:
+        prncplOwnrInqFrstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First Name
+          example: Jeffrey
+        prncplOwnrInqLstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last Name
+          example: Radebe
+        prncplOwnrInqMidNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Mid Name
+          example: T
+      description: Name object
+    AuthSgnr2Inq:
+      type: object
+      properties:
+        authSgnr2InqDrvrLicNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Driver's License Number
+          example: 11NHA00486
+        authSgnr2InqDrvrLicSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: NH
+        authSgnr2InqDteOfBrth:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date of Birth
+          example: '04011901'
+        authSgnr2InqGovtNbr:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Government number
+          example: '879969585'
+        authSgnr2InqHmPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Home Phone
+          example: '2285331533'
+        authSgnr2InqWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number
+          example: '2285331538'
+        authSgnr2SgnrTyp:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Type of authorized signer
+          example: '02'
+        authSgnr2InqPrevAddr:
+          $ref: '#/components/schemas/AuthSgnr2InqPrevAddr'
+        authSgnr2InqCurAddr:
+          $ref: '#/components/schemas/AuthSgnr2InqCurAddr'
+        authSgnr2InqNme:
+          $ref: '#/components/schemas/AuthSgnr2InqNme'
+      description: Additional Authorized Signer
+    AuthSgnr2InqPrevAddr:
+      type: object
+      properties:
+        authSgnr2InqNbrMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        authSgnr2InqNbrYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        authSgnr2InqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr2InqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city
+          example: '31102021'
+        authSgnr2InqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state
+          example: NY
+        authSgnr2InqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address
+          example: 2658 Stateville Road
+        authSgnr2InqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous Address object
+    AuthSgnr2InqCurAddr:
+      type: object
+      properties:
+        authSgnr2InqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr2InqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city
+          example: Fitzwilliam
+        authSgnr2InqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state
+          example: NH
+        authSgnr2InqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address
+          example: 481 Royalston Rd
+        authSgnr2InqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code
+          example: '03447'
+        authSgnr2InqNbrMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        authSgnr2InqNbrYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address
+    AuthSgnr2InqNme:
+      type: object
+      properties:
+        authSgnr2InqFrstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First Name
+          example: Jeffrey
+        authSgnr2InqLstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last Name
+          example: Radebe
+        authSgnr2InqMidNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Mid Name
+          example: T
+      description: Name object
+    AuthSgnr3Inq:
+      type: object
+      properties:
+        authSgnr3InqDrvrLicNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Driver's License Number
+          example: 11NHA00486
+        authSgnr3InqDrvrLicSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: NH
+        authSgnr3InqDteOfBrth:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date of Birth
+          example: '04011901'
+        authSgnr3InqGovtNbr:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Government number
+          example: '879969585'
+        authSgnr3InqHmPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Home Phone
+          example: '2285331533'
+        authSgnr3InqWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number
+          example: '2285331538'
+        authSgnr3SgnrTyp:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Type of authorized signer
+          example: '02'
+        authSgnr3InqPrevAddr:
+          $ref: '#/components/schemas/AuthSgnr3InqPrevAddr'
+        authSgnr3InqCurAddr:
+          $ref: '#/components/schemas/AuthSgnr3InqCurAddr'
+        authSgnr3InqNme:
+          $ref: '#/components/schemas/AuthSgnr3InqNme'
+      description: Additional Authorized Signer
+    AuthSgnr3InqPrevAddr:
+      type: object
+      properties:
+        authSgnr3InqNbrMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        authSgnr3InqNbrYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        authSgnr3InqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr3InqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city
+          example: '31102021'
+        authSgnr3InqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state
+          example: NY
+        authSgnr3InqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address
+          example: 2658 Stateville Road
+        authSgnr3InqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous Address object
+    AuthSgnr3InqCurAddr:
+      type: object
+      properties:
+        authSgnr3InqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr3InqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city
+          example: Fitzwilliam
+        authSgnr3InqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state
+          example: NH
+        authSgnr3InqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address
+          example: 481 Royalston Rd
+        authSgnr3InqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code
+          example: '03447'
+        authSgnr3InqNbrMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        authSgnr3InqNbrYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address
+    AuthSgnr3InqNme:
+      type: object
+      properties:
+        authSgnr3InqFrstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First Name
+          example: Jeffrey
+        authSgnr3InqLstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last Name
+          example: Radebe
+        authSgnr3InqMidNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Mid Name
+          example: T
+      description: Name object
+    AuthSgnr4Inq:
+      type: object
+      properties:
+        authSgnr4InqDrvrLicNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Driver's License Number
+          example: 11NHA00486
+        authSgnr4InqDrvrLicSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: NH
+        authSgnr4InqDteOfBrth:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date of Birth
+          example: '04011901'
+        authSgnr4InqGovtNbr:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Government number
+          example: '879969585'
+        authSgnr4InqHmPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Home Phone
+          example: '2285331533'
+        authSgnr4InqWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number
+          example: '2285331538'
+        authSgnr4SgnrTyp:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Type of authorized signer
+          example: '02'
+        authSgnr4InqPrevAddr:
+          $ref: '#/components/schemas/AuthSgnr4InqPrevAddr'
+        authSgnr4InqCurAddr:
+          $ref: '#/components/schemas/AuthSgnr4InqCurAddr'
+        authSgnr4InqNme:
+          $ref: '#/components/schemas/AuthSgnr4InqNme'
+      description: Additional Authorized Signer
+    AuthSgnr4InqPrevAddr:
+      type: object
+      properties:
+        authSgnr4InqNbrMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        authSgnr4InqNbrYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        authSgnr4InqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr4InqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city
+          example: '31102021'
+        authSgnr4InqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state
+          example: NY
+        authSgnr4InqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address
+          example: 2658 Stateville Road
+        authSgnr4InqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous Address object
+    AuthSgnr4InqCurAddr:
+      type: object
+      properties:
+        authSgnr4InqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr4InqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city
+          example: Fitzwilliam
+        authSgnr4InqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state
+          example: NH
+        authSgnr4InqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address
+          example: 481 Royalston Rd
+        authSgnr4InqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code
+          example: '03447'
+        authSgnr4InqNbrMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        authSgnr4InqNbrYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address
+    AuthSgnr4InqNme:
+      type: object
+      properties:
+        authSgnr4InqFrstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First Name
+          example: Jeffrey
+        authSgnr4InqLstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last Name
+          example: Radebe
+        authSgnr4InqMidNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Mid Name
+          example: T
+      description: Name object
+    AuthSgnr5Inq:
+      type: object
+      properties:
+        authSgnr5InqDrvrLicNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Driver's License Number
+          example: 11NHA00486
+        authSgnr5InqDrvrLicSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: NH
+        authSgnr5InqDteOfBrth:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: Date of Birth
+          example: '04011901'
+        authSgnr5InqGovtNbr:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Government number
+          example: '879969585'
+        authSgnr5InqHmPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Home Phone
+          example: '2285331533'
+        authSgnr5InqWrkPhNbr:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Work phone number
+          example: '2285331538'
+        authSgnr5SgnrTyp:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Type of authorized signer
+          example: '02'
+        authSgnr5InqPrevAddr:
+          $ref: '#/components/schemas/AuthSgnr5InqPrevAddr'
+        authSgnr5InqCurAddr:
+          $ref: '#/components/schemas/AuthSgnr5InqCurAddr'
+        authSgnr5InqNme:
+          $ref: '#/components/schemas/AuthSgnr5InqNme'
+      description: Additional Authorized Signer
+    AuthSgnr5InqPrevAddr:
+      type: object
+      properties:
+        authSgnr5InqNbrMthsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at previous address
+          example: '5'
+        authSgnr5InqNbrYrsAtPrevAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at previous address
+          example: '3'
+        authSgnr5InqPrevCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr5InqPrevCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous city
+          example: '31102021'
+        authSgnr5InqPrevSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Previous state
+          example: NY
+        authSgnr5InqPrevStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Previous street address
+          example: 2658 Stateville Road
+        authSgnr5InqPrevZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Previous zip code
+          example: '12345'
+      description: Previous Address object
+    AuthSgnr5InqCurAddr:
+      type: object
+      properties:
+        authSgnr5InqCurCntryCd:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: Country in ISO-3166 Alpha 2 Format
+          example: US
+        authSgnr5InqCurCty:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current city
+          example: Fitzwilliam
+        authSgnr5InqCurSt:
+          maxLength: 3
+          minLength: 0
+          type: string
+          description: Current state
+          example: NH
+        authSgnr5InqCurStrAddr:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Current street address
+          example: 481 Royalston Rd
+        authSgnr5InqCurZip:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: Current zip code
+          example: '03447'
+        authSgnr5InqNbrMthsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of months at current address
+          example: '3'
+        authSgnr5InqNbrYrsAtCurAddr:
+          maxLength: 5
+          minLength: 0
+          type: string
+          description: Number of years at current address
+          example: '1'
+      description: Current address
+    AuthSgnr5InqNme:
+      type: object
+      properties:
+        authSgnr5InqFrstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First Name
+          example: Jeffrey
+        authSgnr5InqLstNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last Name
+          example: Radebe
+        authSgnr5InqMidNme:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Mid Name
+          example: T
+      description: Name object
+    KeyDriversArrayObject:
+      type: object
+      properties:
+        rank:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: key driver rank
+          example: '1'
+        description:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: key driver description
+          example: Lack of Verification with Consumer Databases
+    FraudMessagesArrayObject:
+      type: object
+      properties:
+        matchedToList:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: list that code is matched to
+          example: Always Review
+        code:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: code
+          example: E010
+        descriptions:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: message description
+          example: Address is invalid.
+    ValidationsResult:
+      type: object
+      properties:
+        addressCheckOk:
+          type: boolean
+          description: address ok?
+          example: true
+        afterSSNDate:
+          type: boolean
+          description: SSN Date ok?
+          example: true
+        dobCheckOk:
+          type: boolean
+          description: dob check ok?
+          example: true
+        driversLicenseCheckOk:
+          type: boolean
+          description: drivers license check ok?
+          example: true
+        idCheckHadMatchingRecords:
+          type: boolean
+          description: id had matching records?
+          example: true
+        idCheckOk:
+          type: boolean
+          description: id check ok?
+          example: true
+        isDeceased:
+          type: boolean
+          description: is deceased?
+          example: false
+        minorYes:
+          type: boolean
+          description: is a minor?
+          example: true
+        nameCheckOk:
+          type: boolean
+          description: name check ok?
+          example: true
+        ofacHit:
+          type: boolean
+          description: ofac hit?
+          example: true
+        telephoneCheckOk:
+          type: boolean
+          description: telephone check ok?
+          example: false
+        ssnCheckOk:
+          type: boolean
+          description: ssn check ok?
+          example: true
+      description: validationsResult object
+    SsnValidation:
+      type: object
+      properties:
+        ssnBeginIssueDate:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: ssn issue date
+          format: date
+        ssnEndIssueDate:
+          maxLength: 7
+          minLength: 0
+          type: string
+          description: ssn end issue date
+          format: date
+        ssnIssueState:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: ssn issue state
+          example: MN
+        ssnValidationMessage:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: ssn validation message
+          example: Message
+      description: ssnValidation object
+    RuleObject:
+      type: object
+      properties:
+        ruleName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: name of rule
+          example: Business v2
+        notes:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: anotes about the rule
+          example: v2 desrciption
+      description: ruleobject
+    AltInformation:
+      type: object
+      properties:
+        altAddress1:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: alternate address 1
+          example: 123 main street
+        alt1AddressLine1:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: alt 1 address line 1
+          example: FUTURE USE
+        alt1AddressLine2:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: alt 1 address line 2
+          example: FUTURE USE
+        alt1City:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: alternate city 1
+          example: FUTURE USE
+        alt1State:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: alternate state 1
+          example: FUTURE USE
+        alt1PostalCd:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: alternate postal code 1
+          example: FUTURE USE
+        altAddress2:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alternate address 2
+          example: 555 North Street
+        alt2AddressLine1:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alt 2 address line 1
+          example: FUTURE USE
+        alt2AddressLine2:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alt 2 address line 2
+          example: FUTURE USE
+        alt2City:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: alternate city 2
+          example: FUTURE USE
+        alt2State:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: alternate state 2
+          example: FUTURE USE
+        alt2PostalCd:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: alternate postal code 2
+          example: FUTURE USE
+        altAddress3:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alternate address 3
+          example: 654 Left Dr.
+        alt3AddressLine1:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alt 3 address line 1
+          example: FUTURE USE
+        alt3AddressLine2:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alt 3 address line 2
+          example: FUTURE USE
+        alt3City:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alternate city 3
+          example: FUTURE USE
+        alt3State:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: alternate state 3
+          example: FUTURE USE
+        alt3PostalCd:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: alternate postal code 3
+          example: FUTURE USE
+        altDob1:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9/]{0,10}$
+          type: string
+          description: alternate date of birth 1
+          example: 10/01/1982
+        altDob2:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9/]{0,10}$
+          type: string
+          description: alternate date of birth 2
+          example: 10/02/1982
+        altDob3:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9/]{0,10}$
+          type: string
+          description: alternate date of birth 3
+          example: 10/03/1982
+        altDriversLicenseno1:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: alternate drivers license 1
+          example: D80XXXXXX
+        altDriversLicenseno2:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: alternate drivers license 2
+          example: D80XXXXXX
+        altDriversLicenseno3:
+          maxLength: 25
+          minLength: 0
+          type: string
+          description: alternate drivers license 3
+          example: D80XXXXXX
+        altHomePhone1:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: alternate home phone 1
+          example: '+18659657895'
+        altHomePhone2:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: alternate home phone 2
+          example: '+18659657898'
+        altHomePhone3:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: alternate home phone 3
+          example: '+18659657899'
+        altName1:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: alternate name 1
+          example: John Jacob
+        altName2:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: alternate name 2
+          example: Billy Bob
+        altName3:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: alternate name 3
+          example: Sue Jones
+      description: altInformation object
+    advancedSSN:
+      type: object
+      properties:
+        verified:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Advanced SSN verified indicator
+          example: 'N'
+        deathIndicator:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Advanced SSN death indicator
+          example: 'Y'
+      description: Advanced SSN object
+    ConsumerDataAlert:
+      type: object
+      properties:
+        proofsOfResidency:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: proofs of residency
+          example: '1'
+        proofsOfIdentity:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: proofs of identity
+          example: '1'
+        totalAlerts:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: total alerts
+          example: '2'
+      description: consumerDataAlert object
+    customer:
+      type: object
+      properties:
+        customerId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Akoya ID assigned to customer
+          example: '1221963699'
+        name:
+          type: array
+          description: Names on Akoya account
+          items:
+            $ref: '#/components/schemas/name'
+        businessCustomer:
+          $ref: '#/components/schemas/businessCustomer'
+        addresses:
+          type: array
+          description: Addresses associated with Akoya account
+          items:
+            $ref: '#/components/schemas/addresses'
+        telephones:
+          type: array
+          description: Addresses associated with Akoya account
+          items:
+            $ref: '#/components/schemas/telephones'
+        email:
+          type: array
+          description: Emails associated with Akoya account
+          items:
+            $ref: '#/components/schemas/email'
+        accounts:
+          type: array
+          description: Akoya accounts array
+          items:
+            $ref: '#/components/schemas/accounts'
+      description: Akoya customer object
+    businessCustomer:
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Name of Business Customer
+          example: FIS
+        registeredAgents:
+          type: array
+          description: Registered agents associated with business
+          items:
+            $ref: '#/components/schemas/registeredAgents'
+        registeredId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Business' Registered ID
+          example: '1221963699'
+        industryCode:
+          $ref: '#/components/schemas/industryCode'
+        domicile:
+          $ref: '#/components/schemas/domicile'
+      description: Akoya Business Customer object
+    email:
+      maxLength: 200
+      minLength: 0
+      type: string
+      description: Akoya email address
+    telephones:
+      type: object
+      properties:
+        telephones:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Telephone Number
+          example: '9585550103'
+        type:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Telephone type
+          example: HOME
+        country:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Telephone country
+          example: '1'
+      description: Akoya telephones Object
+    domicile:
+      type: object
+      properties:
+        region:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Region of Domicile
+          example: North
+        country:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Country of Domicile
+          example: USA
+      description: Domicile Object
+    industryCode:
+      type: object
+      properties:
+        type:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Type of Industry Code
+          example: '4810'
+        code:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Industry Code
+          example: Air Transportation
+      description: Industry Code Object
+    registeredAgents:
+      type: object
+      properties:
+        first:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First name of Agent
+          example: Mike
+        middle:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Middle name of Agent
+          example: James
+        last:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last name of Agent
+          example: Johnson
+        prefix:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Prefix of Agent
+          example: Mr
+        suffix:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: suffix of Agent
+          example: Jr
+        company:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Company of Agent
+          example: FIS
+      description: Object to hold Registered Agents Information
+    name:
+      type: object
+      properties:
+        first:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: First name of customer
+          example: Mike
+        middle:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Middle name of customer
+          example: James
+        last:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Last name of customer
+          example: Johnson
+        prefix:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Prefix of customer
+          example: Mr
+        suffix:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: suffix of customer
+          example: Jr
+        company:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Company of customer
+          example: FIS
+      description: Object to hold customer names
+    addresses:
+      type: object
+      properties:
+        line1:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Line 1 of Address
+          example: 7572 Road Rd
+        line2:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Line 2 of Address
+          example: 7572 Road Rd
+        line3:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Line 3 of Address
+          example: 7572 Road Rd
+        city:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses city
+          example: SPRINGFIELD
+        state:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses state
+          example: TN
+        region:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses region
+          example: North
+        postalCode:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses Postal Code
+          example: 37172-6488
+        country:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses Country
+          example: USA
+        type:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Addresses type
+          example: HOME
+      description: Akoya addresses object
+    accounts:
+      type: object
+      properties:
+        accountId:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: ID of Akoya account
+          example: 47320722f1e9340a8f8ead1e38bdbc215b0866d0ad83472c6777923499a74429
+        relationship:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Relationship of account to customer
+          example: PRIMARY
+      description: Akoya account object
+    BusinessResults:
+      type: object
+      properties:
+        bizChexRcmndedDcsn:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: Decision for the business
+          example: Accept
+        busCIPRsp:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Response for the business
+          example: Verified
+        busOFACHit:
+          type: boolean
+          description: OFAC hit
+          example: false
+      description: Business results object
+    BizChexPeopleResult:
+      type: object
+      properties:
+        cIPRsp:
+          maxLength: 50
+          minLength: 0
+          type: string
+          description: Response from Bizchex for signer
+          example: Verified
+        oFACHit:
+          type: boolean
+          description: OFAC hit
+          example: false
+      description: Signer results object
+    DatasourceResults:
+      type: array
+      description: DatasourceResults array
+      items:
+        $ref: '#/components/schemas/DatasourceObject'
+    DatasourceObject:
+      type: object
+      properties:
+        DatasourceName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Agency Used in Query
+          example: Credit Agency 2
+        DatasouceFields:
+          type: array
+          description: DatasouceFields array
+          items:
+            $ref: '#/components/schemas/DatasourceFields'
+        AppendedFields:
+          type: array
+          description: AppendedFields array
+          items:
+            $ref: '#/components/schemas/AppendedFields'
+        Errors:
+          type: array
+          description: Error array
+          items:
+            $ref: '#/components/schemas/Errors'
+      description: DatasourceResults object
+    DatasourceFields:
+      type: object
+      properties:
+        FieldName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Attribute Used in Query
+          example: PostalCode
+        Status:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Status of Attribute
+          example: match
+      description: DatasourceResults array
+    AppendedFields:
+      type: object
+      properties:
+        FieldName:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Attribute Used in Query
+          example: PostalCode
+        Data:
+          type: string
+          description: Data for the appended attribute
+          example: match
+      description: AppendedFields array
+    Errors:
+      type: object
+      properties:
+        Code:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Error Code
+          example: '200'
+        Message:
+          type: string
+          description: Error message
+          example: invalid postal code
+      description: Errors array
+    WatchListArrayObject:
+      type: object
+      properties:
+        name:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: customer name opening account
+          example: osama
+        program:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: name of watch list program
+          example: SDGT
+        type:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: type being checked
+          example: Individual
+        remarks:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: extra details
+          example: DOB 10 Apr 1960; POB Bloomington, Indiana USA
+        source:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: List that was found
+          example: SDN List
+    WatchListReporterArrayObject:
+      type: object
+      properties:
+        listCode:
+          type: string
+          description: WatchList code for the party
+          example: 'Dow Jones: US-OFAC'
+        name:
+          type: string
+          description: List category name of the party
+          example: El Mata Policias (Alternate Name)
+        program:
+          type: string
+          description: 'Program name of the party '
+          example: OFAC - Principal Significant Foreign Narcotics Trafficker List
+        entityId:
+          type: string
+          description: Unique identifier for the entity
+          example: '1005436'
+        score:
+          type: string
+          description: Score produced for the scan
+          example: '77.98'
+        summaryId:
+          type: string
+          description: Unique identifier for the summary record
+          example: '1101'
+    watchListReporter:
+      type: object
+      properties:
+        operationStatus:
+          type: string
+          description: Status of the transaction
+          example: Success
+        numberOfMatches:
+          type: integer
+          description: Number of matches with WatchList Reporter
+          example: 12
+        matchSummary:
+          maxItems: 30
+          minItems: 0
+          type: array
+          description: List of WatchList Reporter matches
+          items:
+            $ref: '#/components/schemas/WatchListReporterArrayObject'
+    MessagesArrayObject:
+      type: object
+      properties:
+        deliveryStatus:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: delivery status
+          example: fail
+        messageName:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: name of message sent
+          example: First
+        messageText:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: text of message sent
+          example: Hi there.
+        timestamp:
+          maxLength: 1000
+          minLength: 0
+          type: string
+          description: timestamp of when message was created
+          example: ''
+    IdaDecision:
+      type: object
+      properties:
+        base:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: number of questions
+          example: '3'
+        decision:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: decision based on answers submitted
+          example: Pass
+        idaOid:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: idaOid
+          example: '2148536629'
+        score:
+          maxLength: 2
+          minLength: 0
+          type: integer
+          description: how many were answered correctly
+          example: 3
+        userReferenceText1:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: userReferenceText1
+          example: ''
+        userReferenceText2:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: userReferenceText2
+          example: ''
+        userReferenceText3:
+          maxLength: 100
+          minLength: 0
+          type: string
+          description: userReferenceText3
+          example: ''
+      description: IdaDecision object
+    IdaQuestions:
+      type: object
+      properties:
+        idaQuestion1:
+          $ref: '#/components/schemas/IdaQuestion1'
+        idaQuestion2:
+          $ref: '#/components/schemas/IdaQuestion2'
+        idaQuestion3:
+          $ref: '#/components/schemas/IdaQuestion3'
+        idaQuestion4:
+          $ref: '#/components/schemas/IdaQuestion4'
+        idaQuestion5:
+          $ref: '#/components/schemas/IdaQuestion5'
+        idaQuestion6:
+          $ref: '#/components/schemas/IdaQuestion6'
+        idaQuestion7:
+          $ref: '#/components/schemas/IdaQuestion7'
+        idaQuestion8:
+          $ref: '#/components/schemas/IdaQuestion8'
+        idaQuestion9:
+          $ref: '#/components/schemas/IdaQuestion9'
+        quizId:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: quizId
+          example: DISC:PEN:2148536917
+        transId:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: transId
+          example: '3941185452'
+      description: IdaQuestions object
+    IdaQuestion1:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion2:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion3:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion4:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion5:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion6:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion7:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion8:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    IdaQuestion9:
+      type: object
+      properties:
+        answer1Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 1
+          example: '04792578'
+        answer1Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 1 text
+          example: October 2003
+        answer2Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 2
+          example: '04792578'
+        answer2Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 2 text
+          example: None of the above
+        answer3Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 3
+          example: '04792578'
+        answer3Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 3 text
+          example: None of the above
+        answer4Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 4
+          example: '04792578'
+        answer4Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 4 text
+          example: None of the above
+        answer5Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 5
+          example: '04792578'
+        answer5Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 5 text
+          example: None of the above
+        answer6Id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: Id of answer 6
+          example: '04792578'
+        answer6Text:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: answer 6 text
+          example: None of the above
+        id:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: question id
+          example: '88674562'
+        questionText:
+          maxLength: 150
+          minLength: 0
+          type: string
+          description: text of the question
+          example: When did you purchase or lease your Acura 3.2 TL?
+      description: IdaQuestion1 object
+    Configuration:
+      type: object
+      properties:
+        verificationMaxAttempts:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: max attempts allowed
+          example: 3
+        verificationTtl:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: length url is valid (seconds)
+          example: 86400
+        verificationUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: URL to Document Verification UI
+          example: https://dev.fisglobal.documentverification.net
+        verificationFlow:
+          maxItems: 100
+          minItems: 0
+          type: array
+          description: verification flow array of what validation will be run
+          items:
+            maxLength: 1000
+            minLength: 0
+            type: string
+            description: what Document Verification operations are being run
+            example: OCR
+      description: configuration object
+    Status:
+      type: object
+      properties:
+        transactionId:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: transactionId
+          example: abcdef-1234-s4esdf-34343fdfde
+        newStatus:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: status to switch to
+          example: FAIL
+        comment:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: comment on status change
+          example: Sample comment.
+        submittedBy:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Who submitted the status change.
+          example: Bob
+        changeReason:
+          maxLength: 40
+          minLength: 0
+          type: string
+          description: Reason to change status
+          example: Sample Reason
+    Customer:
+      type: object
+      properties:
+        customerId:
+          maxLength: 36
+          minLength: 0
+          type: string
+          description: customerId
+          example: 8b6409a3-7525-4584-a0f1-b2de2d5a08f9
+        email:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: email
+          example: test@fisglobal.com
+        phone:
+          maxLength: 15
+          minLength: 0
+          type: string
+          description: phone number
+          example: '+16784690531'
+        firstName:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: first name
+          example: Bob
+        lastName:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: last name
+          example: Jones
+      description: Customer object
+    StepsArrayObject:
+      type: object
+      properties:
+        sessionId:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: sessionId
+          example: Kx1w5GO
+        codename:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: codename of step being run
+          example: GUIDE
+        attemptsLeft:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: number of attempts left
+          example: 1
+        started:
+          type: boolean
+          description: has step started
+          example: true
+        passed:
+          type: boolean
+          description: has step passed
+          example: false
+        completed:
+          type: boolean
+          description: has step completed
+          example: true
+        processed:
+          type: boolean
+          description: has step processed
+          example: false
+        errorCode:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: error code
+          example: error code
+        statusMessage:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: error message
+          example: error message
+        responseData:
+          $ref: '#/components/schemas/ResponseData'
+        requestId:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: request Id
+          example: '12345'
+    ResponseData:
+      type: object
+      properties:
+        fakeDetected:
+          type: boolean
+          description: if provided video is a fake.
+          example: true
+        proofOfLiveness:
+          type: boolean
+          description: raw result from service determining PoL.
+          example: false
+        shapeError:
+          maximum: 100
+          minimum: 0
+          type: number
+          description: >-
+            the measure of how far the processed face is to our ideal face
+            model. The closer to zero the better.
+          format: float
+          example: 2.34
+        duration:
+          maximum: 2147483647
+          minimum: 0
+          type: integer
+          description: video processing time.
+          example: 6
+        faceImageUrl:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: temporarily stored video frame with face
+          example: https://pathToPol.com/polvideo.mp4
+        mrzRaw:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: raw data read from the barcode strip in MRZ format
+          example: P<USATRAVELER<<HA...
+        mrzVerification:
+          type: boolean
+          description: is MRZ valid, format-wise
+          example: false
+        confidence:
+          maximum: 1
+          minimum: 0
+          type: number
+          description: confidence level of proof of liveness from 0.0-1.0
+          format: float
+          example: 0.9
+        verdict:
+          type: boolean
+          description: raw result from service determining PoL
+          example: true
+        userEnteredData:
+          $ref: '#/components/schemas/UserEnteredData'
+        documentDetails:
+          $ref: '#/components/schemas/DocumentDetails'
+        Data:
+          $ref: '#/components/schemas/Data'
+        subtasks:
+          $ref: '#/components/schemas/Subtasks'
+      description: responseData object
+    Data:
+      type: object
+      properties:
+        address:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: full street address
+          example: 50 EXAMPLE RD
+        apartmentNr:
+          maxLength: 10
+          minLength: 0
+          type: string
+          description: apartment number
+          example: '13'
+        city:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: city
+          example: Minneapolis
+        dob:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9-]{0,10}$
+          type: string
+          description: date of birth
+          example: '1990-03-02'
+        dateExp:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9-]{0,10}$
+          type: string
+          description: expiration date
+          example: '2019-03-02'
+        exp:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9-]{0,10}$
+          type: string
+          description: expiration date
+          example: '2019-03-02'
+        firstName:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: first name
+          example: Jane
+        dateIssue:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9-]{0,10}$
+          type: string
+          description: issue date
+          example: '1999-04-02'
+        iss:
+          maxLength: 10
+          minLength: 0
+          pattern: ^[0-9-]{0,10}$
+          type: string
+          description: issue date
+          example: '1999-04-02'
+        lastName:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: last name
+          example: Doe
+        middleInitial:
+          maxLength: 1
+          minLength: 0
+          type: string
+          description: middle initial
+          example: A
+        title:
+          type: string
+          description: Title on ID
+          example: Mr
+        state:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: state
+          example: MN
+        country:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Country
+          example: USA
+        stateTemplateName:
+          maxLength: 30
+          minLength: 0
+          type: string
+          description: State template name
+          example: FL_co_2017_all
+        zipCode:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: zip code
+          example: 30016-5217
+        twoSided:
+          type: boolean
+          description: is id two sided
+          example: true
+        minFieldsRequired:
+          type: string
+          description: Number of required fields
+          example: '4'
+        documentNo:
+          type: string
+          description: >-
+            Document Number. Used for both synchronous and asynchronous document
+            verification transactions.
+          example: G620-400-97-346-0 9
+        idNumber:
+          type: string
+          description: >-
+            ID Number on document. Used exclusively for asynchronous document
+            verification transactions.
+          example: G620-400-97-346-0 9
+        dd:
+          type: string
+          description: Document Number
+          example: 5DD X632111260396
+        sex:
+          type: string
+          description: Sex on ID
+          example: M
+        eyes:
+          type: string
+          description: Color of eyes on ID
+          example: Brown
+        height:
+          type: string
+          description: Height on ID
+          example: '09'
+        weight:
+          type: string
+          description: Weight on ID
+          example: '155'
+        endorsements:
+          type: string
+          description: Endorsements on ID
+          example: NONE
+      description: Data object
+    UserEnteredData:
+      type: object
+      properties:
+        countryCode:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Countries Code
+          example: US
+        stateCode:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: States Code
+          example: FL
+        documentType:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Type of Document used for OCR
+          example: DOCUMENT_TYPE_DL
+      description: User Entered Data object
+    DocumentDetails:
+      type: object
+      properties:
+        countryCode:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Countries Code
+          example: US
+        stateCode:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: States Code
+          example: FL
+        documentType:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: Type of Document used for OCR
+          example: DOCUMENT_TYPE_DL
+      description: User Entered Data object
+    Subtasks:
+      type: object
+      properties:
+        sideComparison:
+          $ref: '#/components/schemas/SideComparison'
+        faceComparison:
+          $ref: '#/components/schemas/FaceComparison'
+      description: subtasks object
+    SideComparison:
+      type: object
+      properties:
+        passed:
+          type: boolean
+          description: status of the subtask
+          example: false
+        data:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: result of the subtask processing
+          example: side Comparison data
+        meta:
+          $ref: '#/components/schemas/MetaSide'
+      description: sideComparison object
+    FaceComparison:
+      type: object
+      properties:
+        passed:
+          type: boolean
+          description: status of the subtask
+          example: false
+        data:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: result of the subtask processing
+          example: Face Comparison data
+        meta:
+          $ref: '#/components/schemas/MetaFace'
+        bioMatch:
+          $ref: '#/components/schemas/BioMatchInfo'
+      description: faceComparison object
+    MetaFace:
+      type: object
+      properties:
+        ocrHash:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: ocr hash
+          example: ocr hash
+        videoPolHash:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: video_pol hash
+          example: video_pol hash
+      description: metaFace object
+    BioMatchInfo:
+      type: object
+      properties:
+        bioMatchPassed:
+          type: boolean
+          description: result of Biometric match
+          example: true
+        bioMatchErrorCode:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Error message
+          example: 'null'
+        bioMatchStatus:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: Status of biometric match
+          example: 'null'
+        bioMatchSessionMatchedTo:
+          $ref: '#/components/schemas/BioMatchSessionMatchedTo'
+      description: Additional information about Document ID Photo and Video.
+    BioMatchSessionMatchedTo:
+      maxItems: 100
+      minItems: 0
+      type: array
+      description: List of sessions
+      items:
+        $ref: '#/components/schemas/BioMatchSessionWrapper'
+    BioMatchSessionWrapper:
+      maxLength: 20
+      minLength: 0
+      type: string
+      description: Sessions linked to the biometric
+      example: test3
+    MetaSide:
+      type: object
+      properties:
+        ocrData:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: ocr data
+          example: ocr data
+        barcodeData:
+          maxLength: 2147483647
+          minLength: 0
+          type: string
+          description: barcode data
+          example: barcode data
+      description: metaSide object
+    ErrorDetails:
+      maxItems: 100
+      minItems: 0
+      type: array
+      description: errorDetails array
+      items:
+        $ref: '#/components/schemas/Details'
+    complianceDocumentsResponse:
+      maxItems: 100
+      minItems: 0
+      type: array
+      description: Uploaded documents response array
+      items:
+        $ref: '#/components/schemas/complianceDocumentsResponseObject'
+    Details:
+      type: object
+      properties:
+        code:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: error code
+          example: 400/500
+        message:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: error message
+          example: Sample Error Message
+        product:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: product where validation error occured
+          example: Qualifile
+      description: error details object
+    complianceDocumentsResponseObject:
+      type: object
+      properties:
+        name:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Name of provided document
+          example: File Agreement
+        description:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Description of uploaded document
+          example: This is a file agreement document
+        provided:
+          type: boolean
+          description: Boolean to represent whether document has been provided
+        approvalStatus:
+          maxLength: 200
+          minLength: 0
+          type: string
+          description: Approval status of provided document
+          example: Rejected
+      description: Document Upload Response object
+    ErrorResponse:
+      required:
+        - details
+      type: object
+      properties:
+        details:
+          type: array
+          description: >-
+            (Required) The details attribute identifies an array of one or more
+            objects providing information about the specific instances of the
+            type of error that occurred.
+          items:
+            required:
+              - code
+              - message
+            type: object
+            properties:
+              code:
+                maxLength: 4
+                minLength: 0
+                type: string
+                description: Error code that describes the error
+                example: 400/500
+              message:
+                maxLength: 99
+                minLength: 0
+                type: string
+                description: Error message that describes the error
+                example: Sample Error Message
+    UpdateStatusErrorResponse:
+      type: object
+      properties:
+        error:
+          maxLength: 255
+          minLength: 0
+          type: string
+          description: error message
+          example: Sample Error Message
+        code:
+          maxLength: 20
+          minLength: 0
+          type: string
+          description: error code
+          example: 400/500
+      description: update comment/status error object
+  parameters:
+    uuid:
+      name: uuid
+      in: header
+      description: Uniquely identifies an API call. Generated on each call.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 32
+        pattern: >-
+          ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        type: string
+        example: 124a4567-e79b-12d3-b456-346655440000
+      example: 8bbaf6de-707c-46f6-b2b6-8e3ffe1d909c
+    source:
+      name: source
+      in: header
+      description: Source passed on each migration call.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 0
+        pattern: ^[0-9A-Za-z]{0,36}$
+        type: string
+        example: Source
+      example: Source
+    token:
+      name: token
+      in: header
+      description: token for validation on each migration call
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 0
+        pattern: ^[0-9A-Za-z]{0,36}$
+        type: string
+        example: 8bbaf6de
+      example: 8bbaf6de
+    transactionid:
+      name: transactionid
+      in: query
+      description: transactionid
+      required: true
+      style: form
+      explode: true
+      schema:
+        maxLength: 36
+        minLength: 32
+        type: string
+      example: c9650fac-0b1d-4bb3-af47-7deefc07ec51
+    customerid:
+      name: customerid
+      in: query
+      description: customerid being passed to get configuration details on a customer
+      required: true
+      style: form
+      explode: true
+      schema:
+        maxLength: 36
+        minLength: 0
+        type: string
+      example: '123456789'
+    externalid:
+      name: externalid
+      in: header
+      description: external id being passed for authentication
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 0
+        type: string
+      example: '12345678'
+  headers:
+    uuid:
+      description: A unique transaction identifier to be used per API interaction
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 32
+        pattern: >-
+          ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$
+        type: string
+        example: 124a4567-e79b-12d3-b456-346655440000
+    externalid:
+      description: A unique external id to be used per customerid GET call
+      required: true
+      style: simple
+      explode: false
+      schema:
+        maxLength: 36
+        minLength: 0
+        pattern: ^[0-9A-Za-z]{0,36}$
+        type: string
+        example: 124a4567-e79b-12d3-b456-346655440000
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

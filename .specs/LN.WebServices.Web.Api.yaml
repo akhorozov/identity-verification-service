@@ -1,0 +1,6268 @@
+openapi: 3.0.0
+info:
+  version: V1-oas3
+  title: LN.WebServices.Web.Api
+  x-swagger-net-version: 8.4.12.001
+tags:
+  - name: Entity
+  - name: ListMaintenance
+  - name: Lists
+  - name: Results
+  - name: Token
+paths:
+  /api/Entity/Photo/{id}:
+    get:
+      tags:
+        - Entity
+      operationId: Entity_Photo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: InternalServerError
+      path: /api/Entity/Photo/{id}
+      method: GET
+  /api/ListMaintenance/ResultRecord:
+    put:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_ResultRecord
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddResultRecordRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/ResultRecord
+      method: PUT
+  /api/ListMaintenance/SearchLists:
+    post:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_SearchLists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchListsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                xml:
+                  name: ListInfo
+                  wrapped: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListInfo'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/SearchLists
+      method: POST
+  /api/ListMaintenance/IndexList:
+    post:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_IndexList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexListRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/IndexList
+      method: POST
+  /api/ListMaintenance/AddList:
+    post:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_AddList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddListRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/AddList
+      method: POST
+  /api/ListMaintenance/DeleteList/{id}:
+    delete:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_DeleteList
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/DeleteList/{id}
+      method: DELETE
+  /api/ListMaintenance/UpdateList:
+    post:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_UpdateList
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateListRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/UpdateList
+      method: POST
+  /api/ListMaintenance/List/{id}:
+    get:
+      tags:
+        - ListMaintenance
+      operationId: ListMaintenance_List
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListInfo'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/ListMaintenance/List/{id}
+      method: GET
+  /api/Lists/Search:
+    post:
+      tags:
+        - Lists
+      operationId: Lists_Search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntitySearchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Lists/Search
+      method: POST
+  /api/Lists/DataFiles:
+    post:
+      tags:
+        - Lists
+      operationId: Lists_DataFiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientContext'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                xml:
+                  name: DataFileInfo
+                  wrapped: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataFileInfo'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Lists/DataFiles
+      method: POST
+  /api/Results/Records:
+    post:
+      tags:
+        - Results
+      operationId: Results_Records
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultRecordsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                xml:
+                  name: ResultRecord
+                  wrapped: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResultRecord'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Results/Records
+      method: POST
+  /api/Results/SearchRuns:
+    post:
+      tags:
+        - Results
+      operationId: Results_SearchRuns
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResultRunsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                xml:
+                  name: RunInfo
+                  wrapped: true
+                type: array
+                items:
+                  $ref: '#/components/schemas/RunInfo'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Results/SearchRuns
+      method: POST
+  /api/Results/SearchRecords:
+    post:
+      tags:
+        - Results
+      operationId: Results_SearchRecords
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchResultRecordsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchRecordResults'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Results/SearchRecords
+      method: POST
+  /api/Results/SetRecordState:
+    post:
+      tags:
+        - Results
+      operationId: Results_SetRecordState
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetRecordStateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Results/SetRecordState
+      method: POST
+  /api/Results/RunInfo/{id}:
+    get:
+      tags:
+        - Results
+      operationId: Results_RunInfo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunInfo'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Results/RunInfo/{id}
+      method: GET
+  /api/Token/Issue:
+    post:
+      tags:
+        - Token
+      operationId: Token_Issue
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+        '401':
+          description: Unauthorized
+        '500':
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                type: string
+      path: /api/Token/Issue
+      method: POST
+servers:
+  - url: https://bridgerstaging.lexisnexis.com/LN.WebServices
+components:
+  schemas:
+    AddResultRecordRequest:
+      type: object
+      required:
+        - ListId
+        - Result
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        Result:
+          $ref: '#/components/schemas/ResultInfo'
+        ListId:
+          type: integer
+          format: int64
+      xml:
+        name: AddResultRecordRequest
+    ClientContext:
+      type: object
+      properties:
+        ClientID:
+          type: string
+        ClientReference:
+          type: string
+        DPPA:
+          type: string
+          enum:
+            - NA
+            - Choice0
+            - Choice1
+            - Choice2
+            - Choice3
+            - Choice4
+            - Choice6
+        GLB:
+          type: integer
+          format: int32
+        Password:
+          type: string
+        UserID:
+          type: string
+      xml:
+        name: ClientContext
+    ResultInfo:
+      type: object
+      properties:
+        NewAlertState:
+          type: string
+          enum:
+            - None
+            - Closed
+            - Open
+            - Unassigned
+        NewMatchStates:
+          type: array
+          xml:
+            name: WatchlistMatchState
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WatchlistMatchState'
+        NewStatus:
+          type: string
+        Note:
+          type: string
+        Record:
+          $ref: '#/components/schemas/ResultRecord'
+        ResultID:
+          type: integer
+          format: int64
+      xml:
+        name: ResultInfo
+    WatchlistMatchState:
+      type: object
+      properties:
+        MatchID:
+          type: integer
+          format: int64
+        Type:
+          type: string
+          enum:
+            - None
+            - FalsePositive
+            - TrueMatch
+      xml:
+        name: WatchlistMatchState
+    ResultRecord:
+      type: object
+      properties:
+        AttachmentIDs:
+          type: array
+          items:
+            type: integer
+            format: int64
+        FraudPoint:
+          $ref: '#/components/schemas/FraudPointResults'
+        InstantIDBusiness:
+          $ref: '#/components/schemas/InstantIDBusinessResults'
+        InstantIDIndividual:
+          $ref: '#/components/schemas/InstantIDIndividualResults'
+        InstantIDIntlIndividual:
+          $ref: '#/components/schemas/InstantIDIntlIndividualResults'
+        Record:
+          type: integer
+          format: int64
+        RecordDetails:
+          $ref: '#/components/schemas/ResultRecordDetails'
+        ResultID:
+          type: integer
+          format: int64
+        RunID:
+          type: integer
+          format: int64
+        Watchlist:
+          $ref: '#/components/schemas/WatchlistResults'
+        HasScreeningListMatches:
+          type: boolean
+        RecordStatus:
+          type: string
+        EFTID:
+          type: string
+      xml:
+        name: ResultRecord
+    FraudPointResults:
+      type: object
+      properties:
+        Errors:
+          type: array
+          xml:
+            name: ResultError
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ResultError'
+        Input:
+          $ref: '#/components/schemas/FPInput'
+        RedFlags:
+          type: array
+          xml:
+            name: FPRedFlag
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/FPRedFlag'
+        RiskIndicators:
+          type: array
+          xml:
+            name: FPRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/FPRiskIndicator'
+        Score:
+          type: integer
+          format: int32
+        SyntheticIdentityIndex:
+          type: integer
+          format: int32
+        StolenIdentityIndex:
+          type: integer
+          format: int32
+        ManipulatedIdentityIndex:
+          type: integer
+          format: int32
+        VulnerableVictimIndex:
+          type: integer
+          format: int32
+        FriendlyFraudIndex:
+          type: integer
+          format: int32
+        SuspiciousActivityIndex:
+          type: integer
+          format: int32
+      xml:
+        name: FraudPointResults
+    InstantIDBusinessResults:
+      type: object
+      properties:
+        BankruptcyFilingsCount:
+          type: integer
+          format: int32
+        ComprehensiveVerificationIndex:
+          type: integer
+          format: int32
+        CorrectedCompanyName:
+          type: string
+        Errors:
+          type: array
+          xml:
+            name: ResultError
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ResultError'
+        FEINMatches:
+          type: array
+          xml:
+            name: IIDFEINMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDFEINMatch'
+        Input:
+          $ref: '#/components/schemas/IIDInput'
+        MostRecentBankrupctyFiling:
+          $ref: '#/components/schemas/IIDFiling'
+        MostRecentJudgmentLienFiling:
+          $ref: '#/components/schemas/IIDFiling'
+        NameAddressFEINIndicator:
+          type: integer
+          format: int32
+        NameAddressPhoneIndicator:
+          type: integer
+          format: int32
+        NameAddressSSNIndicator:
+          type: integer
+          format: int32
+        PhoneOfNameAddress:
+          type: string
+        PhoneType:
+          type: string
+        ReleasedJudgmentLienCount:
+          type: integer
+          format: int32
+        ReversePhone:
+          $ref: '#/components/schemas/IIDReversePhone'
+        RiskIndicators:
+          type: array
+          xml:
+            name: IIDRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDRiskIndicator'
+        UnreleasedJudgmentLienCount:
+          type: integer
+          format: int32
+        VerificationIndicators:
+          $ref: '#/components/schemas/IIDVerificationIndicators'
+        VerifiedInput:
+          $ref: '#/components/schemas/IIDInput'
+        Watchlist:
+          $ref: '#/components/schemas/IIDWatchlist'
+      xml:
+        name: InstantIDBusinessResults
+    InstantIDIndividualResults:
+      type: object
+      properties:
+        AddressCMRA:
+          type: string
+        AddressHistory:
+          type: array
+          xml:
+            name: IIDAddressHistory
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDAddressHistory'
+        AddressPOBox:
+          type: string
+        AlternateNames:
+          type: array
+          xml:
+            name: IIDAlternateName
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDAlternateName'
+        ComprehensiveVerificationIndex:
+          type: integer
+          format: int32
+        DOBMatchLevel:
+          type: integer
+          format: int32
+        Errors:
+          type: array
+          xml:
+            name: ResultError
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ResultError'
+        Input:
+          $ref: '#/components/schemas/IIDInput'
+        LexID:
+          type: string
+        NameAddressPhone:
+          $ref: '#/components/schemas/IIDRiskIndicator'
+        NameAddressSSN:
+          $ref: '#/components/schemas/IIDRiskIndicator'
+        PhoneOfNameAddress:
+          type: string
+        PotentialFollowupActions:
+          type: array
+          xml:
+            name: IIDRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDRiskIndicator'
+        RedFlags:
+          type: array
+          xml:
+            name: IIDRedFlag
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDRedFlag'
+        ReversePhone:
+          $ref: '#/components/schemas/IIDReversePhone'
+        RiskIndicators:
+          type: array
+          xml:
+            name: IIDRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDRiskIndicator'
+        SSNInfo:
+          $ref: '#/components/schemas/IIDSSNInfo'
+        VerifiedInput:
+          $ref: '#/components/schemas/IIDInput'
+        Version:
+          type: string
+        Watchlist:
+          $ref: '#/components/schemas/IIDWatchlist'
+      xml:
+        name: InstantIDIndividualResults
+    InstantIDIntlIndividualResults:
+      type: object
+      properties:
+        Header:
+          $ref: '#/components/schemas/IIDIHeader'
+        Result:
+          $ref: '#/components/schemas/IIDIResult'
+      xml:
+        name: InstantIDIntlIndividualResults
+    ResultRecordDetails:
+      type: object
+      properties:
+        AcceptListID:
+          type: integer
+          format: int64
+        AccountAmount:
+          type: string
+        AccountDate:
+          type: string
+        AccountGroupID:
+          type: string
+        AccountOtherData:
+          type: string
+        AccountProviderID:
+          type: string
+        AccountMemberID:
+          type: string
+        AccountType:
+          type: string
+        AddedToAcceptList:
+          type: boolean
+        AdditionalInfo:
+          type: array
+          xml:
+            name: InputAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: InputAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputAddress'
+        CustomWatchlistIDs:
+          type: array
+          items:
+            type: integer
+            format: int32
+        Division:
+          type: string
+        DPPA:
+          type: string
+          enum:
+            - NA
+            - Choice0
+            - Choice1
+            - Choice2
+            - Choice3
+            - Choice4
+            - Choice6
+        EFTContext:
+          type: string
+        EFTType:
+          type: string
+          enum:
+            - None
+            - ACH
+            - Fedwire
+            - ISO20022
+            - SWIFT
+            - Unstructured
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        Error:
+          $ref: '#/components/schemas/ResultError'
+        Gender:
+          type: string
+          enum:
+            - None
+            - Female
+            - Male
+            - Unknown
+        GLB:
+          type: integer
+          format: int32
+        IDs:
+          type: array
+          xml:
+            name: InputID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputID'
+        LastUpdatedDate:
+          type: string
+          format: date-time
+        Name:
+          $ref: '#/components/schemas/InputName'
+        ParsedACH:
+          $ref: '#/components/schemas/ParsedACH'
+        ParsedFedwire:
+          $ref: '#/components/schemas/ParsedFedwire'
+        ParsedISO20022:
+          $ref: '#/components/schemas/ParsedISO20022'
+        ParsedSWIFT:
+          $ref: '#/components/schemas/ParsedSWIFT'
+        Phones:
+          type: array
+          xml:
+            name: InputPhone
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputPhone'
+        RecordState:
+          $ref: '#/components/schemas/RecordState'
+        SearchDate:
+          type: string
+          format: date-time
+        Text:
+          type: string
+      xml:
+        name: ResultRecordDetails
+    WatchlistResults:
+      type: object
+      properties:
+        Matches:
+          type: array
+          xml:
+            name: WLMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatch'
+        Status:
+          type: string
+          enum:
+            - NotSearched
+            - NoResults
+            - Results
+      xml:
+        name: WatchlistResults
+    ResultError:
+      type: object
+      properties:
+        Code:
+          type: integer
+          format: int32
+        Message:
+          type: string
+      xml:
+        name: ResultError
+    FPInput:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/FPAddress'
+        DOB:
+          type: string
+        Name:
+          $ref: '#/components/schemas/InputName'
+        Phone:
+          type: string
+        SSN:
+          type: string
+      xml:
+        name: FPInput
+    FPRedFlag:
+      type: object
+      properties:
+        Name:
+          type: string
+        RiskIndicators:
+          type: array
+          xml:
+            name: FPRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/FPRiskIndicator'
+      xml:
+        name: FPRedFlag
+    FPRiskIndicator:
+      type: object
+      properties:
+        Description:
+          type: string
+        RiskCode:
+          type: string
+      xml:
+        name: FPRiskIndicator
+    IIDFEINMatch:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        CompanyName:
+          type: string
+      xml:
+        name: IIDFEINMatch
+    IIDInput:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        DOB:
+          type: string
+        DOBVerified:
+          type: string
+        FEIN:
+          type: string
+        Name:
+          $ref: '#/components/schemas/InputName'
+        Phone:
+          type: string
+        SSN:
+          type: string
+      xml:
+        name: IIDInput
+    IIDFiling:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        Date:
+          type: string
+        Name:
+          type: string
+        Type:
+          type: string
+      xml:
+        name: IIDFiling
+    IIDReversePhone:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        Name:
+          $ref: '#/components/schemas/InputName'
+      xml:
+        name: IIDReversePhone
+    IIDRiskIndicator:
+      type: object
+      properties:
+        Description:
+          type: string
+        RiskCode:
+          type: string
+      xml:
+        name: IIDRiskIndicator
+    IIDVerificationIndicators:
+      type: object
+      properties:
+        Address:
+          type: string
+        City:
+          type: string
+        FEIN:
+          type: string
+        Name:
+          type: string
+        Phone:
+          type: string
+        PostalCode:
+          type: string
+        State:
+          type: string
+      xml:
+        name: IIDVerificationIndicators
+    IIDWatchlist:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        County:
+          type: string
+        EntityName:
+          type: string
+        FirstName:
+          type: string
+        LastName:
+          type: string
+        RecordNumber:
+          type: string
+        Table:
+          type: string
+      xml:
+        name: IIDWatchlist
+    IIDAddressHistory:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDAddress'
+        DateFirstSeen:
+          type: string
+        DateLastSeen:
+          type: string
+        IsBestAddress:
+          type: string
+      xml:
+        name: IIDAddressHistory
+    IIDAlternateName:
+      type: object
+      properties:
+        LastName:
+          type: string
+        LastSeenDate:
+          type: string
+      xml:
+        name: IIDAlternateName
+    IIDRedFlag:
+      type: object
+      properties:
+        Name:
+          type: string
+        RiskIndicators:
+          type: array
+          xml:
+            name: IIDRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDRiskIndicator'
+      xml:
+        name: IIDRedFlag
+    IIDSSNInfo:
+      type: object
+      properties:
+        FoundForLexID:
+          type: string
+        IssuedEndDate:
+          type: string
+        IssuedLocation:
+          type: string
+        IssuedStartDate:
+          type: string
+      xml:
+        name: IIDSSNInfo
+    IIDIHeader:
+      type: object
+      properties:
+        Exceptions:
+          type: array
+          xml:
+            name: IIDIException
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDIException'
+        Message:
+          type: string
+        QueryID:
+          type: string
+        Status:
+          type: string
+        TransactionID:
+          type: string
+      xml:
+        name: IIDIHeader
+    IIDIResult:
+      type: object
+      properties:
+        ComplianceLevel:
+          type: string
+        DataSourceResults:
+          type: array
+          xml:
+            name: IIDIDataSource
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDIDataSource'
+        InputEcho:
+          $ref: '#/components/schemas/IIDIInput'
+        PassportNumberValidated:
+          type: string
+        RiskIndicators:
+          type: array
+          xml:
+            name: IIDIRiskIndicator
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDIRiskIndicator'
+        VerificationIndex:
+          $ref: '#/components/schemas/IIDIVerificationIndex'
+        VerificationResults:
+          type: array
+          xml:
+            name: IIDIVerificationResult
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDIVerificationResult'
+        VisaNumberValidated:
+          type: string
+        Watchlist:
+          $ref: '#/components/schemas/IIDWatchlist'
+      xml:
+        name: IIDIResult
+    InputAdditionalInfo:
+      type: object
+      properties:
+        Date:
+          $ref: '#/components/schemas/Date'
+        Label:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+        Value:
+          type: string
+      xml:
+        name: InputAdditionalInfo
+    InputAddress:
+      type: object
+      properties:
+        BuildingOrStreetNumber:
+          type: string
+        City:
+          type: string
+        Country:
+          type: string
+        County:
+          type: string
+        FullAddress:
+          type: string
+        PostalCode:
+          type: string
+        StateProvinceDistrict:
+          type: string
+        Street1:
+          type: string
+        Street2:
+          type: string
+        StreetName:
+          type: string
+        StreetPostDirection:
+          type: string
+        StreetPreDirection:
+          type: string
+        StreetSuffixOrType:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+        UnitDesignation:
+          type: string
+        UnitNumber:
+          type: string
+        HouseNumber:
+          type: string
+        BuildingName:
+          type: string
+        FloorNumber:
+          type: string
+        Suburb:
+          type: string
+        District:
+          type: string
+        IntlStreetType:
+          type: string
+      xml:
+        name: InputAddress
+    InputID:
+      type: object
+      properties:
+        DateExpires:
+          $ref: '#/components/schemas/Date'
+        DateIssued:
+          $ref: '#/components/schemas/Date'
+        Issuer:
+          type: string
+        Label:
+          type: string
+        MachineReadableLine1:
+          type: string
+        MachineReadableLine2:
+          type: string
+        Number:
+          type: string
+        PlaceOfBirth:
+          type: string
+        CountryOfBirth:
+          type: string
+        FamilyNameAtBirth:
+          type: string
+        FamilyNameAtCitizenship:
+          type: string
+        CityOfIssue:
+          type: string
+        CountyOfIssue:
+          type: string
+        DistrictOfIssue:
+          type: string
+        ProvinceOfIssue:
+          type: string
+        StateOfBirth:
+          type: string
+        DriverLicenceVersionNumber:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+        AccountType:
+          type: string
+      xml:
+        name: InputID
+    InputName:
+      type: object
+      properties:
+        First:
+          type: string
+        Full:
+          type: string
+        Generation:
+          type: string
+        Last:
+          type: string
+        Middle:
+          type: string
+        Title:
+          type: string
+        MaidenName:
+          type: string
+        SecondSurname:
+          type: string
+      xml:
+        name: InputName
+    ParsedACH:
+      type: object
+      properties:
+        Fields:
+          type: array
+          xml:
+            name: ParsedACHField
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHField'
+        Notes:
+          type: array
+          xml:
+            name: ParsedACHNote
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHNote'
+        Parties:
+          type: array
+          xml:
+            name: ParsedACHParty
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHParty'
+      xml:
+        name: ParsedACH
+    ParsedFedwire:
+      type: object
+      properties:
+        Fields:
+          type: array
+          xml:
+            name: ParsedFedwireField
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireField'
+        Notes:
+          type: array
+          xml:
+            name: ParsedFedwireNote
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireNote'
+        Parties:
+          type: array
+          xml:
+            name: ParsedFedwireParty
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireParty'
+      xml:
+        name: ParsedFedwire
+    ParsedISO20022:
+      type: object
+      properties:
+        Fields:
+          type: array
+          xml:
+            name: ParsedISO20022Field
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Field'
+        Notes:
+          type: array
+          xml:
+            name: ParsedISO20022Note
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Note'
+        Parties:
+          type: array
+          xml:
+            name: ParsedISO20022Party
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Party'
+      xml:
+        name: ParsedISO20022
+    ParsedSWIFT:
+      type: object
+      properties:
+        Fields:
+          type: array
+          xml:
+            name: ParsedSWIFTField
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTField'
+        MessageType:
+          type: string
+        Notes:
+          type: array
+          xml:
+            name: ParsedSWIFTNote
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTNote'
+        Parties:
+          type: array
+          xml:
+            name: ParsedSWIFTParty
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTParty'
+      xml:
+        name: ParsedSWIFT
+    InputPhone:
+      type: object
+      properties:
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Business
+            - Cell
+            - Fax
+            - Home
+            - Work
+            - Unknown
+      xml:
+        name: InputPhone
+    RecordState:
+      type: object
+      properties:
+        AddedToAcceptList:
+          type: boolean
+        AlertState:
+          type: string
+          enum:
+            - None
+            - Closed
+            - Open
+            - Unassigned
+        AssignedTo:
+          type: array
+          items:
+            type: string
+        AssignmentType:
+          type: string
+          enum:
+            - Unknown
+            - Role
+            - User
+        Division:
+          type: string
+        History:
+          type: array
+          xml:
+            name: AuditItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/AuditItem'
+        MatchStates:
+          type: array
+          xml:
+            name: WatchlistMatchState
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WatchlistMatchState'
+        Note:
+          type: string
+        Status:
+          type: string
+      xml:
+        name: RecordState
+    WLMatch:
+      type: object
+      properties:
+        AcceptListID:
+          type: integer
+          format: int64
+        AddedToAcceptList:
+          type: boolean
+        Addresses:
+          type: array
+          xml:
+            name: WLAddressMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLAddressMatch'
+        AddressName:
+          type: boolean
+        AutoFalsePositive:
+          type: boolean
+        BestAddressIsPartial:
+          type: boolean
+        BestCountry:
+          type: string
+        BestCountryScore:
+          type: integer
+          format: int32
+        BestCountryType:
+          type: string
+          enum:
+            - None
+            - AlternateName
+            - City
+            - Code
+            - Country
+            - Port
+            - Term
+        BestDOBIsPartial:
+          type: boolean
+        BestName:
+          type: string
+        BestNameScore:
+          type: integer
+          format: int32
+        CheckSum:
+          type: integer
+          format: int32
+        Citizenships:
+          type: array
+          xml:
+            name: WLCitizenshipMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLCitizenshipMatch'
+        Conflicts:
+          $ref: '#/components/schemas/WLMatchConflicts'
+        CountryDetails:
+          $ref: '#/components/schemas/WLCountryDetails'
+        DOBs:
+          type: array
+          xml:
+            name: WLDOBMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLDOBMatch'
+        EntityDetails:
+          $ref: '#/components/schemas/WLEntityDetails'
+        EntityName:
+          type: string
+        EntityScore:
+          type: integer
+          format: int32
+        EntityUniqueID:
+          type: string
+        Error:
+          $ref: '#/components/schemas/ResultError'
+        FalsePositive:
+          type: boolean
+        File:
+          $ref: '#/components/schemas/WLMatchFile'
+        GatewayOFACScreeningIndicatorMatch:
+          type: boolean
+        ID:
+          type: integer
+          format: int64
+        IDs:
+          type: array
+          xml:
+            name: WLIDMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLIDMatch'
+        MatchReAlert:
+          type: boolean
+        MatchXML:
+          $ref: '#/components/schemas/WLMatchSummary'
+        MatchIMDSDetails:
+          $ref: '#/components/schemas/WLMatchFprDetails'
+        OFACInfo:
+          $ref: '#/components/schemas/OFACReportInfo'
+        Phones:
+          type: array
+          xml:
+            name: WLPhoneMatch
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLPhoneMatch'
+        PreviousResultID:
+          type: integer
+          format: int64
+        ReasonListed:
+          type: string
+        ResultDate:
+          type: string
+          format: date-time
+        SecondaryOFACScreeningIndicatorMatch:
+          type: boolean
+        TrueMatch:
+          type: boolean
+        CountryAssociations:
+          type: array
+          xml:
+            name: CountryAssociation
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/CountryAssociation'
+        Vessels:
+          type: array
+          xml:
+            name: Vessel
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Vessel'
+        MSBs:
+          type: array
+          xml:
+            name: MSB
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/MSB'
+        Sanctions:
+          type: array
+          xml:
+            name: Sanction
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Sanction'
+        Relationships:
+          type: array
+          xml:
+            name: Relationship
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Relationship'
+        PEPs:
+          type: array
+          xml:
+            name: PEP
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/PEP'
+        SOEs:
+          type: array
+          xml:
+            name: SOE
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/SOE'
+        Enforcements:
+          type: array
+          xml:
+            name: Enforcement
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Enforcement'
+        AdverseMedias:
+          type: array
+          xml:
+            name: AdverseMedia
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/AdverseMedia'
+        OtherSegments:
+          type: array
+          xml:
+            name: OtherSegment
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/OtherSegment'
+        Registrations:
+          type: array
+          xml:
+            name: Registration
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/Registration'
+        SourceItems:
+          type: array
+          xml:
+            name: SourceItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/SourceItem'
+        DeceasedDate:
+          type: string
+        DateModified:
+          type: string
+          format: date-time
+        Status:
+          type: string
+          enum:
+            - Unknown
+            - Alive
+            - Deceased
+            - NotApplicable
+      xml:
+        name: WLMatch
+    FPAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        PostalCode:
+          type: string
+        State:
+          type: string
+        Street1:
+          type: string
+      xml:
+        name: FPAddress
+    IIDAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        County:
+          type: string
+        PostalCode:
+          type: string
+        State:
+          type: string
+        Street1:
+          type: string
+      xml:
+        name: IIDAddress
+    IIDIException:
+      type: object
+      properties:
+        Code:
+          type: integer
+          format: int32
+        Message:
+          type: string
+        Source:
+          type: string
+      xml:
+        name: IIDIException
+    IIDIDataSource:
+      type: object
+      properties:
+        Error:
+          type: string
+        ID:
+          type: string
+        Message:
+          type: string
+        Name:
+          type: string
+        Type:
+          type: string
+        Verifications:
+          type: array
+          xml:
+            name: IIDIDataSourceVerification
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDIDataSourceVerification'
+      xml:
+        name: IIDIDataSource
+    IIDIInput:
+      type: object
+      properties:
+        Address:
+          $ref: '#/components/schemas/IIDIAddress'
+        DOB:
+          $ref: '#/components/schemas/IIDIDate'
+        Driver:
+          $ref: '#/components/schemas/IIDIIdentification'
+        Gender:
+          type: string
+        HomePhone:
+          type: string
+        IPAddress:
+          type: string
+        Name:
+          $ref: '#/components/schemas/InputName'
+        NationalIDCountry:
+          type: string
+        NationalIDNumber:
+          type: string
+        Passport:
+          $ref: '#/components/schemas/IIDIPassport'
+        Visa:
+          $ref: '#/components/schemas/IIDIPassport'
+        WorkPhone:
+          type: string
+      xml:
+        name: IIDIInput
+    IIDIRiskIndicator:
+      type: object
+      properties:
+        Description:
+          type: string
+        RiskCode:
+          type: string
+      xml:
+        name: IIDIRiskIndicator
+    IIDIVerificationIndex:
+      type: object
+      properties:
+        IVI:
+          type: string
+      xml:
+        name: IIDIVerificationIndex
+    IIDIVerificationResult:
+      type: object
+      properties:
+        Count:
+          type: string
+        FieldName:
+          type: string
+        IsVerified:
+          type: string
+      xml:
+        name: IIDIVerificationResult
+    Date:
+      type: object
+      properties:
+        Day:
+          type: integer
+          format: int32
+        Month:
+          type: integer
+          format: int32
+        Unparsed:
+          type: string
+        Year:
+          type: integer
+          format: int32
+      xml:
+        name: Date
+    ParsedACHField:
+      type: object
+      properties:
+        AddendaTypeCode:
+          type: string
+        Contested:
+          type: boolean
+        Dishonored:
+          type: boolean
+        Field:
+          type: integer
+          format: int32
+        RecordTypeCode:
+          type: integer
+          format: int32
+        Refused:
+          type: boolean
+        Value:
+          type: string
+      xml:
+        name: ParsedACHField
+    ParsedACHNote:
+      type: object
+      properties:
+        AdditionalTextSearch:
+          type: boolean
+        EDITRNDataSegmentIdentifier:
+          type: string
+        Field:
+          type: integer
+          format: int32
+        IDField:
+          type: integer
+          format: int32
+        IDRecordTypeCode:
+          type: integer
+          format: int32
+        Note:
+          type: string
+        OriginalReceivingDFIIdentification:
+          type: string
+        OriginatingCompanyID:
+          type: string
+        RecordTypeCode:
+          type: integer
+          format: int32
+        ReferenceID1:
+          type: string
+        ReferenceID2:
+          type: string
+        SequenceNumber:
+          type: string
+        TraceTypeCode:
+          type: string
+        TypeCode:
+          type: string
+      xml:
+        name: ParsedACHNote
+    ParsedACHParty:
+      type: object
+      properties:
+        AddendaTypeCode:
+          type: string
+        AdditionalInfo:
+          type: array
+          items:
+            type: string
+        AdditionalInfo2:
+          type: array
+          xml:
+            name: ParsedACHAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: ParsedACHAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHAddress'
+        Field:
+          type: integer
+          format: int32
+        IDs:
+          type: array
+          xml:
+            name: ParsedACHID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedACHID'
+        Name:
+          type: string
+        RecordTypeCode:
+          type: integer
+          format: int32
+        Type:
+          type: string
+          enum:
+            - None
+            - AccountCredited
+            - AccountDebited
+            - AccountIdentification
+            - AccountServicingFI
+            - AccountWithInstitution
+            - AdviseThroughFI
+            - Applicant
+            - ApplicantFI
+            - AvailableWithFI
+            - Beneficiary
+            - BeneficiaryFI
+            - ChargesAccount
+            - ChargesAccountAgent
+            - ChequeDeliverTo
+            - ChequeFrom
+            - Contact
+            - CorrespondentFI
+            - CreditMandateSigner
+            - Creditor
+            - CreditorAccount
+            - CreditorAgent
+            - CreditorAgentAccount
+            - Debtor
+            - DebtorAccount
+            - DebtorAgent
+            - DebtorAgentAccount
+            - DocumentIssuer
+            - Drawee
+            - ForwardingAgent
+            - InitiatingParty
+            - InstructingFI
+            - InstructingParty
+            - IntermediaryAgent
+            - IntermediaryAgentAccount
+            - IntermediaryFI
+            - Invoicee
+            - Invoicer
+            - Issuer
+            - IssuingFI
+            - NegotiatingFI
+            - OrderingCustomer
+            - OrderingFI
+            - OriginalCreditMandateSigner
+            - OriginalCreditorAgent
+            - OriginalCreditorAgentAccount
+            - OriginalDebtor
+            - OriginalDebtorAccount
+            - OriginalDebtorAgent
+            - OriginalDebtorAgentAccount
+            - OriginalReceivingFI
+            - Originator
+            - OriginationFI
+            - PrimaryDocumentIssuer
+            - Principal
+            - Receiver
+            - ReceiversCorrespondent
+            - ReceivingFI
+            - ReimbursingFI
+            - Remittance
+            - SecondaryDocumentIssuer
+            - SenderOfCashLetter
+            - SendersCorrespondent
+            - SendingFI
+            - ThirdReimbursementFI
+            - UltimateCreditor
+            - UltimateDebtor
+            - Broker
+            - CreditorsFI
+            - DealingBranchPartyA
+            - DealingBranchPartyB
+            - DebitInstitution
+            - DebtorsFI
+            - DeliveryAgent
+            - DrawerFI
+            - EnquiredParty
+            - FundOrBeneficiaryCustomer
+            - FundOrInstructingParty
+            - InitiatingInstitution
+            - PartyA
+            - PartyB
+            - Payee
+            - ReceivingAgent
+            - BeneficiaryOfCommodity
+            - Borrower
+            - ClearingBroker
+            - ClearingExceptionParty
+            - DelivererOfCommodity
+            - ExecutionVenue
+            - ReceiverOfCommodity
+            - RemittingAgent
+            - ReportingParty
+            - SafekeepingAccount
+            - SellingAgent
+            - SSIRecipient
+            - SubmittingParty
+            - TradeParty
+            - ApplicationHeaderBlockParty
+            - BasicHeaderBlockParty
+            - CalculationAgent
+            - CentralCounterpartyClearingHouse
+            - Counterparty
+            - ExecutingBroker
+            - Fund
+            - FundManager
+            - FXCounterparty
+            - Investor
+            - LoanDepositCounterparty
+            - MessageOriginator
+            - AccountForPayment
+            - AccountOwner
+            - AffirmingParty
+            - BrokerOfCredit
+            - BeneficialOwner
+            - BeneficialOwnersIntermediary
+            - BirthName
+            - Buyer
+            - CertifyingPartySignature
+            - CommissionAccount
+            - CustomerOfPartyA
+            - CustomerOfPartyB
+            - DeliverersCustodian
+            - DeliverersIntermediary
+            - ETCServiceProvider
+            - ExposedParty
+            - InterestedParty
+            - IntroducingBroker
+            - MessageRecipient
+            - Nominee
+            - PartyAClient
+            - PlaceOfClearing
+            - PlaceOfSettlement
+            - Provider
+            - QualifiedForeignIntermediary
+            - RecDelOfSecurities
+            - ReceiversCustodian
+            - ReceiversIntermediary
+            - RegistrarAccount
+            - RequestedBroker
+            - Sender
+            - StepInBroker
+            - StockExchange
+            - TaxAccount
+            - TradeRegulator
+            - TripartyAgent
+            - TrusteeOrThirdParty
+            - Vendor
+            - CashAccount
+            - CountryOfDomicile
+            - CountryOfNonDomicile
+            - DropAgent
+            - HaircutSource
+            - InformationAgent
+            - IssuerAgent
+            - MarketClaimCounterpart
+            - PayingAgent
+            - PhysicalSecuritiesAgent
+            - Registrar
+            - ResellingAgent
+            - SolicitationAgent
+            - SubPayingAgent
+            - ExercisingParty
+            - NonExercisingParty
+            - Pledgee
+            - PartyBClient
+            - CountryOfIncomeSource
+            - RequestedConfirmation
+            - ChangedApplicant
+            - Payer
+            - Offeror
+            - TransferAgent
+            - RelatedParty
+            - DepositoryOfCSD
+            - ObligorInstructingParty
+            - AdvisingBank
+            - DeliveryToCollectionBy
+            - AvailableWith
+            - Garnishee
+            - GarnishmentAdministrator
+            - SettlementAccount
+            - InstructingReimbursementAgent
+            - InstructingReimbursementAgentAccount
+            - InstructedReimbursementAgent
+            - InstructedReimbursementAgentAccount
+            - ThirdReimbursementAgent
+            - ThirdReimbursementAgentAccount
+            - PreviousInstructingAgent
+            - PreviousInstructingAgentAccount
+            - InstructingAgent
+            - InstructedAgent
+            - ProprietaryAgent
+            - Creator
+            - Agent
+            - BlockchainAccount
+            - PrepaidAccount
+            - RelatedAccount
+      xml:
+        name: ParsedACHParty
+    ParsedFedwireField:
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/ParsedFedwireAmount'
+        Element:
+          type: integer
+          format: int32
+        Tag:
+          type: string
+        Value:
+          type: string
+      xml:
+        name: ParsedFedwireField
+    ParsedFedwireNote:
+      type: object
+      properties:
+        AdditionalTextSearch:
+          type: boolean
+        Element:
+          type: integer
+          format: int32
+        Note:
+          type: string
+        Tag:
+          type: string
+      xml:
+        name: ParsedFedwireNote
+    ParsedFedwireParty:
+      type: object
+      properties:
+        AdditionalInfo:
+          type: array
+          xml:
+            name: ParsedFedwireAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: ParsedFedwireAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireAddress'
+        Element:
+          type: integer
+          format: int32
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        Fields:
+          type: array
+          xml:
+            name: ParsedFedwireNote
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireNote'
+        IDs:
+          type: array
+          xml:
+            name: ParsedFedwireID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwireID'
+        Name:
+          type: string
+        Phones:
+          type: array
+          xml:
+            name: ParsedFedwirePhone
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedFedwirePhone'
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - AccountCredited
+            - AccountDebited
+            - AccountIdentification
+            - AccountServicingFI
+            - AccountWithInstitution
+            - AdviseThroughFI
+            - Applicant
+            - ApplicantFI
+            - AvailableWithFI
+            - Beneficiary
+            - BeneficiaryFI
+            - ChargesAccount
+            - ChargesAccountAgent
+            - ChequeDeliverTo
+            - ChequeFrom
+            - Contact
+            - CorrespondentFI
+            - CreditMandateSigner
+            - Creditor
+            - CreditorAccount
+            - CreditorAgent
+            - CreditorAgentAccount
+            - Debtor
+            - DebtorAccount
+            - DebtorAgent
+            - DebtorAgentAccount
+            - DocumentIssuer
+            - Drawee
+            - ForwardingAgent
+            - InitiatingParty
+            - InstructingFI
+            - InstructingParty
+            - IntermediaryAgent
+            - IntermediaryAgentAccount
+            - IntermediaryFI
+            - Invoicee
+            - Invoicer
+            - Issuer
+            - IssuingFI
+            - NegotiatingFI
+            - OrderingCustomer
+            - OrderingFI
+            - OriginalCreditMandateSigner
+            - OriginalCreditorAgent
+            - OriginalCreditorAgentAccount
+            - OriginalDebtor
+            - OriginalDebtorAccount
+            - OriginalDebtorAgent
+            - OriginalDebtorAgentAccount
+            - OriginalReceivingFI
+            - Originator
+            - OriginationFI
+            - PrimaryDocumentIssuer
+            - Principal
+            - Receiver
+            - ReceiversCorrespondent
+            - ReceivingFI
+            - ReimbursingFI
+            - Remittance
+            - SecondaryDocumentIssuer
+            - SenderOfCashLetter
+            - SendersCorrespondent
+            - SendingFI
+            - ThirdReimbursementFI
+            - UltimateCreditor
+            - UltimateDebtor
+            - Broker
+            - CreditorsFI
+            - DealingBranchPartyA
+            - DealingBranchPartyB
+            - DebitInstitution
+            - DebtorsFI
+            - DeliveryAgent
+            - DrawerFI
+            - EnquiredParty
+            - FundOrBeneficiaryCustomer
+            - FundOrInstructingParty
+            - InitiatingInstitution
+            - PartyA
+            - PartyB
+            - Payee
+            - ReceivingAgent
+            - BeneficiaryOfCommodity
+            - Borrower
+            - ClearingBroker
+            - ClearingExceptionParty
+            - DelivererOfCommodity
+            - ExecutionVenue
+            - ReceiverOfCommodity
+            - RemittingAgent
+            - ReportingParty
+            - SafekeepingAccount
+            - SellingAgent
+            - SSIRecipient
+            - SubmittingParty
+            - TradeParty
+            - ApplicationHeaderBlockParty
+            - BasicHeaderBlockParty
+            - CalculationAgent
+            - CentralCounterpartyClearingHouse
+            - Counterparty
+            - ExecutingBroker
+            - Fund
+            - FundManager
+            - FXCounterparty
+            - Investor
+            - LoanDepositCounterparty
+            - MessageOriginator
+            - AccountForPayment
+            - AccountOwner
+            - AffirmingParty
+            - BrokerOfCredit
+            - BeneficialOwner
+            - BeneficialOwnersIntermediary
+            - BirthName
+            - Buyer
+            - CertifyingPartySignature
+            - CommissionAccount
+            - CustomerOfPartyA
+            - CustomerOfPartyB
+            - DeliverersCustodian
+            - DeliverersIntermediary
+            - ETCServiceProvider
+            - ExposedParty
+            - InterestedParty
+            - IntroducingBroker
+            - MessageRecipient
+            - Nominee
+            - PartyAClient
+            - PlaceOfClearing
+            - PlaceOfSettlement
+            - Provider
+            - QualifiedForeignIntermediary
+            - RecDelOfSecurities
+            - ReceiversCustodian
+            - ReceiversIntermediary
+            - RegistrarAccount
+            - RequestedBroker
+            - Sender
+            - StepInBroker
+            - StockExchange
+            - TaxAccount
+            - TradeRegulator
+            - TripartyAgent
+            - TrusteeOrThirdParty
+            - Vendor
+            - CashAccount
+            - CountryOfDomicile
+            - CountryOfNonDomicile
+            - DropAgent
+            - HaircutSource
+            - InformationAgent
+            - IssuerAgent
+            - MarketClaimCounterpart
+            - PayingAgent
+            - PhysicalSecuritiesAgent
+            - Registrar
+            - ResellingAgent
+            - SolicitationAgent
+            - SubPayingAgent
+            - ExercisingParty
+            - NonExercisingParty
+            - Pledgee
+            - PartyBClient
+            - CountryOfIncomeSource
+            - RequestedConfirmation
+            - ChangedApplicant
+            - Payer
+            - Offeror
+            - TransferAgent
+            - RelatedParty
+            - DepositoryOfCSD
+            - ObligorInstructingParty
+            - AdvisingBank
+            - DeliveryToCollectionBy
+            - AvailableWith
+            - Garnishee
+            - GarnishmentAdministrator
+            - SettlementAccount
+            - InstructingReimbursementAgent
+            - InstructingReimbursementAgentAccount
+            - InstructedReimbursementAgent
+            - InstructedReimbursementAgentAccount
+            - ThirdReimbursementAgent
+            - ThirdReimbursementAgentAccount
+            - PreviousInstructingAgent
+            - PreviousInstructingAgentAccount
+            - InstructingAgent
+            - InstructedAgent
+            - ProprietaryAgent
+            - Creator
+            - Agent
+            - BlockchainAccount
+            - PrepaidAccount
+            - RelatedAccount
+      xml:
+        name: ParsedFedwireParty
+    ParsedISO20022Field:
+      type: object
+      properties:
+        CurrencyCode:
+          type: boolean
+        Value:
+          type: string
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022Field
+    ParsedISO20022Note:
+      type: object
+      properties:
+        AdditionalTextSearch:
+          type: boolean
+        Note:
+          type: string
+        Tag:
+          type: string
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022Note
+    ParsedISO20022Party:
+      type: object
+      properties:
+        AdditionalInfo:
+          type: array
+          xml:
+            name: ParsedISO20022AdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022AdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: ParsedISO20022Address
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Address'
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        IDs:
+          type: array
+          xml:
+            name: ParsedISO20022ID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022ID'
+        Name:
+          type: string
+        Notes:
+          type: array
+          xml:
+            name: ParsedISO20022Note
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Note'
+        Phones:
+          type: array
+          xml:
+            name: ParsedISO20022Phone
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedISO20022Phone'
+        Title:
+          type: string
+        TitleXPath:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - AccountCredited
+            - AccountDebited
+            - AccountIdentification
+            - AccountServicingFI
+            - AccountWithInstitution
+            - AdviseThroughFI
+            - Applicant
+            - ApplicantFI
+            - AvailableWithFI
+            - Beneficiary
+            - BeneficiaryFI
+            - ChargesAccount
+            - ChargesAccountAgent
+            - ChequeDeliverTo
+            - ChequeFrom
+            - Contact
+            - CorrespondentFI
+            - CreditMandateSigner
+            - Creditor
+            - CreditorAccount
+            - CreditorAgent
+            - CreditorAgentAccount
+            - Debtor
+            - DebtorAccount
+            - DebtorAgent
+            - DebtorAgentAccount
+            - DocumentIssuer
+            - Drawee
+            - ForwardingAgent
+            - InitiatingParty
+            - InstructingFI
+            - InstructingParty
+            - IntermediaryAgent
+            - IntermediaryAgentAccount
+            - IntermediaryFI
+            - Invoicee
+            - Invoicer
+            - Issuer
+            - IssuingFI
+            - NegotiatingFI
+            - OrderingCustomer
+            - OrderingFI
+            - OriginalCreditMandateSigner
+            - OriginalCreditorAgent
+            - OriginalCreditorAgentAccount
+            - OriginalDebtor
+            - OriginalDebtorAccount
+            - OriginalDebtorAgent
+            - OriginalDebtorAgentAccount
+            - OriginalReceivingFI
+            - Originator
+            - OriginationFI
+            - PrimaryDocumentIssuer
+            - Principal
+            - Receiver
+            - ReceiversCorrespondent
+            - ReceivingFI
+            - ReimbursingFI
+            - Remittance
+            - SecondaryDocumentIssuer
+            - SenderOfCashLetter
+            - SendersCorrespondent
+            - SendingFI
+            - ThirdReimbursementFI
+            - UltimateCreditor
+            - UltimateDebtor
+            - Broker
+            - CreditorsFI
+            - DealingBranchPartyA
+            - DealingBranchPartyB
+            - DebitInstitution
+            - DebtorsFI
+            - DeliveryAgent
+            - DrawerFI
+            - EnquiredParty
+            - FundOrBeneficiaryCustomer
+            - FundOrInstructingParty
+            - InitiatingInstitution
+            - PartyA
+            - PartyB
+            - Payee
+            - ReceivingAgent
+            - BeneficiaryOfCommodity
+            - Borrower
+            - ClearingBroker
+            - ClearingExceptionParty
+            - DelivererOfCommodity
+            - ExecutionVenue
+            - ReceiverOfCommodity
+            - RemittingAgent
+            - ReportingParty
+            - SafekeepingAccount
+            - SellingAgent
+            - SSIRecipient
+            - SubmittingParty
+            - TradeParty
+            - ApplicationHeaderBlockParty
+            - BasicHeaderBlockParty
+            - CalculationAgent
+            - CentralCounterpartyClearingHouse
+            - Counterparty
+            - ExecutingBroker
+            - Fund
+            - FundManager
+            - FXCounterparty
+            - Investor
+            - LoanDepositCounterparty
+            - MessageOriginator
+            - AccountForPayment
+            - AccountOwner
+            - AffirmingParty
+            - BrokerOfCredit
+            - BeneficialOwner
+            - BeneficialOwnersIntermediary
+            - BirthName
+            - Buyer
+            - CertifyingPartySignature
+            - CommissionAccount
+            - CustomerOfPartyA
+            - CustomerOfPartyB
+            - DeliverersCustodian
+            - DeliverersIntermediary
+            - ETCServiceProvider
+            - ExposedParty
+            - InterestedParty
+            - IntroducingBroker
+            - MessageRecipient
+            - Nominee
+            - PartyAClient
+            - PlaceOfClearing
+            - PlaceOfSettlement
+            - Provider
+            - QualifiedForeignIntermediary
+            - RecDelOfSecurities
+            - ReceiversCustodian
+            - ReceiversIntermediary
+            - RegistrarAccount
+            - RequestedBroker
+            - Sender
+            - StepInBroker
+            - StockExchange
+            - TaxAccount
+            - TradeRegulator
+            - TripartyAgent
+            - TrusteeOrThirdParty
+            - Vendor
+            - CashAccount
+            - CountryOfDomicile
+            - CountryOfNonDomicile
+            - DropAgent
+            - HaircutSource
+            - InformationAgent
+            - IssuerAgent
+            - MarketClaimCounterpart
+            - PayingAgent
+            - PhysicalSecuritiesAgent
+            - Registrar
+            - ResellingAgent
+            - SolicitationAgent
+            - SubPayingAgent
+            - ExercisingParty
+            - NonExercisingParty
+            - Pledgee
+            - PartyBClient
+            - CountryOfIncomeSource
+            - RequestedConfirmation
+            - ChangedApplicant
+            - Payer
+            - Offeror
+            - TransferAgent
+            - RelatedParty
+            - DepositoryOfCSD
+            - ObligorInstructingParty
+            - AdvisingBank
+            - DeliveryToCollectionBy
+            - AvailableWith
+            - Garnishee
+            - GarnishmentAdministrator
+            - SettlementAccount
+            - InstructingReimbursementAgent
+            - InstructingReimbursementAgentAccount
+            - InstructedReimbursementAgent
+            - InstructedReimbursementAgentAccount
+            - ThirdReimbursementAgent
+            - ThirdReimbursementAgentAccount
+            - PreviousInstructingAgent
+            - PreviousInstructingAgentAccount
+            - InstructingAgent
+            - InstructedAgent
+            - ProprietaryAgent
+            - Creator
+            - Agent
+            - BlockchainAccount
+            - PrepaidAccount
+            - RelatedAccount
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022Party
+    ParsedSWIFTField:
+      type: object
+      properties:
+        Amount:
+          $ref: '#/components/schemas/ParsedSWIFTAmount'
+        OriginalMessage:
+          $ref: '#/components/schemas/ParsedSWIFTOriginalMessage'
+        Qualifier:
+          type: string
+        SubSequence:
+          type: string
+        Sequence:
+          type: string
+        Tag:
+          type: string
+        Value:
+          type: string
+      xml:
+        name: ParsedSWIFTField
+    ParsedSWIFTNote:
+      type: object
+      properties:
+        AdditionalTextSearch:
+          type: boolean
+        Note:
+          type: string
+        Qualifier:
+          type: string
+        SubSequence:
+          type: string
+        Sequence:
+          type: string
+        Tag:
+          type: string
+      xml:
+        name: ParsedSWIFTNote
+    ParsedSWIFTParty:
+      type: object
+      properties:
+        AdditionalInfo:
+          type: array
+          xml:
+            name: ParsedSWIFTAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: ParsedSWIFTAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTAddress'
+        IDs:
+          type: array
+          xml:
+            name: ParsedSWIFTID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ParsedSWIFTID'
+        Name:
+          type: string
+        Qualifier:
+          type: string
+        SubSequence:
+          type: string
+        Sequence:
+          type: string
+        Tag:
+          type: string
+        Type:
+          type: string
+      xml:
+        name: ParsedSWIFTParty
+    AuditItem:
+      type: object
+      properties:
+        Date:
+          type: string
+          format: date-time
+        Event:
+          type: string
+        Note:
+          type: string
+        User:
+          type: string
+      xml:
+        name: AuditItem
+    WLAddressMatch:
+      type: object
+      properties:
+        InputValue:
+          type: string
+        ListValue:
+          type: string
+        Score:
+          type: integer
+          format: int32
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: WLAddressMatch
+    WLCitizenshipMatch:
+      type: object
+      properties:
+        InputValue:
+          type: string
+        ListValue:
+          type: string
+        Score:
+          type: integer
+          format: int32
+      xml:
+        name: WLCitizenshipMatch
+    WLMatchConflicts:
+      type: object
+      properties:
+        AddressConflict:
+          type: boolean
+        CitizenshipConflict:
+          type: boolean
+        CountryConflict:
+          type: boolean
+        DOBConflict:
+          type: boolean
+        EntityTypeConflict:
+          type: boolean
+        GenderConflict:
+          type: boolean
+        IDConflict:
+          type: boolean
+        PhoneConflict:
+          type: boolean
+      xml:
+        name: WLMatchConflicts
+    WLCountryDetails:
+      type: object
+      properties:
+        AKAs:
+          type: array
+          items:
+            type: string
+        Cities:
+          type: array
+          items:
+            type: string
+        Codes:
+          type: array
+          items:
+            type: string
+        Comments:
+          type: string
+        Country:
+          type: string
+        DateListed:
+          type: string
+        ListReferenceNumber:
+          type: string
+        Ports:
+          type: array
+          items:
+            type: string
+        ReasonListed:
+          type: string
+        Terms:
+          type: array
+          items:
+            type: string
+      xml:
+        name: WLCountryDetails
+    WLDOBMatch:
+      type: object
+      properties:
+        InputValue:
+          type: string
+        ListValue:
+          type: string
+        Score:
+          type: integer
+          format: int32
+      xml:
+        name: WLDOBMatch
+    WLEntityDetails:
+      type: object
+      properties:
+        AdditionalInfo:
+          type: array
+          xml:
+            name: EntityAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/EntityAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: EntityAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/EntityAddress'
+        AKAs:
+          type: array
+          xml:
+            name: EntityAKA
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/EntityAKA'
+        Comments:
+          type: string
+        DateListed:
+          type: string
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Unknown
+            - Vessel
+        Gender:
+          type: string
+        IDs:
+          type: array
+          xml:
+            name: EntityID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/EntityID'
+        ListReferenceNumber:
+          type: string
+        Name:
+          $ref: '#/components/schemas/EntityName'
+        Phones:
+          type: array
+          xml:
+            name: EntityPhone
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/EntityPhone'
+        ReasonListed:
+          type: string
+      xml:
+        name: WLEntityDetails
+    WLMatchFile:
+      type: object
+      properties:
+        Build:
+          type: string
+          format: date-time
+        Custom:
+          type: boolean
+        ID:
+          type: integer
+          format: int32
+        Name:
+          type: string
+        Published:
+          type: string
+          format: date-time
+        Type:
+          type: string
+          enum:
+            - UDF
+            - ADF
+            - BDF
+            - CDF
+            - SDF
+      xml:
+        name: WLMatchFile
+    WLIDMatch:
+      type: object
+      properties:
+        InputValue:
+          type: string
+        ListValue:
+          type: string
+        Score:
+          type: integer
+          format: int32
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: WLIDMatch
+    WLMatchSummary:
+      type: object
+      properties:
+        AddressMatches:
+          type: array
+          xml:
+            name: WLMatchSummaryItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatchSummaryItem'
+        CitizenshipMatches:
+          type: array
+          xml:
+            name: WLMatchSummaryItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatchSummaryItem'
+        DOBMatches:
+          type: array
+          xml:
+            name: WLMatchSummaryItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatchSummaryItem'
+        Gender:
+          $ref: '#/components/schemas/WLMatchSummaryItem'
+        IDMatches:
+          type: array
+          xml:
+            name: WLMatchSummaryItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatchSummaryItem'
+        PhoneMatches:
+          type: array
+          xml:
+            name: WLMatchSummaryItem
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WLMatchSummaryItem'
+      xml:
+        name: WLMatchSummary
+    WLMatchFprDetails:
+      type: object
+      properties:
+        IsIMDSFalsePositive:
+          type: boolean
+        Confidence:
+          type: number
+          format: float
+        ReasonDescriptions:
+          type: string
+        RulesName:
+          type: string
+        Version:
+          type: string
+      xml:
+        name: WLMatchFprDetails
+    OFACReportInfo:
+      type: object
+      properties:
+        ActionDate:
+          type: string
+        AdditionalData:
+          type: string
+        AdditionalRelevantInfo:
+          type: string
+        Amount:
+          type: string
+        Institutions:
+          type: array
+          xml:
+            name: OFACInstitutionInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/OFACInstitutionInfo'
+        NameOfSigner:
+          type: string
+        PreparerDate:
+          type: string
+        Reason:
+          type: string
+        ReportType:
+          type: string
+          enum:
+            - Blocked
+            - Rejected
+        TitleOfSigner:
+          type: string
+        TransactionDate:
+          type: string
+      xml:
+        name: OFACReportInfo
+    WLPhoneMatch:
+      type: object
+      properties:
+        InputValue:
+          type: string
+        ListValue:
+          type: string
+        Score:
+          type: integer
+          format: int32
+        Type:
+          type: string
+          enum:
+            - None
+            - Business
+            - Cell
+            - Fax
+            - Home
+            - Work
+            - Unknown
+      xml:
+        name: WLPhoneMatch
+    CountryAssociation:
+      type: object
+      xml:
+        name: CountryAssociation
+    Vessel:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - IHS
+            - IHSOFAC
+        Source:
+          type: string
+        VesselType:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        GrossTonnage:
+          type: string
+        DateModified:
+          type: string
+          format: date-time
+        Weight:
+          type: string
+        Owner:
+          type: string
+        FormerVesselName:
+          type: string
+        FlagEffectiveDate:
+          type: string
+        ShipStatus:
+          type: string
+        ShipStatusEffectiveDate:
+          type: string
+        PortOfRegistry:
+          type: string
+        YearOfBuild:
+          type: string
+        YardNumber:
+          type: string
+        Shipbuilder:
+          type: string
+        ShipbuilderSubContractorYardHull:
+          type: string
+        ShipbuilderSubContractor:
+          type: string
+        GroupBeneficialOwner:
+          type: string
+        GroupBeneficialOwnerCompanyCode:
+          type: string
+        GroupBeneficialOwnerCountryOfControl:
+          type: string
+        GroupBeneficialOwnerCountryOfDomicile:
+          type: string
+        GroupBeneficialOwnerCountryOfRegistration:
+          type: string
+        Operator:
+          type: string
+        OperatorCompanyCode:
+          type: string
+        OperatorCountryOfControl:
+          type: string
+        OperatorCountryOfDomicile:
+          type: string
+        OperatorCountryOfRegistration:
+          type: string
+        RegisteredOwnerCompanyCode:
+          type: string
+        RegisteredOwnerCountryOfControl:
+          type: string
+        RegisteredOwnerCountryOfDomicile:
+          type: string
+        RegisteredOwnerCountryOfRegistration:
+          type: string
+        ShipManager:
+          type: string
+        ShipManagerCompanyCode:
+          type: string
+        ShipManagerCountryOfControl:
+          type: string
+        ShipManagerCountryOfDomicile:
+          type: string
+        ShipManagerCountryOfRegistration:
+          type: string
+        TechnicalManager:
+          type: string
+        TechnicalManagerCompanyCode:
+          type: string
+        TechnicalManagerCountryOfControl:
+          type: string
+        TechnicalManagerCountryOfDomicile:
+          type: string
+        TechnicalManagerCountryOfRegistration:
+          type: string
+        DOCCompany:
+          type: string
+        DOCCompanyCode:
+          type: string
+        DOCCompanyCountryOfControl:
+          type: string
+        DOCCompanyCountryOfDomicile:
+          type: string
+        DOCCompanyCountryOfRegistration:
+          type: string
+      xml:
+        name: Vessel
+    MSB:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - US
+            - UAE
+        Source:
+          type: string
+        AuthorizedSignature:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        ReceiveDate:
+          type: string
+        DateModified:
+          type: string
+          format: date-time
+        NumberOfBranches:
+          type: string
+        RegistrationType:
+          type: string
+          enum:
+            - None
+            - InitialRegistration
+            - CorrectedReport
+            - Renewal
+            - Reregistration
+      xml:
+        name: MSB
+    Sanction:
+      type: object
+      properties:
+        Country:
+          type: string
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: Sanction
+    Relationship:
+      type: object
+      properties:
+        Group:
+          type: string
+        Source:
+          type: string
+        Type:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        EntityId:
+          type: integer
+          format: int32
+        DateModified:
+          type: string
+          format: date-time
+        EntityName:
+          type: string
+        OwnershipPercentage:
+          type: number
+          format: double
+        Segments:
+          type: string
+      xml:
+        name: Relationship
+    PEP:
+      type: object
+      properties:
+        Country:
+          type: string
+        Source:
+          type: string
+        AdminUnit1:
+          type: string
+        AdminUnit2:
+          type: string
+        AdminUnit3:
+          type: string
+        AdminUnit4:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        AdminLevel:
+          type: string
+        DateModified:
+          type: string
+          format: date-time
+        Status:
+          type: string
+          enum:
+            - Unknown
+            - Active
+            - Inactive
+        IsPrimary:
+          type: boolean
+        CountryRole:
+          type: string
+          enum:
+            - Unknown
+            - MicroPEP
+            - PEP
+        GoverningInstitution:
+          type: string
+        GoverningRole:
+          type: string
+        EffectiveDateType:
+          type: string
+          enum:
+            - None
+            - Appointed
+            - Elected
+            - Official
+            - Reported
+        EffectiveDate:
+          type: string
+        ExpirationDateType:
+          type: string
+          enum:
+            - None
+            - Appointed
+            - Elected
+            - Official
+            - Reported
+        ExpirationDate:
+          type: string
+      xml:
+        name: PEP
+    SOE:
+      type: object
+      properties:
+        IsActive:
+          type: boolean
+        Source:
+          type: string
+        CountryAssociations:
+          type: array
+          xml:
+            name: CountryAssociation
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/CountryAssociation'
+        SubCategories:
+          type: array
+          items:
+            type: string
+        Domain:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+        TotalOwnershipCountryPercentage:
+          type: number
+          format: double
+      xml:
+        name: SOE
+    Enforcement:
+      type: object
+      properties:
+        Country:
+          type: string
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: Enforcement
+    AdverseMedia:
+      type: object
+      properties:
+        Description:
+          type: string
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: AdverseMedia
+    OtherSegment:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - AssociatedEntity
+            - OwnershipOrControl
+            - SWIFTBIC
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: OtherSegment
+    Registration:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - FATCA
+            - MarijuanaRegBus
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: Registration
+    SourceItem:
+      type: object
+      properties:
+        SourceURI:
+          type: string
+        Source:
+          type: string
+        SubCategories:
+          type: array
+          items:
+            type: string
+        DateModified:
+          type: string
+          format: date-time
+      xml:
+        name: SourceItem
+    IIDIDataSourceVerification:
+      type: object
+      properties:
+        FieldName:
+          type: string
+        Verification:
+          type: string
+      xml:
+        name: IIDIDataSourceVerification
+    IIDIAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        Country:
+          type: string
+        PostalCode:
+          type: string
+        Province:
+          type: string
+        StreetAddress1:
+          type: string
+        StreetName:
+          type: string
+        StreetNumber:
+          type: string
+        StreetSuffix:
+          type: string
+        UnitDesignation:
+          type: string
+        BuildingName:
+          type: string
+        FloorNumber:
+          type: string
+        Suburb:
+          type: string
+        District:
+          type: string
+        IntlStreetType:
+          type: string
+      xml:
+        name: IIDIAddress
+    IIDIDate:
+      type: object
+      properties:
+        Day:
+          type: string
+        Month:
+          type: string
+        Year:
+          type: string
+      xml:
+        name: IIDIDate
+    IIDIIdentification:
+      type: object
+      properties:
+        ExpirationDate:
+          $ref: '#/components/schemas/IIDIDate'
+        Number:
+          type: string
+        State:
+          type: string
+      xml:
+        name: IIDIIdentification
+    IIDIPassport:
+      type: object
+      properties:
+        Country:
+          type: string
+        ExpirationDate:
+          $ref: '#/components/schemas/IIDIDate'
+        MachineReadableLine1:
+          type: string
+        MachineReadableLine2:
+          type: string
+        Number:
+          type: string
+      xml:
+        name: IIDIPassport
+    ParsedACHAdditionalInfo:
+      type: object
+      properties:
+        Field:
+          type: integer
+          format: int32
+        Info:
+          type: string
+        RecordTypeCode:
+          type: integer
+          format: int32
+      xml:
+        name: ParsedACHAdditionalInfo
+    ParsedACHAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        CityField:
+          type: integer
+          format: int32
+        CityRecordTypeCode:
+          type: integer
+          format: int32
+        CityStateProvince:
+          type: string
+        CSPField:
+          type: integer
+          format: int32
+        CSPRecordTypeCode:
+          type: integer
+          format: int32
+        Country:
+          type: string
+        CountryField:
+          type: integer
+          format: int32
+        CountryRecordTypeCode:
+          type: integer
+          format: int32
+        CountryPostalCode:
+          type: string
+        CPCField:
+          type: integer
+          format: int32
+        CPCRecordTypeCode:
+          type: integer
+          format: int32
+        Field:
+          type: integer
+          format: int32
+        PostalCode:
+          type: string
+        PostalCodeField:
+          type: integer
+          format: int32
+        PostalCodeRecordTypeCode:
+          type: integer
+          format: int32
+        RecordTypeCode:
+          type: integer
+          format: int32
+        StateProvince:
+          type: string
+        StateProvinceField:
+          type: integer
+          format: int32
+        StateProvinceRecordTypeCode:
+          type: integer
+          format: int32
+        StreetAddress:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: ParsedACHAddress
+    ParsedACHID:
+      type: object
+      properties:
+        AddendaTypeCode:
+          type: string
+        Field:
+          type: integer
+          format: int32
+        Number:
+          type: string
+        RecordTypeCode:
+          type: integer
+          format: int32
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: ParsedACHID
+    ParsedFedwireAmount:
+      type: object
+      properties:
+        Amount:
+          type: string
+        CurrencyCode:
+          type: string
+      xml:
+        name: ParsedFedwireAmount
+    ParsedFedwireAdditionalInfo:
+      type: object
+      properties:
+        Country:
+          type: string
+        Element:
+          type: integer
+          format: int32
+        Info:
+          type: string
+        ParsedInfo:
+          type: string
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+      xml:
+        name: ParsedFedwireAdditionalInfo
+    ParsedFedwireAddress:
+      type: object
+      properties:
+        AddressLine1:
+          type: string
+        AddressLine1Element:
+          type: integer
+          format: int32
+        AddressLine2:
+          type: string
+        AddressLine2Element:
+          type: integer
+          format: int32
+        AddressLine3:
+          type: string
+        AddressLine3Element:
+          type: integer
+          format: int32
+        AddressLine4:
+          type: string
+        AddressLine4Element:
+          type: integer
+          format: int32
+        AddressLine5:
+          type: string
+        AddressLine5Element:
+          type: integer
+          format: int32
+        AddressLine6:
+          type: string
+        AddressLine6Element:
+          type: integer
+          format: int32
+        AddressLine7:
+          type: string
+        AddressLine7Element:
+          type: integer
+          format: int32
+        BuildingNumber:
+          type: string
+        BuildingNumberElement:
+          type: integer
+          format: int32
+        City:
+          type: string
+        CityElement:
+          type: integer
+          format: int32
+        Country:
+          type: string
+        CountryElement:
+          type: integer
+          format: int32
+        Department:
+          type: string
+        DepartmentElement:
+          type: integer
+          format: int32
+        PostalCode:
+          type: string
+        PostalCodeElement:
+          type: integer
+          format: int32
+        StateProvince:
+          type: string
+        StateProvinceElement:
+          type: integer
+          format: int32
+        StreetName:
+          type: string
+        StreetNameElement:
+          type: integer
+          format: int32
+        SubDepartment:
+          type: string
+        SubDepartmentElement:
+          type: integer
+          format: int32
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: ParsedFedwireAddress
+    ParsedFedwireID:
+      type: object
+      properties:
+        CountryCode:
+          type: string
+        Element:
+          type: integer
+          format: int32
+        Issuer:
+          type: string
+        Number:
+          type: string
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: ParsedFedwireID
+    ParsedFedwirePhone:
+      type: object
+      properties:
+        Element:
+          type: integer
+          format: int32
+        Number:
+          type: string
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Business
+            - Cell
+            - Fax
+            - Home
+            - Work
+            - Unknown
+      xml:
+        name: ParsedFedwirePhone
+    ParsedISO20022AdditionalInfo:
+      type: object
+      properties:
+        CountryOfBirth:
+          type: string
+        CountryOfBirthXPath:
+          type: string
+        Info:
+          type: string
+        ParsedInfo:
+          type: string
+        ProvinceOfBirth:
+          type: string
+        ProvinceOfBirthXPath:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022AdditionalInfo
+    ParsedISO20022Address:
+      type: object
+      properties:
+        AddrType:
+          type: string
+        AddrTypeXPath:
+          type: string
+        BuildingName:
+          type: string
+        BuildingNameXpath:
+          type: string
+        BuildingNumber:
+          type: string
+        BuildingNumberXPath:
+          type: string
+        City:
+          type: string
+        CityXPath:
+          type: string
+        Country:
+          type: string
+        CountryXPath:
+          type: string
+        Department:
+          type: string
+        DepartmentXPath:
+          type: string
+        DistrictName:
+          type: string
+        DistrictNameXpath:
+          type: string
+        Floor:
+          type: string
+        FloorXPath:
+          type: string
+        Lines:
+          type: array
+          items:
+            type: string
+        LineXPaths:
+          type: array
+          items:
+            type: string
+        PostalCode:
+          type: string
+        PostalCodeXPath:
+          type: string
+        PostBox:
+          type: string
+        PostBoxXpath:
+          type: string
+        Room:
+          type: string
+        RoomXPath:
+          type: string
+        StateProvince:
+          type: string
+        StateProvinceXPath:
+          type: string
+        StreetName:
+          type: string
+        StreetNameXPath:
+          type: string
+        SubDepartment:
+          type: string
+        SubDepartmentXPath:
+          type: string
+        TownLocationName:
+          type: string
+        TownLocationNameXpath:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: ParsedISO20022Address
+    ParsedISO20022ID:
+      type: object
+      properties:
+        Issuer:
+          type: string
+        IssuerXPath:
+          type: string
+        Label:
+          type: string
+        LabelXPath:
+          type: string
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022ID
+    ParsedISO20022Phone:
+      type: object
+      properties:
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Business
+            - Cell
+            - Fax
+            - Home
+            - Work
+            - Unknown
+        XPath:
+          type: string
+      xml:
+        name: ParsedISO20022Phone
+    ParsedSWIFTAmount:
+      type: object
+      properties:
+        AdditionalInformation:
+          type: string
+        Amount:
+          type: string
+        Amount2:
+          type: string
+        Code:
+          type: string
+        CurrencyCode:
+          type: string
+        CurrencyCode2:
+          type: string
+        DataSourceScheme:
+          type: string
+        Date:
+          type: string
+        DebitCreditMark:
+          type: string
+        MaturityPeriodType:
+          type: string
+        Number:
+          type: string
+        NumberOfDaysOrMonths:
+          type: string
+        Period:
+          type: string
+        Type:
+          type: string
+        Type2:
+          type: string
+        Units:
+          type: string
+      xml:
+        name: ParsedSWIFTAmount
+    ParsedSWIFTOriginalMessage:
+      type: object
+      properties:
+        Date:
+          type: string
+        MessageType:
+          type: string
+        SessionNumberAndISN:
+          type: string
+      xml:
+        name: ParsedSWIFTOriginalMessage
+    ParsedSWIFTAdditionalInfo:
+      type: object
+      properties:
+        Country:
+          type: string
+        Info:
+          type: string
+        ParsedInfo:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+      xml:
+        name: ParsedSWIFTAdditionalInfo
+    ParsedSWIFTAddress:
+      type: object
+      properties:
+        AddressLine1:
+          type: string
+        AddressLine2:
+          type: string
+        AddressLine3:
+          type: string
+        AddressLine4:
+          type: string
+        City:
+          type: string
+        Country:
+          type: string
+        StateProvince:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: ParsedSWIFTAddress
+    ParsedSWIFTID:
+      type: object
+      properties:
+        CountryCode:
+          type: string
+        Issuer:
+          type: string
+        Number:
+          type: string
+        Qualifier:
+          type: string
+        SubSequence:
+          type: string
+        Sequence:
+          type: string
+        Tag:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: ParsedSWIFTID
+    EntityAdditionalInfo:
+      type: object
+      properties:
+        Comments:
+          type: string
+        ID:
+          type: integer
+          format: int64
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+        Value:
+          type: string
+      xml:
+        name: EntityAdditionalInfo
+    EntityAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        Comments:
+          type: string
+        Country:
+          type: string
+        ID:
+          type: integer
+          format: int64
+        PostalCode:
+          type: string
+        StateProvinceDistrict:
+          type: string
+        Street1:
+          type: string
+        Street2:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Current
+            - Mailing
+            - Previous
+            - Unknown
+      xml:
+        name: EntityAddress
+    EntityAKA:
+      type: object
+      properties:
+        Category:
+          type: string
+          enum:
+            - None
+            - Strong
+            - Weak
+        Comments:
+          type: string
+        ID:
+          type: integer
+          format: int64
+        Name:
+          $ref: '#/components/schemas/EntityName'
+        Type:
+          type: string
+          enum:
+            - None
+            - AKA
+            - FKA
+            - NKA
+            - DBA
+            - CCC
+            - Nickname
+            - CallSign
+            - Acronym
+      xml:
+        name: EntityAKA
+    EntityID:
+      type: object
+      properties:
+        Comments:
+          type: string
+        DateExpires:
+          $ref: '#/components/schemas/Date'
+        DateIssued:
+          $ref: '#/components/schemas/Date'
+        ID:
+          type: integer
+          format: int64
+        Issuer:
+          type: string
+        Label:
+          type: string
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: EntityID
+    EntityName:
+      type: object
+      properties:
+        First:
+          type: string
+        Full:
+          type: string
+        Generation:
+          type: string
+        Last:
+          type: string
+        Middle:
+          type: string
+        Title:
+          type: string
+      xml:
+        name: EntityName
+    EntityPhone:
+      type: object
+      properties:
+        Comments:
+          type: string
+        ID:
+          type: integer
+          format: int64
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Business
+            - Cell
+            - Fax
+            - Home
+            - Work
+            - Unknown
+      xml:
+        name: EntityPhone
+    WLMatchSummaryItem:
+      type: object
+      properties:
+        Input:
+          type: string
+        List:
+          type: string
+        Score:
+          type: integer
+          format: int32
+        Type:
+          type: string
+      xml:
+        name: WLMatchSummaryItem
+    OFACInstitutionInfo:
+      type: object
+      properties:
+        Address:
+          type: string
+        Name:
+          type: string
+        Type:
+          type: string
+      xml:
+        name: OFACInstitutionInfo
+    SearchListsRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        Criteria:
+          $ref: '#/components/schemas/ListCriteria'
+      xml:
+        name: SearchListsRequest
+    ListCriteria:
+      type: object
+      properties:
+        Divisions:
+          type: array
+          items:
+            type: string
+        ID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        Name:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - Accept
+            - Country
+            - Entity
+      xml:
+        name: ListCriteria
+    ListInfo:
+      type: object
+      properties:
+        AccountNumbersUniqueIDs:
+          type: boolean
+        AutoIndex:
+          type: boolean
+        Comments:
+          type: string
+        Description:
+          type: string
+        Divisions:
+          type: array
+          items:
+            type: string
+        Encrypt:
+          type: boolean
+        EntityUniqueIDType:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+        ID:
+          type: integer
+          format: int64
+        Name:
+          type: string
+        Publication:
+          type: string
+          format: date-time
+        Type:
+          type: string
+          enum:
+            - None
+            - Accept
+            - Country
+            - Entity
+        UniqueID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        UserSelectedStatusRequired:
+          type: boolean
+      xml:
+        name: ListInfo
+    IndexListRequest:
+      type: object
+      required:
+        - ListId
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        ListId:
+          type: integer
+          format: int64
+      xml:
+        name: IndexListRequest
+    AddListRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        List:
+          $ref: '#/components/schemas/ListInfo'
+      xml:
+        name: AddListRequest
+    UpdateListRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        List:
+          $ref: '#/components/schemas/ListInfo'
+      xml:
+        name: UpdateListRequest
+    EntitySearchRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        SearchConfiguration:
+          $ref: '#/components/schemas/SearchConfiguration'
+        SearchInput:
+          $ref: '#/components/schemas/SearchInput'
+      xml:
+        name: EntitySearchRequest
+    SearchConfiguration:
+      type: object
+      properties:
+        AssignResultTo:
+          $ref: '#/components/schemas/AssignmentInfo'
+        FraudPoint:
+          $ref: '#/components/schemas/FraudPointConfiguration'
+        InstantID:
+          $ref: '#/components/schemas/InstantIDConfiguration'
+        InstantIDIntl:
+          $ref: '#/components/schemas/InstantIDIntlConfiguration'
+        PredefinedSearchName:
+          type: string
+        Watchlist:
+          $ref: '#/components/schemas/WatchlistConfiguration'
+        WriteResultsToDatabase:
+          type: boolean
+        ExcludeScreeningListMatches:
+          type: boolean
+        DuplicateMatchSuppression:
+          type: boolean
+        DuplicateMatchSuppressionSameDivisionOnly:
+          type: boolean
+      xml:
+        name: SearchConfiguration
+    SearchInput:
+      type: object
+      properties:
+        BlockID:
+          type: string
+        Records:
+          type: array
+          xml:
+            name: InputRecord
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputRecord'
+      xml:
+        name: SearchInput
+    AssignmentInfo:
+      type: object
+      properties:
+        Division:
+          type: string
+        EmailNotification:
+          type: boolean
+        RolesOrUsers:
+          type: array
+          items:
+            type: string
+        Type:
+          type: string
+          enum:
+            - Unknown
+            - Role
+            - User
+      xml:
+        name: AssignmentInfo
+    FraudPointConfiguration:
+      type: object
+      properties:
+        Password:
+          type: string
+        UserID:
+          type: string
+        SyntheticIdentityIndex:
+          type: integer
+          format: int32
+        StolenIdentityIndex:
+          type: integer
+          format: int32
+        ManipulatedIdentityIndex:
+          type: integer
+          format: int32
+        VulnerableVictimIndex:
+          type: integer
+          format: int32
+        FriendlyFraudIndex:
+          type: integer
+          format: int32
+        SuspiciousActivityIndex:
+          type: integer
+          format: int32
+      xml:
+        name: FraudPointConfiguration
+    InstantIDConfiguration:
+      type: object
+      properties:
+        Password:
+          type: string
+        UserID:
+          type: string
+      xml:
+        name: InstantIDConfiguration
+    InstantIDIntlConfiguration:
+      type: object
+      properties:
+        Password:
+          type: string
+        UserID:
+          type: string
+      xml:
+        name: InstantIDIntlConfiguration
+    WatchlistConfiguration:
+      type: object
+      properties:
+        AutomaticFalsePositiveRules:
+          $ref: '#/components/schemas/WatchlistAutomaticFalsePositiveRules'
+        IMDS:
+          $ref: '#/components/schemas/WatchlistIntelligentMatchDecisionSolution'
+        DataFiles:
+          type: array
+          xml:
+            name: WatchlistDataFile
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WatchlistDataFile'
+        GeneralOptions:
+          $ref: '#/components/schemas/WatchlistGeneralOptions'
+        MatchDispositionRules:
+          $ref: '#/components/schemas/WatchlistMatchDispositionRules'
+        MatchOptions:
+          $ref: '#/components/schemas/WatchlistMatchOptions'
+        FalseMatchSettings:
+          $ref: '#/components/schemas/WatchlistFalseMatchSettings'
+      xml:
+        name: WatchlistConfiguration
+    InputRecord:
+      type: object
+      properties:
+        EFT:
+          $ref: '#/components/schemas/InputEFT'
+        Entity:
+          $ref: '#/components/schemas/InputEntity'
+        ID:
+          $ref: '#/components/schemas/InputBasicID'
+        RecordID:
+          type: integer
+          format: int64
+        Text:
+          $ref: '#/components/schemas/InputText'
+      xml:
+        name: InputRecord
+    WatchlistAutomaticFalsePositiveRules:
+      type: object
+      properties:
+        Addresses:
+          type: boolean
+        Citizenship:
+          type: boolean
+        Countries:
+          type: boolean
+        DisplayAFPMatches:
+          type: boolean
+        DOB:
+          type: boolean
+        DOBTolerance:
+          type: integer
+          format: int32
+        EntityType:
+          type: boolean
+        Gender:
+          type: boolean
+        GenerateResultRecord:
+          type: boolean
+        IDs:
+          type: boolean
+        Phones:
+          type: boolean
+        ShowResultAsAlert:
+          type: boolean
+        WhiteList:
+          type: boolean
+      xml:
+        name: WatchlistAutomaticFalsePositiveRules
+    WatchlistIntelligentMatchDecisionSolution:
+      type: object
+      properties:
+        RuleUniqueID:
+          type: string
+          format: byte
+          pattern: ^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$
+        RulesName:
+          type: string
+        ConfidenceText:
+          type: string
+        Confidence:
+          type: number
+          format: float
+      xml:
+        name: WatchlistIntelligentMatchDecisionSolution
+    WatchlistDataFile:
+      type: object
+      properties:
+        AlwaysGenerateMatchesForCitiesAndPorts:
+          type: boolean
+        Custom:
+          type: boolean
+        ID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        IgnoreWeakAKAs:
+          type: boolean
+        MinScore:
+          type: integer
+          format: int32
+        Name:
+          type: string
+        SearchCriteria:
+          $ref: '#/components/schemas/WatchlistSearchCriteria'
+        TopLevelOperatorIsOr:
+          type: boolean
+      xml:
+        name: WatchlistDataFile
+    WatchlistGeneralOptions:
+      type: object
+      properties:
+        GenerateAlertsForAllRecords:
+          type: boolean
+        GenerateAlertsForErrors:
+          type: boolean
+        IgnoreMatchesAgainstVessels:
+          type: boolean
+        ScanAddressForBlockedCountries:
+          type: boolean
+        ScanNameForBlockedCountries:
+          type: boolean
+        ScanRunTogetherWordsForBlockedCountries:
+          type: boolean
+      xml:
+        name: WatchlistGeneralOptions
+    WatchlistMatchDispositionRules:
+      type: object
+      properties:
+        GenerateTrueMatchUpdates:
+          type: boolean
+        IndividualMatchDisposition:
+          type: boolean
+        TrueMatchSetsOthersToFalsePositive:
+          type: boolean
+        CheckForFalseMatchUpdates:
+          type: boolean
+      xml:
+        name: WatchlistMatchDispositionRules
+    WatchlistMatchOptions:
+      type: object
+      properties:
+        Addresses:
+          type: boolean
+        IDs:
+          type: boolean
+        InfluencedByInitials:
+          type: boolean
+        InfluencedBySingleWords:
+          type: boolean
+        PaymentScreeningOptions:
+          $ref: '#/components/schemas/WatchlistPaymentScreeningOptions'
+        Phones:
+          type: boolean
+      xml:
+        name: WatchlistMatchOptions
+    WatchlistFalseMatchSettings:
+      type: object
+      properties:
+        Name:
+          type: boolean
+        Dob:
+          type: boolean
+        Gender:
+          type: boolean
+        Aka:
+          type: boolean
+        IdNumbers:
+          type: boolean
+        Address:
+          type: boolean
+        Phone:
+          type: boolean
+        Citizenship:
+          type: boolean
+        GenerateFalseMatchUpdate:
+          type: boolean
+      xml:
+        name: WatchlistFalseMatchSettings
+    InputEFT:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - None
+            - ACH
+            - Fedwire
+            - ISO20022
+            - SWIFT
+            - Unstructured
+        Value:
+          type: string
+        EFTID:
+          type: string
+      xml:
+        name: InputEFT
+    InputEntity:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/InputAccount'
+        AdditionalInfo:
+          type: array
+          xml:
+            name: InputAdditionalInfo
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputAdditionalInfo'
+        Addresses:
+          type: array
+          xml:
+            name: InputAddress
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputAddress'
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Unknown
+        Gender:
+          type: string
+          enum:
+            - None
+            - Female
+            - Male
+            - Unknown
+        IDs:
+          type: array
+          xml:
+            name: InputID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputID'
+        Name:
+          $ref: '#/components/schemas/InputName'
+        Phones:
+          type: array
+          xml:
+            name: InputPhone
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputPhone'
+      xml:
+        name: InputEntity
+    InputBasicID:
+      type: object
+      properties:
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: InputBasicID
+    InputText:
+      type: object
+      properties:
+        IDs:
+          type: array
+          xml:
+            name: InputID
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/InputID'
+        Text:
+          type: string
+      xml:
+        name: InputText
+    WatchlistSearchCriteria:
+      type: object
+      properties:
+        Groups:
+          type: array
+          xml:
+            name: WatchlistSearchCriteriaGroup
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/WatchlistSearchCriteriaGroup'
+      xml:
+        name: WatchlistSearchCriteria
+    WatchlistPaymentScreeningOptions:
+      type: object
+      properties:
+        EFTOptions:
+          $ref: '#/components/schemas/WatchlistEFTMatchOptions'
+        ScanAllFieldsForBICs:
+          type: boolean
+        ScanAllFieldsForCountryCodes:
+          type: boolean
+        ScanAllFieldsForCountryNames:
+          type: boolean
+        ScanAllFieldsForNames:
+          type: boolean
+      xml:
+        name: WatchlistPaymentScreeningOptions
+    InputAccount:
+      type: object
+      properties:
+        Amount:
+          type: string
+        Date:
+          type: string
+        GroupID:
+          type: string
+        OtherData:
+          type: string
+        ProviderID:
+          type: string
+        MemberID:
+          type: string
+        Type:
+          type: string
+      xml:
+        name: InputAccount
+    WatchlistSearchCriteriaGroup:
+      type: object
+      properties:
+        ID:
+          type: integer
+          format: int32
+        Criterias:
+          type: array
+          items:
+            type: integer
+            format: int32
+      xml:
+        name: WatchlistSearchCriteriaGroup
+    WatchlistEFTMatchOptions:
+      type: object
+      properties:
+        ACHGatewayOperatorOFACScreeningIndicator:
+          type: boolean
+        ACHSecondaryOFACScreeningIndicator:
+          type: boolean
+      xml:
+        name: WatchlistEFTMatchOptions
+    SearchResults:
+      type: object
+      properties:
+        BlockID:
+          type: string
+        ClientReference:
+          type: string
+        Records:
+          type: array
+          xml:
+            name: ResultRecord
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/ResultRecord'
+        SearchEngineVersion:
+          type: string
+      xml:
+        name: SearchResults
+    DataFileInfo:
+      type: object
+      properties:
+        Custom:
+          type: boolean
+        Description:
+          type: string
+        FileDate:
+          type: string
+          format: date-time
+        HasWeakAKAs:
+          type: boolean
+        ID:
+          type: string
+          format: uuid
+          example: 00000000-0000-0000-0000-000000000000
+        Name:
+          type: string
+        PublishedDate:
+          type: string
+          format: date-time
+        SearchCriteria:
+          type: string
+        Type:
+          type: string
+          enum:
+            - UDF
+            - ADF
+            - BDF
+            - CDF
+            - SDF
+      xml:
+        name: DataFileInfo
+    ResultRecordsRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        Ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+      xml:
+        name: ResultRecordsRequest
+    ResultRunsRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        Criteria:
+          $ref: '#/components/schemas/RunsCriteria'
+      xml:
+        name: ResultRunsRequest
+    RunsCriteria:
+      type: object
+      properties:
+        DateEnd:
+          $ref: '#/components/schemas/Date'
+        DateStart:
+          $ref: '#/components/schemas/Date'
+        EFTType:
+          type: string
+          enum:
+            - None
+            - ACH
+            - Fedwire
+            - ISO20022
+            - SWIFT
+            - Unstructured
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        FileName:
+          type: string
+        PredefinedSearch:
+          type: string
+        ProcessingState:
+          type: string
+          enum:
+            - None
+            - Canceled
+            - Completed
+            - Error
+            - Incomplete
+            - Interrupted
+            - Processing
+        SubmitType:
+          type: string
+          enum:
+            - All
+            - AutomaticBatch
+            - Batch
+            - Import
+            - None
+            - RealTime
+            - WebServices
+      xml:
+        name: RunsCriteria
+    RunInfo:
+      type: object
+      properties:
+        AlertCount:
+          type: integer
+          format: int32
+        Division:
+          type: string
+        DivisionID:
+          type: integer
+          format: int32
+        DPPA:
+          type: string
+          enum:
+            - NA
+            - Choice0
+            - Choice1
+            - Choice2
+            - Choice3
+            - Choice4
+            - Choice6
+        EFTType:
+          type: string
+          enum:
+            - None
+            - ACH
+            - Fedwire
+            - ISO20022
+            - SWIFT
+            - Unstructured
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        ErrorCount:
+          type: integer
+          format: int32
+        ErrorMessage:
+          type: string
+        FileName:
+          type: string
+        FileFormatName:
+          type: string
+        GLB:
+          type: integer
+          format: int32
+        LastUpdateTime:
+          type: string
+          format: date-time
+        NumRecordsProcessed:
+          type: integer
+          format: int32
+        PredefinedSearchName:
+          type: string
+        ProcessingState:
+          type: string
+          enum:
+            - None
+            - Canceled
+            - Completed
+            - Error
+            - Incomplete
+            - Interrupted
+            - Processing
+        ResultsFile1:
+          type: string
+        ResultsFile2:
+          type: string
+        RunID:
+          type: integer
+          format: int64
+        StartTime:
+          type: string
+          format: date-time
+        SubmitType:
+          type: string
+        TotalNumRecords:
+          type: integer
+          format: int32
+        TotalNumRows:
+          type: integer
+          format: int32
+        UserName:
+          type: string
+        WLMatchCount:
+          type: integer
+          format: int32
+      xml:
+        name: RunInfo
+    SearchResultRecordsRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        Criteria:
+          $ref: '#/components/schemas/ResultsCriteria'
+        Position:
+          type: integer
+          format: int64
+        NumberToReturn:
+          type: integer
+          format: int32
+      xml:
+        name: SearchResultRecordsRequest
+    ResultsCriteria:
+      type: object
+      properties:
+        Account:
+          $ref: '#/components/schemas/ResultCriteriaAccount'
+        AdditionalInfo:
+          $ref: '#/components/schemas/EntityCriteriaAdditionalInfo'
+        Address:
+          $ref: '#/components/schemas/EntityCriteriaAddress'
+        Context:
+          type: string
+        DateEnd:
+          $ref: '#/components/schemas/Date'
+        DateStart:
+          $ref: '#/components/schemas/Date'
+        EFT:
+          $ref: '#/components/schemas/ResultCriteriaEFT'
+        EntityType:
+          type: string
+          enum:
+            - None
+            - Business
+            - Individual
+            - Text
+            - Unknown
+            - Unstructured
+        FirstName:
+          type: string
+        FraudPoint:
+          $ref: '#/components/schemas/FraudPointResultCriteria'
+        FullName:
+          type: string
+        ID:
+          $ref: '#/components/schemas/EntityCriteriaID'
+        InstantID:
+          $ref: '#/components/schemas/InstantIDResultCriteria'
+        InstantIDIntl:
+          $ref: '#/components/schemas/InstantIDIntlResultCriteria'
+        LastName:
+          type: string
+        MatchText:
+          type: string
+        MiddleName:
+          type: string
+        SecondSurname:
+          type: string
+        MaidenName:
+          type: string
+        RecordState:
+          $ref: '#/components/schemas/ResultCriteriaRecordState'
+        RunIDs:
+          type: array
+          items:
+            type: integer
+            format: int64
+        SSNEIN:
+          type: string
+        TimeEnd:
+          $ref: '#/components/schemas/Time'
+        TimeStart:
+          $ref: '#/components/schemas/Time'
+        AlertDecisionName:
+          type: string
+        Watchlist:
+          $ref: '#/components/schemas/WatchlistResultCriteria'
+      xml:
+        name: ResultsCriteria
+    ResultCriteriaAccount:
+      type: object
+      properties:
+        Amount:
+          type: string
+        Date:
+          type: string
+        GroupID:
+          type: string
+        ID:
+          type: string
+        MemberID:
+          type: string
+        OtherData:
+          type: string
+        ProviderID:
+          type: string
+        Type:
+          type: string
+      xml:
+        name: ResultCriteriaAccount
+    EntityCriteriaAdditionalInfo:
+      type: object
+      properties:
+        Type:
+          type: string
+          enum:
+            - None
+            - Citizenship
+            - Complexion
+            - DistinguishingMarks
+            - DOB
+            - EyeColor
+            - HairColor
+            - Height
+            - MothersName
+            - Nationality
+            - Occupation
+            - PlaceOfBirth
+            - Position
+            - Race
+            - VesselCallSign
+            - VesselFlag
+            - VesselGRT
+            - VesselOwner
+            - VesselTonnage
+            - VesselType
+            - Weight
+            - Incident
+            - Other
+            - IPAddress
+        Value1:
+          type: string
+        Value2:
+          type: string
+      xml:
+        name: EntityCriteriaAdditionalInfo
+    EntityCriteriaAddress:
+      type: object
+      properties:
+        City:
+          type: string
+        Country:
+          type: string
+        Phone:
+          type: string
+        PostalCode:
+          type: string
+        StateProvinceDistrict:
+          type: string
+        Street1:
+          type: string
+        Street2:
+          type: string
+        BuildingName:
+          type: string
+        FloorNumber:
+          type: string
+        Suburb:
+          type: string
+        District:
+          type: string
+      xml:
+        name: EntityCriteriaAddress
+    ResultCriteriaEFT:
+      type: object
+      properties:
+        DollarAmount:
+          type: string
+        DollarAmountComparison:
+          type: string
+          enum:
+            - None
+            - Is
+            - IsGreaterThan
+            - IsGreaterThanOrEqual
+            - IsLessThan
+            - IsLessThanOrEqual
+            - IsNull
+        DUNS:
+          type: string
+        ExternalOFACIndicator:
+          type: boolean
+        TransactionID:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ACH
+            - Fedwire
+            - ISO20022
+            - SWIFT
+            - Unstructured
+      xml:
+        name: ResultCriteriaEFT
+    FraudPointResultCriteria:
+      type: object
+      properties:
+        ErrorText:
+          type: string
+        ProviderErrorsOnly:
+          type: boolean
+        RedFlags:
+          type: array
+          xml:
+            name: FPResultCriteriaRedFlag
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/FPResultCriteriaRedFlag'
+        RiskIndicators:
+          type: array
+          items:
+            type: integer
+            format: int32
+        ScoreEnd:
+          type: integer
+          format: int32
+        ScoreStart:
+          type: integer
+          format: int32
+        SyntheticIdentityIndexStart:
+          type: integer
+          format: int32
+        SyntheticIdentityIndexEnd:
+          type: integer
+          format: int32
+        StolenIdentityIndexStart:
+          type: integer
+          format: int32
+        StolenIdentityIndexEnd:
+          type: integer
+          format: int32
+        ManipulatedIdentityIndexStart:
+          type: integer
+          format: int32
+        ManipulatedIdentityIndexEnd:
+          type: integer
+          format: int32
+        VulnerableVictimIndexStart:
+          type: integer
+          format: int32
+        VulnerableVictimIndexEnd:
+          type: integer
+          format: int32
+        FriendlyFraudIndexStart:
+          type: integer
+          format: int32
+        FriendlyFraudIndexEnd:
+          type: integer
+          format: int32
+        SuspiciousActivityIndexStart:
+          type: integer
+          format: int32
+        SuspiciousActivityIndexEnd:
+          type: integer
+          format: int32
+      xml:
+        name: FraudPointResultCriteria
+    EntityCriteriaID:
+      type: object
+      properties:
+        Label:
+          type: string
+        Number:
+          type: string
+        Type:
+          type: string
+          enum:
+            - None
+            - ABARouting
+            - Account
+            - AlienRegistration
+            - BankIdentifierCode
+            - BankPartyID
+            - Cedula
+            - ChipsUID
+            - CustomerNumber
+            - DriversLicense
+            - DUNS
+            - EFTCode
+            - EIN
+            - GLN
+            - IBAN
+            - IBEI
+            - Member
+            - Military
+            - National
+            - NIT
+            - Other
+            - Passport
+            - ProprietaryUID
+            - SSN
+            - SwiftBEI
+            - SwiftBIC
+            - TaxID
+            - VISA
+            - MedicareID
+            - RTACardNumber
+            - MedicareReference
+            - ProviderID
+            - AircraftConstructionNumber
+            - AircraftManufacturerSerialNumber
+            - BusinessRegistrationNumber
+            - EuropeanHealthInsuranceCard
+            - ExpeditedEntryCard
+            - FishingNumber
+            - GIIN
+            - IMO
+            - ISIN
+            - MSB
+            - OFAC
+            - SEC
+            - SocialServicesNumber
+            - UnitedNations
+            - Voter
+            - MMSI
+            - LegalEntity
+            - CRD
+            - LexID
+      xml:
+        name: EntityCriteriaID
+    InstantIDResultCriteria:
+      type: object
+      properties:
+        Business:
+          $ref: '#/components/schemas/IIDResultCriteriaBusiness'
+        ErrorText:
+          type: string
+        Individual:
+          $ref: '#/components/schemas/IIDResultCriteriaIndividual'
+        ProviderErrorsOnly:
+          type: boolean
+      xml:
+        name: InstantIDResultCriteria
+    InstantIDIntlResultCriteria:
+      type: object
+      properties:
+        ErrorText:
+          type: string
+        Individual:
+          $ref: '#/components/schemas/IIDIResultCriteriaIndividual'
+        ProviderErrorsOnly:
+          type: boolean
+      xml:
+        name: InstantIDIntlResultCriteria
+    ResultCriteriaRecordState:
+      type: object
+      properties:
+        AlertAge:
+          type: string
+          enum:
+            - None
+            - Days10
+            - Days20
+            - Days30
+            - Days60
+            - Days90
+        AlertState:
+          type: string
+          enum:
+            - None
+            - Closed
+            - Open
+            - Unassigned
+        AnyErrors:
+          type: boolean
+        AssignedTo:
+          type: string
+        AssignmentType:
+          type: string
+          enum:
+            - Unknown
+            - Role
+            - User
+        CurrentStatus:
+          type: string
+        Divisions:
+          type: array
+          items:
+            type: string
+        DateStateAssignedEnd:
+          $ref: '#/components/schemas/Date'
+        DateStateAssignedStart:
+          $ref: '#/components/schemas/Date'
+        DateStatusAssignedEnd:
+          $ref: '#/components/schemas/Date'
+        DateStatusAssignedStart:
+          $ref: '#/components/schemas/Date'
+        GeneralSearchErrorsOnly:
+          type: boolean
+        PredefinedSearch:
+          type: string
+        RecordChangedBy:
+          type: string
+        RecordHasAttachments:
+          type: boolean
+        ResultsWithoutDivision:
+          type: boolean
+        ResultsWithoutStatus:
+          type: boolean
+        StatusHistory:
+          type: string
+      xml:
+        name: ResultCriteriaRecordState
+    Time:
+      type: object
+      properties:
+        Hour:
+          type: integer
+          format: int32
+        Milliseconds:
+          type: integer
+          format: int32
+        Minute:
+          type: integer
+          format: int32
+        Second:
+          type: integer
+          format: int32
+        Unparsed:
+          type: string
+      xml:
+        name: Time
+    WatchlistResultCriteria:
+      type: object
+      properties:
+        ErrorText:
+          type: string
+        ExcludeIfTrueMatchUpdatesOnly:
+          type: boolean
+        ExcludeIfFalseMatchUpdatesOnly:
+          type: boolean
+        FalseMatchUpdatesOnly:
+          type: boolean
+        MatchDispositionFalsePositive:
+          type: boolean
+        MatchDispositionTrueMatch:
+          type: boolean
+        ReasonListed:
+          type: string
+        ScoreEnd:
+          type: integer
+          format: int32
+        ScoreStart:
+          type: integer
+          format: int32
+        SearchOnErrors:
+          type: boolean
+        SourceName:
+          type: string
+        TrueMatchUpdatesOnly:
+          type: boolean
+      xml:
+        name: WatchlistResultCriteria
+    FPResultCriteriaRedFlag:
+      type: object
+      properties:
+        PrimaryID:
+          type: integer
+          format: int32
+        SecondaryID:
+          type: integer
+          format: int32
+      xml:
+        name: FPResultCriteriaRedFlag
+    IIDResultCriteriaBusiness:
+      type: object
+      properties:
+        IndexEnd:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        IndexStart:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        RiskIndicators:
+          type: array
+          items:
+            type: integer
+            format: int32
+      xml:
+        name: IIDResultCriteriaBusiness
+    IIDResultCriteriaIndividual:
+      type: object
+      properties:
+        IndexEnd:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        IndexStart:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        NAPCriteria:
+          type: integer
+          format: int32
+        NASCriteria:
+          type: integer
+          format: int32
+        RedFlags:
+          type: array
+          xml:
+            name: IIDResultCriteriaRedFlag
+            wrapped: true
+          items:
+            $ref: '#/components/schemas/IIDResultCriteriaRedFlag'
+        RiskIndicators:
+          type: array
+          items:
+            type: integer
+            format: int32
+      xml:
+        name: IIDResultCriteriaIndividual
+    IIDIResultCriteriaIndividual:
+      type: object
+      properties:
+        IndexEnd:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        IndexStart:
+          type: string
+          enum:
+            - None
+            - Level0
+            - Level10
+            - Level20
+            - Level30
+            - Level40
+            - Level50
+        RiskIndicators:
+          type: array
+          items:
+            type: integer
+            format: int32
+      xml:
+        name: IIDIResultCriteriaIndividual
+    IIDResultCriteriaRedFlag:
+      type: object
+      properties:
+        PrimaryID:
+          type: integer
+          format: int32
+        SecondaryID:
+          type: integer
+          format: int32
+      xml:
+        name: IIDResultCriteriaRedFlag
+    SearchRecordResults:
+      type: object
+      properties:
+        RecordIDs:
+          type: array
+          items:
+            type: integer
+            format: int64
+        TotalNumRecords:
+          type: integer
+          format: int64
+      xml:
+        name: SearchRecordResults
+    SetRecordStateRequest:
+      type: object
+      properties:
+        ClientContext:
+          $ref: '#/components/schemas/ClientContext'
+        ResultID:
+          type: integer
+          format: int64
+        State:
+          $ref: '#/components/schemas/RecordState'
+      xml:
+        name: SetRecordStateRequest
+    OAuth2Token:
+      type: object
+      properties:
+        token_type:
+          type: string
+        expires_in:
+          type: integer
+          format: int32
+        expires_on:
+          type: integer
+          format: int32
+        not_before:
+          type: integer
+          format: int32
+        resource:
+          type: string
+        access_token:
+          type: string
+      xml:
+        name: OAuth2Token

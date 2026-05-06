@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Address Validation Proxy - UI Mockups</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              fluent: {
+                primary: '#0078D4',
+                'primary-hover': '#106EBE',
+                'primary-pressed': '#005A9E',
+                bg: '#FAFAFA',
+                surface: '#FFFFFF',
+                'surface-secondary': '#F5F5F5',
+                'text-primary': '#242424',
+                'text-secondary': '#616161',
+                'text-tertiary': '#8A8886',
+                success: '#107C10',
+                'success-bg': '#DFF6DD',
+                warning: '#FFB900',
+                'warning-bg': '#FFF4CE',
+                error: '#D13438',
+                'error-bg': '#FDE7E9',
+                border: '#E0E0E0',
+                'border-strong': '#C8C6C4',
+                'nav-active': '#E8F0FE',
+                info: '#0078D4',
+                'info-bg': '#EBF3FC',
+                teal: '#038387',
+                'teal-bg': '#D2F0F0',
+                purple: '#8764B8',
+                'purple-bg': '#EDE5F5',
+                orange: '#CA5010',
+                'orange-bg': '#FFF0E0',
+              }
+            },
+            fontFamily: {
+              fluent: ["'Segoe UI'", '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            },
+            boxShadow: {
+              'fluent-card': '0 2px 4px rgba(0,0,0,0.08)',
+              'fluent-card-hover': '0 4px 12px rgba(0,0,0,0.12)',
+              'fluent-dialog': '0 25px 65px rgba(0,0,0,0.18)',
+            }
+          },
+        },
+      };
+    </script>
+    <style>
+      * { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
+      body { background: #FAFAFA; color: #242424; margin: 0; }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: #C8C6C4; border-radius: 3px; }
+
+      /* Fluent focus ring */
+      .fluent-focus:focus { outline: 2px solid #0078D4; outline-offset: 1px; }
+      .fluent-focus:focus:not(:focus-visible) { outline: none; }
+      .fluent-focus:focus-visible { outline: 2px solid #0078D4; outline-offset: 1px; }
+
+      /* Nav item */
+      .nav-item { display: flex; align-items: center; gap: 12px; padding: 8px 16px; border-radius: 4px; color: #242424; font-size: 14px; font-weight: 400; cursor: pointer; position: relative; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
+      .nav-item:hover { background: #F0F0F0; }
+      .nav-item.active { background: #E8F0FE; color: #0078D4; font-weight: 600; }
+      .nav-item.active::before { content: ''; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px; background: #0078D4; border-radius: 0 3px 3px 0; }
+
+      /* Fluent button */
+      .btn-primary { background: #0078D4; color: #fff; border: none; padding: 6px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; min-height: 32px; }
+      .btn-primary:hover { background: #106EBE; }
+      .btn-primary:active { background: #005A9E; }
+      .btn-secondary { background: #fff; color: #242424; border: 1px solid #8A8886; padding: 6px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; min-height: 32px; }
+      .btn-secondary:hover { background: #F3F2F1; border-color: #605E5C; }
+      .btn-warning { background: #CA5010; color: #fff; border: none; padding: 6px 20px; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; min-height: 32px; }
+      .btn-warning:hover { background: #A33D0B; }
+
+      /* Fluent card */
+      .fluent-card { background: #FFFFFF; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); padding: 20px; transition: box-shadow 0.2s; }
+      .fluent-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+
+      /* Badge */
+      .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+      .badge-green { background: #DFF6DD; color: #107C10; }
+      .badge-red { background: #FDE7E9; color: #D13438; }
+      .badge-yellow { background: #FFF4CE; color: #7A6400; }
+      .badge-blue { background: #EBF3FC; color: #0078D4; }
+      .badge-teal { background: #D2F0F0; color: #038387; }
+      .badge-purple { background: #EDE5F5; color: #8764B8; }
+      .badge-orange { background: #FFF0E0; color: #CA5010; }
+      .badge-gray { background: #F3F2F1; color: #605E5C; }
+
+      /* Input */
+      .fluent-input { width: 100%; padding: 6px 12px; border: 1px solid #8A8886; border-radius: 4px; font-size: 14px; background: #fff; color: #242424; min-height: 32px; transition: border-color 0.15s; box-sizing: border-box; }
+      .fluent-input:hover { border-color: #605E5C; }
+      .fluent-input:focus { outline: none; border-color: #0078D4; border-bottom: 2px solid #0078D4; }
+      .fluent-input::placeholder { color: #8A8886; }
+
+      .fluent-select { padding: 6px 32px 6px 12px; border: 1px solid #8A8886; border-radius: 4px; font-size: 14px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23605E5C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") right 10px center no-repeat; color: #242424; min-height: 32px; cursor: pointer; appearance: none; -webkit-appearance: none; }
+      .fluent-select:focus { outline: none; border-color: #0078D4; border-bottom: 2px solid #0078D4; }
+
+      /* Table */
+      .fluent-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+      .fluent-table thead th { background: #F5F5F5; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 12px; color: #616161; border-bottom: 1px solid #E0E0E0; white-space: nowrap; }
+      .fluent-table tbody td { padding: 8px 12px; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
+      .fluent-table tbody tr:hover { background: #F5F5F5; }
+      .fluent-table tbody tr { transition: background 0.1s; }
+
+      /* Page sections */
+      .page { display: none; }
+      .page.active { display: block; }
+
+      /* Sidebar */
+      .sidebar { width: 256px; min-width: 256px; background: #F5F5F5; border-right: 1px solid #E0E0E0; height: calc(100vh - 48px); overflow-y: auto; transition: all 0.25s ease; }
+      .sidebar.collapsed { width: 0; min-width: 0; overflow: hidden; padding: 0; }
+      @media (max-width: 1023px) {
+        .sidebar { position: fixed; left: 0; top: 48px; z-index: 40; transform: translateX(-100%); }
+        .sidebar.mobile-open { transform: translateX(0); box-shadow: 4px 0 12px rgba(0,0,0,0.1); }
+        .sidebar.collapsed { transform: translateX(-100%); }
+      }
+
+      /* Donut center text */
+      .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+
+      /* Pulse animation */
+      @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+      .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+      /* Message bar */
+      .message-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 4px; font-size: 13px; }
+      .message-bar-info { background: #EBF3FC; color: #0078D4; border-left: 3px solid #0078D4; }
+
+      /* Drop zone */
+      .drop-zone { border: 2px dashed #C8C6C4; border-radius: 4px; padding: 48px 24px; text-align: center; background: #FAFAFA; transition: all 0.2s; cursor: pointer; }
+      .drop-zone:hover { border-color: #0078D4; background: #EBF3FC; }
+
+      /* Dialog overlay */
+      .dialog-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; display: flex; align-items: center; justify-content: center; }
+      .dialog-overlay.hidden { display: none; }
+      .dialog-box { background: #fff; border-radius: 8px; box-shadow: 0 25px 65px rgba(0,0,0,0.18); padding: 24px; max-width: 480px; width: 90%; }
+
+      /* Accordion */
+      .accordion-header { cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #F0F0F0; }
+      .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+      .accordion-body.open { max-height: 800px; }
+
+      /* Progress ring SVG */
+      .progress-ring { transform: rotate(-90deg); }
+
+      /* Code block */
+      .code-block { background: #1E1E1E; color: #D4D4D4; padding: 12px 16px; border-radius: 4px; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; overflow-x: auto; white-space: pre; line-height: 1.5; }
+      .code-key { color: #9CDCFE; }
+      .code-string { color: #CE9178; }
+      .code-number { color: #B5CEA8; }
+      .code-bool { color: #569CD6; }
+
+      /* State machine */
+      .state-node { padding: 8px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; border: 2px solid; text-align: center; }
+      .state-active { box-shadow: 0 0 0 3px rgba(16,124,16,0.25); }
+
+      /* Summary bar */
+      .summary-bar { display: flex; gap: 16px; padding: 12px 16px; background: #F5F5F5; border-radius: 4px; font-size: 13px; font-weight: 600; flex-wrap: wrap; }
+
+      /* Mobile nav overlay */
+      .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 35; }
+      .mobile-overlay.visible { display: block; }
+    </style>
+</head>
+<body data-id="0" class="min-h-screen flex flex-col">
+<app-icon data-id="1" hidden data-icon="map-pin-check-inside" data-palette="Blue"></app-icon>
+
+<!-- Header Bar -->
+<header data-id="2" class="h-12 bg-white border-b border-fluent-border flex items-center justify-between px-4 sticky top-0 z-50" style="min-height:48px;max-height:48px;">
+    <div data-id="3" class="flex items-center gap-3">
+        <button data-id="4" id="sidebar-toggle" class="p-1.5 rounded hover:bg-gray-100 fluent-focus" aria-label="Toggle sidebar">
+            <i data-id="5" data-lucide="menu" class="w-5 h-5 text-fluent-text-secondary"></i>
+        </button>
+        <div data-id="6" class="flex items-center gap-2">
+            <div data-id="7" class="w-6 h-6 rounded bg-fluent-primary flex items-center justify-center">
+                <i data-id="8" data-lucide="map-pin" class="w-3.5 h-3.5 text-white"></i>
+            </div>
+            <span data-id="9" class="font-semibold text-sm text-fluent-text-primary hidden sm:inline">Address Validation Proxy</span>
+        </div>
+    </div>
+    <div data-id="10" class="flex items-center gap-2">
+        <button data-id="11" class="p-2 rounded hover:bg-gray-100 relative fluent-focus" aria-label="Notifications">
+            <i data-id="12" data-lucide="bell" class="w-4.5 h-4.5 text-fluent-text-secondary" style="width:18px;height:18px;"></i>
+            <span data-id="13" class="absolute top-1.5 right-1.5 w-2 h-2 bg-fluent-error rounded-full"></span>
+        </button>
+        <div data-id="14" class="w-8 h-8 rounded-full bg-fluent-primary flex items-center justify-center text-white text-xs font-semibold cursor-pointer" title="Alex K">AK</div>
+    </div>
+</header>
+
+<div data-id="15" class="flex flex-1 overflow-hidden">
+    <!-- Mobile overlay -->
+    <div data-id="16" id="mobile-overlay" class="mobile-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside data-id="17" id="sidebar" class="sidebar flex flex-col py-3 px-2 gap-0.5">
+        <button data-id="18" class="nav-item active" data-page="dashboard">
+            <i data-id="19" data-lucide="layout-dashboard" class="w-5 h-5"></i>
+            <span data-id="20">Dashboard</span>
+        </button>
+        <button data-id="21" class="nav-item" data-page="validate">
+            <i data-id="22" data-lucide="mail-check" class="w-5 h-5"></i>
+            <span data-id="23">Validate Address</span>
+        </button>
+        <button data-id="24" class="nav-item" data-page="batch">
+            <i data-id="25" data-lucide="files" class="w-5 h-5"></i>
+            <span data-id="26">Batch Validation</span>
+        </button>
+        <button data-id="27" class="nav-item" data-page="cache">
+            <i data-id="28" data-lucide="database" class="w-5 h-5"></i>
+            <span data-id="29">Cache Management</span>
+        </button>
+        <button data-id="30" class="nav-item" data-page="audit">
+            <i data-id="31" data-lucide="scroll-text" class="w-5 h-5"></i>
+            <span data-id="32">Audit Log</span>
+        </button>
+        <button data-id="33" class="nav-item" data-page="health">
+            <i data-id="34" data-lucide="heart-pulse" class="w-5 h-5"></i>
+            <span data-id="35">Health &amp; Metrics</span>
+        </button>
+        <button data-id="36" class="nav-item" data-page="settings">
+            <i data-id="37" data-lucide="settings" class="w-5 h-5"></i>
+            <span data-id="38">Settings</span>
+        </button>
+    </aside>
+
+    <!-- Main Content -->
+    <main data-id="39" class="flex-1 overflow-y-auto p-4 md:p-6" id="main-content">
+
+        <!-- ========== PAGE: DASHBOARD ========== -->
+        <section data-id="40" id="page-dashboard" class="page active">
+            <!-- Breadcrumb -->
+            <div data-id="41" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="42" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="43">/</span>
+                <span data-id="44" class="text-fluent-text-primary font-medium">Dashboard</span>
+            </div>
+            <h1 data-id="45" class="text-xl font-semibold text-fluent-text-primary mb-5">Dashboard</h1>
+
+            <!-- KPI Cards -->
+            <div data-id="46" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Total Validations -->
+                <div data-id="47" class="fluent-card">
+                    <div data-id="48" class="flex items-center justify-between mb-2">
+                        <span data-id="49" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide">Total Validations Today</span>
+                        <i data-id="50" data-lucide="activity" class="w-4 h-4 text-fluent-text-tertiary"></i>
+                    </div>
+                    <div data-id="51" class="text-2xl font-bold text-fluent-text-primary tabular-nums">12,847</div>
+                    <div data-id="52" class="flex items-center gap-1 mt-1">
+                        <span data-id="53" class="badge badge-green text-xs"><i data-id="54" data-lucide="trending-up" class="w-3 h-3 mr-0.5"></i>+8.3%</span>
+                        <span data-id="55" class="text-xs text-fluent-text-tertiary">vs yesterday</span>
+                    </div>
+                </div>
+                <!-- Cache Hit Ratio -->
+                <div data-id="56" class="fluent-card">
+                    <div data-id="57" class="flex items-center justify-between mb-2">
+                        <span data-id="58" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide">Cache Hit Ratio</span>
+                        <i data-id="59" data-lucide="gauge" class="w-4 h-4 text-fluent-text-tertiary"></i>
+                    </div>
+                    <div data-id="60" class="flex items-center gap-3">
+                        <div data-id="61" class="relative" style="width:48px;height:48px;">
+                            <svg data-id="62" viewBox="0 0 36 36" class="progress-ring" width="48" height="48">
+                                <circle data-id="63" cx="18" cy="18" r="15.9" fill="none" stroke="#E0E0E0" stroke-width="3"></circle>
+                                <circle data-id="64" cx="18" cy="18" r="15.9" fill="none" stroke="#0078D4" stroke-width="3" stroke-dasharray="78.4 100" stroke-linecap="round"></circle>
+                            </svg>
+                        </div>
+                        <div data-id="65">
+                            <div data-id="66" class="text-2xl font-bold text-fluent-text-primary tabular-nums">78.4%</div>
+                            <div data-id="67" class="text-xs text-fluent-text-tertiary">Combined L1+L2</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Avg Response Time -->
+                <div data-id="68" class="fluent-card">
+                    <div data-id="69" class="flex items-center justify-between mb-2">
+                        <span data-id="70" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide">Avg Response Time</span>
+                        <i data-id="71" data-lucide="clock" class="w-4 h-4 text-fluent-text-tertiary"></i>
+                    </div>
+                    <div data-id="72" class="flex items-center gap-2">
+                        <div data-id="73" class="text-2xl font-bold text-fluent-text-primary tabular-nums">45<span data-id="74" class="text-sm font-medium text-fluent-text-secondary">ms</span></div>
+                    </div>
+                    <div data-id="75" class="flex items-center gap-1.5 mt-1">
+                        <span data-id="76" class="w-2 h-2 rounded-full bg-fluent-success"></span>
+                        <span data-id="77" class="text-xs text-fluent-success font-medium">Healthy</span>
+                    </div>
+                </div>
+                <!-- Smarty API Calls -->
+                <div data-id="78" class="fluent-card">
+                    <div data-id="79" class="flex items-center justify-between mb-2">
+                        <span data-id="80" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide">Smarty API Calls</span>
+                        <i data-id="81" data-lucide="cloud" class="w-4 h-4 text-fluent-text-tertiary"></i>
+                    </div>
+                    <div data-id="82" class="text-2xl font-bold text-fluent-text-primary tabular-nums">2,771</div>
+                    <div data-id="83" class="flex items-center gap-1 mt-1">
+                        <span data-id="84" class="badge badge-green text-xs"><i data-id="85" data-lucide="trending-down" class="w-3 h-3 mr-0.5"></i>-12%</span>
+                        <span data-id="86" class="text-xs text-fluent-text-tertiary">cost savings</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div data-id="87" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <div data-id="88" class="fluent-card">
+                    <h3 data-id="89" class="text-sm font-semibold text-fluent-text-primary mb-4">Validation Volume (Last 24h)</h3>
+                    <div data-id="90" class="relative h-56 md:h-64">
+                        <canvas data-id="91" id="chart-volume"></canvas>
+                    </div>
+                </div>
+                <div data-id="92" class="fluent-card">
+                    <h3 data-id="93" class="text-sm font-semibold text-fluent-text-primary mb-4">Cache Performance</h3>
+                    <div data-id="94" class="relative h-56 md:h-64 flex items-center justify-center">
+                        <div data-id="95" class="relative" style="max-width:220px;width:100%;">
+                            <canvas data-id="96" id="chart-cache"></canvas>
+                            <div data-id="97" class="donut-center">
+                                <div data-id="98" class="text-xl font-bold text-fluent-text-primary">10,076</div>
+                                <div data-id="99" class="text-xs text-fluent-text-tertiary">Total Hits</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity Table -->
+            <div data-id="100" class="fluent-card">
+                <h3 data-id="101" class="text-sm font-semibold text-fluent-text-primary mb-4">Recent Validation Activity</h3>
+                <div data-id="102" class="overflow-x-auto">
+                    <table data-id="103" class="fluent-table">
+                        <thead data-id="104">
+                            <tr data-id="105">
+                                <th data-id="106">Timestamp</th>
+                                <th data-id="107">Input Address</th>
+                                <th data-id="108">Status</th>
+                                <th data-id="109">Cache Level</th>
+                                <th data-id="110">Response Time</th>
+                            </tr>
+                        </thead>
+                        <tbody data-id="111">
+                            <tr data-id="112">
+                                <td data-id="113" class="tabular-nums text-fluent-text-secondary">07:34:12</td>
+                                <td data-id="114">4400 University Dr, Fairfax, VA 22030</td>
+                                <td data-id="115"><span data-id="116" class="badge badge-green">Valid</span></td>
+                                <td data-id="117"><span data-id="118" class="badge badge-blue">L1</span></td>
+                                <td data-id="119" class="tabular-nums">3ms</td>
+                            </tr>
+                            <tr data-id="120">
+                                <td data-id="121" class="tabular-nums text-fluent-text-secondary">07:33:58</td>
+                                <td data-id="122">1600 Pennsylvania Ave NW, Washington, DC 20500</td>
+                                <td data-id="123"><span data-id="124" class="badge badge-green">Valid</span></td>
+                                <td data-id="125"><span data-id="126" class="badge badge-teal">L2</span></td>
+                                <td data-id="127" class="tabular-nums">12ms</td>
+                            </tr>
+                            <tr data-id="128">
+                                <td data-id="129" class="tabular-nums text-fluent-text-secondary">07:33:41</td>
+                                <td data-id="130">12345 Fake Blvd, Springfield, VA 99999</td>
+                                <td data-id="131"><span data-id="132" class="badge badge-red">Invalid</span></td>
+                                <td data-id="133"><span data-id="134" class="badge badge-gray">Miss</span></td>
+                                <td data-id="135" class="tabular-nums">287ms</td>
+                            </tr>
+                            <tr data-id="136">
+                                <td data-id="137" class="tabular-nums text-fluent-text-secondary">07:33:27</td>
+                                <td data-id="138">14150 Newbrook Dr, Chantilly, VA 20151</td>
+                                <td data-id="139"><span data-id="140" class="badge badge-green">Valid</span></td>
+                                <td data-id="141"><span data-id="142" class="badge badge-gray">Miss</span></td>
+                                <td data-id="143" class="tabular-nums">342ms</td>
+                            </tr>
+                            <tr data-id="144">
+                                <td data-id="145" class="tabular-nums text-fluent-text-secondary">07:33:05</td>
+                                <td data-id="146">2941 Fairview Park Dr Ste 300, Falls Church, VA 22042</td>
+                                <td data-id="147"><span data-id="148" class="badge badge-yellow">Partial</span></td>
+                                <td data-id="149"><span data-id="150" class="badge badge-blue">L1</span></td>
+                                <td data-id="151" class="tabular-nums">4ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: VALIDATE ADDRESS ========== -->
+        <section data-id="152" id="page-validate" class="page">
+            <div data-id="153" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="154" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="155">/</span>
+                <span data-id="156" class="text-fluent-text-primary font-medium">Validate Address</span>
+            </div>
+            <h1 data-id="157" class="text-xl font-semibold text-fluent-text-primary mb-1">Validate Address</h1>
+            <p data-id="158" class="text-sm text-fluent-text-secondary mb-5">Enter a US address to validate against USPS standards</p>
+
+            <div data-id="159" class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+                <!-- Form Panel -->
+                <div data-id="160" class="lg:col-span-3 fluent-card">
+                    <h3 data-id="161" class="text-sm font-semibold text-fluent-text-primary mb-4">Address Information</h3>
+                    <div data-id="162" class="space-y-4">
+                        <div data-id="163">
+                            <label data-id="164" class="block text-xs font-medium text-fluent-text-secondary mb-1">Street Address <span data-id="165" class="text-fluent-error">*</span></label>
+                            <input data-id="166" type="text" class="fluent-input fluent-focus" placeholder="123 Main St" id="input-street" value="14150 Newbrook Dr">
+                        </div>
+                        <div data-id="167">
+                            <label data-id="168" class="block text-xs font-medium text-fluent-text-secondary mb-1">Street Address 2</label>
+                            <input data-id="169" type="text" class="fluent-input fluent-focus" placeholder="Apt, Suite, Unit" id="input-street2">
+                        </div>
+                        <div data-id="170" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                            <div data-id="171" class="sm:col-span-2">
+                                <label data-id="172" class="block text-xs font-medium text-fluent-text-secondary mb-1">City <span data-id="173" class="text-fluent-error">*</span></label>
+                                <input data-id="174" type="text" class="fluent-input fluent-focus" placeholder="City" id="input-city" value="Chantilly">
+                            </div>
+                            <div data-id="175">
+                                <label data-id="176" class="block text-xs font-medium text-fluent-text-secondary mb-1">State <span data-id="177" class="text-fluent-error">*</span></label>
+                                <select data-id="178" class="fluent-select w-full fluent-focus" id="input-state">
+                                    <option data-id="179" value="">Select</option>
+                                    <option data-id="180" value="DC">DC</option>
+                                    <option data-id="181" value="MD">MD</option>
+                                    <option data-id="182" value="VA" selected>VA</option>
+                                </select>
+                            </div>
+                            <div data-id="183">
+                                <label data-id="184" class="block text-xs font-medium text-fluent-text-secondary mb-1">ZIP Code <span data-id="185" class="text-fluent-error">*</span></label>
+                                <input data-id="186" type="text" class="fluent-input fluent-focus" placeholder="20151" id="input-zip" value="20151">
+                            </div>
+                        </div>
+                        <div data-id="187">
+                            <label data-id="188" class="block text-xs font-medium text-fluent-text-secondary mb-1">Addressee (optional)</label>
+                            <input data-id="189" type="text" class="fluent-input fluent-focus" placeholder="Name of recipient" id="input-addressee">
+                        </div>
+                        <div data-id="190" class="flex items-center gap-3 pt-1">
+                            <span data-id="191" class="badge badge-blue">Api-Version: v1.0</span>
+                            <span data-id="192" class="text-xs text-fluent-text-tertiary">Response: application/json</span>
+                        </div>
+                        <div data-id="193" class="flex gap-3 pt-2">
+                            <button data-id="194" class="btn-primary fluent-focus" id="btn-validate">
+                                <span data-id="195" class="flex items-center gap-1.5"><i data-id="196" data-lucide="search-check" class="w-4 h-4"></i> Validate Address</span>
+                            </button>
+                            <button data-id="197" class="btn-secondary fluent-focus" id="btn-clear">Clear</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Panel -->
+                <div data-id="198" class="lg:col-span-2" id="validation-result">
+                    <div data-id="199" class="fluent-card">
+                        <div data-id="200" class="flex items-center gap-2 mb-4 pb-3 border-b border-fluent-border">
+                            <div data-id="201" class="w-8 h-8 rounded-full bg-fluent-success-bg flex items-center justify-center">
+                                <i data-id="202" data-lucide="check" class="w-5 h-5 text-fluent-success"></i>
+                            </div>
+                            <div data-id="203">
+                                <div data-id="204" class="text-sm font-semibold text-fluent-success">VALID — DPV Confirmed</div>
+                                <div data-id="205" class="text-xs text-fluent-text-tertiary">Verification complete</div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion: Standardized Address -->
+                        <div data-id="206" class="mb-1">
+                            <div data-id="207" class="accordion-header" data-accordion="acc-addr">
+                                <span data-id="208" class="text-xs font-semibold text-fluent-text-secondary uppercase tracking-wide">Standardized Address</span>
+                                <i data-id="209" data-lucide="chevron-down" class="w-4 h-4 text-fluent-text-tertiary accordion-icon"></i>
+                            </div>
+                            <div data-id="210" class="accordion-body open" id="acc-addr">
+                                <div data-id="211" class="py-3 pl-1">
+                                    <div data-id="212" class="text-sm font-semibold text-fluent-text-primary">14150 NEWBROOK DR</div>
+                                    <div data-id="213" class="text-sm font-semibold text-fluent-text-primary">CHANTILLY VA 20151-2264</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion: Analysis -->
+                        <div data-id="214" class="mb-1">
+                            <div data-id="215" class="accordion-header" data-accordion="acc-analysis">
+                                <span data-id="216" class="text-xs font-semibold text-fluent-text-secondary uppercase tracking-wide">DPV Analysis</span>
+                                <i data-id="217" data-lucide="chevron-down" class="w-4 h-4 text-fluent-text-tertiary accordion-icon"></i>
+                            </div>
+                            <div data-id="218" class="accordion-body open" id="acc-analysis">
+                                <div data-id="219" class="py-3 grid grid-cols-2 gap-2 text-xs">
+                                    <div data-id="220"><span data-id="221" class="text-fluent-text-tertiary">DPV Match:</span> <span data-id="222" class="font-semibold text-fluent-success">Y</span></div>
+                                    <div data-id="223"><span data-id="224" class="text-fluent-text-tertiary">Footnotes:</span> <span data-id="225" class="font-mono font-semibold">AABB</span></div>
+                                    <div data-id="226"><span data-id="227" class="text-fluent-text-tertiary">CMRA:</span> <span data-id="228" class="font-semibold">N</span></div>
+                                    <div data-id="229"><span data-id="230" class="text-fluent-text-tertiary">Vacant:</span> <span data-id="231" class="font-semibold">N</span></div>
+                                    <div data-id="232"><span data-id="233" class="text-fluent-text-tertiary">Active:</span> <span data-id="234" class="font-semibold text-fluent-success">Y</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion: Geocoding -->
+                        <div data-id="235" class="mb-1">
+                            <div data-id="236" class="accordion-header" data-accordion="acc-geo">
+                                <span data-id="237" class="text-xs font-semibold text-fluent-text-secondary uppercase tracking-wide">Geocoding</span>
+                                <i data-id="238" data-lucide="chevron-down" class="w-4 h-4 text-fluent-text-tertiary accordion-icon"></i>
+                            </div>
+                            <div data-id="239" class="accordion-body open" id="acc-geo">
+                                <div data-id="240" class="py-3 grid grid-cols-2 gap-2 text-xs">
+                                    <div data-id="241"><span data-id="242" class="text-fluent-text-tertiary">Latitude:</span> <span data-id="243" class="font-mono font-semibold">38.8893</span></div>
+                                    <div data-id="244"><span data-id="245" class="text-fluent-text-tertiary">Longitude:</span> <span data-id="246" class="font-mono font-semibold">-77.4472</span></div>
+                                    <div data-id="247" class="col-span-2"><span data-id="248" class="text-fluent-text-tertiary">Precision:</span> <span data-id="249" class="font-semibold">Zip9</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion: Metadata -->
+                        <div data-id="250" class="mb-1">
+                            <div data-id="251" class="accordion-header" data-accordion="acc-meta">
+                                <span data-id="252" class="text-xs font-semibold text-fluent-text-secondary uppercase tracking-wide">Metadata</span>
+                                <i data-id="253" data-lucide="chevron-down" class="w-4 h-4 text-fluent-text-tertiary accordion-icon"></i>
+                            </div>
+                            <div data-id="254" class="accordion-body open" id="acc-meta">
+                                <div data-id="255" class="py-3 grid grid-cols-2 gap-2 text-xs">
+                                    <div data-id="256"><span data-id="257" class="text-fluent-text-tertiary">Provider:</span> <span data-id="258" class="font-semibold">Smarty</span></div>
+                                    <div data-id="259"><span data-id="260" class="text-fluent-text-tertiary">Cache Level:</span> <span data-id="261" class="badge badge-gray text-xs">Miss → Cached</span></div>
+                                    <div data-id="262"><span data-id="263" class="text-fluent-text-tertiary">Response Time:</span> <span data-id="264" class="font-semibold tabular-nums">342ms</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: BATCH VALIDATION ========== -->
+        <section data-id="265" id="page-batch" class="page">
+            <div data-id="266" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="267" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="268">/</span>
+                <span data-id="269" class="text-fluent-text-primary font-medium">Batch Validation</span>
+            </div>
+            <h1 data-id="270" class="text-xl font-semibold text-fluent-text-primary mb-1">Batch Validation</h1>
+            <p data-id="271" class="text-sm text-fluent-text-secondary mb-5">Upload a CSV file with up to 100 addresses</p>
+
+            <!-- Upload Zone -->
+            <div data-id="272" class="fluent-card mb-4">
+                <div data-id="273" class="drop-zone" id="drop-zone">
+                    <i data-id="274" data-lucide="cloud-upload" class="w-10 h-10 text-fluent-text-tertiary mx-auto mb-3"></i>
+                    <p data-id="275" class="text-sm font-medium text-fluent-text-primary mb-1">Drag & drop CSV file here or click to browse</p>
+                    <p data-id="276" class="text-xs text-fluent-text-tertiary">Maximum 100 addresses per batch</p>
+                </div>
+                <div data-id="277" class="message-bar message-bar-info mt-4">
+                    <i data-id="278" data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                    <span data-id="279">CSV format: <code data-id="280" class="font-mono text-xs bg-white px-1.5 py-0.5 rounded">street, street2, city, state, zipCode</code></span>
+                </div>
+            </div>
+
+            <!-- Batch Results -->
+            <div data-id="281" class="fluent-card mb-4">
+                <div data-id="282" class="flex items-center justify-between mb-4 flex-wrap gap-2">
+                    <h3 data-id="283" class="text-sm font-semibold text-fluent-text-primary">Batch Results</h3>
+                    <div data-id="284" class="flex items-center gap-3">
+                        <span data-id="285" class="text-xs text-fluent-text-tertiary">8 of 8 processed</span>
+                        <button data-id="286" class="btn-secondary text-xs py-1 px-3 fluent-focus" style="min-height:28px;">
+                            <span data-id="287" class="flex items-center gap-1"><i data-id="288" data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV</span>
+                        </button>
+                    </div>
+                </div>
+                <div data-id="289" class="overflow-x-auto">
+                    <table data-id="290" class="fluent-table">
+                        <thead data-id="291">
+                            <tr data-id="292">
+                                <th data-id="293">#</th>
+                                <th data-id="294">Street</th>
+                                <th data-id="295">City</th>
+                                <th data-id="296">State</th>
+                                <th data-id="297">ZIP</th>
+                                <th data-id="298">Status</th>
+                                <th data-id="299">DPV Code</th>
+                                <th data-id="300">Cache Level</th>
+                                <th data-id="301">Response</th>
+                            </tr>
+                        </thead>
+                        <tbody data-id="302">
+                            <tr data-id="303">
+                                <td data-id="304" class="tabular-nums">1</td>
+                                <td data-id="305">4400 University Dr</td>
+                                <td data-id="306">Fairfax</td>
+                                <td data-id="307">VA</td>
+                                <td data-id="308" class="tabular-nums">22030</td>
+                                <td data-id="309"><span data-id="310" class="badge badge-green">Valid</span></td>
+                                <td data-id="311" class="font-mono">Y</td>
+                                <td data-id="312"><span data-id="313" class="badge badge-blue">L1</span></td>
+                                <td data-id="314" class="tabular-nums">3ms</td>
+                            </tr>
+                            <tr data-id="315">
+                                <td data-id="316" class="tabular-nums">2</td>
+                                <td data-id="317">1600 Pennsylvania Ave NW</td>
+                                <td data-id="318">Washington</td>
+                                <td data-id="319">DC</td>
+                                <td data-id="320" class="tabular-nums">20500</td>
+                                <td data-id="321"><span data-id="322" class="badge badge-green">Valid</span></td>
+                                <td data-id="323" class="font-mono">Y</td>
+                                <td data-id="324"><span data-id="325" class="badge badge-teal">L2</span></td>
+                                <td data-id="326" class="tabular-nums">11ms</td>
+                            </tr>
+                            <tr data-id="327">
+                                <td data-id="328" class="tabular-nums">3</td>
+                                <td data-id="329">14150 Newbrook Dr</td>
+                                <td data-id="330">Chantilly</td>
+                                <td data-id="331">VA</td>
+                                <td data-id="332" class="tabular-nums">20151</td>
+                                <td data-id="333"><span data-id="334" class="badge badge-green">Valid</span></td>
+                                <td data-id="335" class="font-mono">Y</td>
+                                <td data-id="336"><span data-id="337" class="badge badge-blue">L1</span></td>
+                                <td data-id="338" class="tabular-nums">2ms</td>
+                            </tr>
+                            <tr data-id="339">
+                                <td data-id="340" class="tabular-nums">4</td>
+                                <td data-id="341">2941 Fairview Park Dr</td>
+                                <td data-id="342">Falls Church</td>
+                                <td data-id="343">VA</td>
+                                <td data-id="344" class="tabular-nums">22042</td>
+                                <td data-id="345"><span data-id="346" class="badge badge-green">Valid</span></td>
+                                <td data-id="347" class="font-mono">Y</td>
+                                <td data-id="348"><span data-id="349" class="badge badge-gray">Miss</span></td>
+                                <td data-id="350" class="tabular-nums">298ms</td>
+                            </tr>
+                            <tr data-id="351">
+                                <td data-id="352" class="tabular-nums">5</td>
+                                <td data-id="353">8283 Greensboro Dr</td>
+                                <td data-id="354">McLean</td>
+                                <td data-id="355">VA</td>
+                                <td data-id="356" class="tabular-nums">22102</td>
+                                <td data-id="357"><span data-id="358" class="badge badge-green">Valid</span></td>
+                                <td data-id="359" class="font-mono">Y</td>
+                                <td data-id="360"><span data-id="361" class="badge badge-teal">L2</span></td>
+                                <td data-id="362" class="tabular-nums">9ms</td>
+                            </tr>
+                            <tr data-id="363">
+                                <td data-id="364" class="tabular-nums">6</td>
+                                <td data-id="365">1 Saarinen Cir</td>
+                                <td data-id="366">Dulles</td>
+                                <td data-id="367">VA</td>
+                                <td data-id="368" class="tabular-nums">20166</td>
+                                <td data-id="369"><span data-id="370" class="badge badge-green">Valid</span></td>
+                                <td data-id="371" class="font-mono">Y</td>
+                                <td data-id="372"><span data-id="373" class="badge badge-gray">Miss</span></td>
+                                <td data-id="374" class="tabular-nums">315ms</td>
+                            </tr>
+                            <tr data-id="375">
+                                <td data-id="376" class="tabular-nums">7</td>
+                                <td data-id="377">123 Nowhere Blvd</td>
+                                <td data-id="378">Arlington</td>
+                                <td data-id="379">VA</td>
+                                <td data-id="380" class="tabular-nums">22201</td>
+                                <td data-id="381"><span data-id="382" class="badge badge-yellow">Partial</span></td>
+                                <td data-id="383" class="font-mono">S</td>
+                                <td data-id="384"><span data-id="385" class="badge badge-gray">Miss</span></td>
+                                <td data-id="386" class="tabular-nums">340ms</td>
+                            </tr>
+                            <tr data-id="387">
+                                <td data-id="388" class="tabular-nums">8</td>
+                                <td data-id="389">99999 Invalid Rd</td>
+                                <td data-id="390">Faketown</td>
+                                <td data-id="391">VA</td>
+                                <td data-id="392" class="tabular-nums">00000</td>
+                                <td data-id="393"><span data-id="394" class="badge badge-red">Invalid</span></td>
+                                <td data-id="395" class="font-mono">N</td>
+                                <td data-id="396"><span data-id="397" class="badge badge-gray">Miss</span></td>
+                                <td data-id="398" class="tabular-nums">267ms</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-id="399" class="summary-bar mt-4">
+                    <span data-id="400" class="text-fluent-success">Valid: 6 (75%)</span>
+                    <span data-id="401" class="text-fluent-text-tertiary">|</span>
+                    <span data-id="402" style="color:#7A6400;">Partial: 1 (12.5%)</span>
+                    <span data-id="403" class="text-fluent-text-tertiary">|</span>
+                    <span data-id="404" class="text-fluent-error">Invalid: 1 (12.5%)</span>
+                    <span data-id="405" class="text-fluent-text-tertiary">|</span>
+                    <span data-id="406" class="text-fluent-text-secondary">Avg Response: 28ms</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: CACHE MANAGEMENT ========== -->
+        <section data-id="407" id="page-cache" class="page">
+            <div data-id="408" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="409" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="410">/</span>
+                <span data-id="411" class="text-fluent-text-primary font-medium">Cache Management</span>
+            </div>
+            <h1 data-id="412" class="text-xl font-semibold text-fluent-text-primary mb-5">Cache Management</h1>
+
+            <!-- Cache Stats -->
+            <div data-id="413" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div data-id="414" class="fluent-card">
+                    <div data-id="415" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide mb-2">Redis (L1) Entries</div>
+                    <div data-id="416" class="text-2xl font-bold text-fluent-text-primary tabular-nums">3,421</div>
+                    <span data-id="417" class="badge badge-blue mt-1">1h TTL</span>
+                </div>
+                <div data-id="418" class="fluent-card">
+                    <div data-id="419" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide mb-2">CosmosDB (L2) Entries</div>
+                    <div data-id="420" class="text-2xl font-bold text-fluent-text-primary tabular-nums">45,892</div>
+                    <span data-id="421" class="badge badge-teal mt-1">90d TTL</span>
+                </div>
+                <div data-id="422" class="fluent-card">
+                    <div data-id="423" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide mb-2">Combined Hit Ratio</div>
+                    <div data-id="424" class="text-2xl font-bold text-fluent-text-primary tabular-nums mb-2">78.4%</div>
+                    <div data-id="425" class="w-full h-2 rounded-full bg-gray-200">
+                        <div data-id="426" class="h-2 rounded-full bg-fluent-primary" style="width:78.4%"></div>
+                    </div>
+                </div>
+                <div data-id="427" class="fluent-card">
+                    <div data-id="428" class="text-xs font-medium text-fluent-text-secondary uppercase tracking-wide mb-2">Estimated Savings</div>
+                    <div data-id="429" class="flex items-center gap-1">
+                        <div data-id="430" class="text-2xl font-bold text-fluent-success tabular-nums">$2,847</div>
+                        <span data-id="431" class="text-sm text-fluent-text-tertiary">/mo</span>
+                    </div>
+                    <div data-id="432" class="flex items-center gap-1 mt-1">
+                        <i data-id="433" data-lucide="trending-up" class="w-3.5 h-3.5 text-fluent-success"></i>
+                        <span data-id="434" class="text-xs text-fluent-success font-medium">vs direct API</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Table -->
+            <div data-id="435" class="fluent-card mb-4">
+                <div data-id="436" class="flex flex-col sm:flex-row gap-3 mb-4">
+                    <div data-id="437" class="relative flex-1">
+                        <i data-id="438" data-lucide="search" class="w-4 h-4 text-fluent-text-tertiary absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input data-id="439" type="text" class="fluent-input pl-9 fluent-focus" placeholder="Search cached addresses...">
+                    </div>
+                    <select data-id="440" class="fluent-select fluent-focus" style="width:auto;min-width:140px;">
+                        <option data-id="441">All States</option>
+                        <option data-id="442">Virginia (VA)</option>
+                        <option data-id="443">DC</option>
+                        <option data-id="444">Maryland (MD)</option>
+                    </select>
+                </div>
+                <div data-id="445" class="overflow-x-auto">
+                    <table data-id="446" class="fluent-table">
+                        <thead data-id="447">
+                            <tr data-id="448">
+                                <th data-id="449">Cached Address</th>
+                                <th data-id="450">State</th>
+                                <th data-id="451">DPV Status</th>
+                                <th data-id="452">Cached At</th>
+                                <th data-id="453">Cache Level</th>
+                                <th data-id="454">TTL Remaining</th>
+                                <th data-id="455">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody data-id="456">
+                            <tr data-id="457">
+                                <td data-id="458">4400 University Dr, Fairfax 22030</td>
+                                <td data-id="459">VA</td>
+                                <td data-id="460"><span data-id="461" class="badge badge-green">Valid</span></td>
+                                <td data-id="462" class="text-fluent-text-tertiary">12 min ago</td>
+                                <td data-id="463"><span data-id="464" class="badge badge-blue">L1</span></td>
+                                <td data-id="465" class="tabular-nums">47m 32s</td>
+                                <td data-id="466"><button data-id="467" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="468" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                            <tr data-id="469">
+                                <td data-id="470">1600 Pennsylvania Ave NW, Washington 20500</td>
+                                <td data-id="471">DC</td>
+                                <td data-id="472"><span data-id="473" class="badge badge-green">Valid</span></td>
+                                <td data-id="474" class="text-fluent-text-tertiary">34 min ago</td>
+                                <td data-id="475"><span data-id="476" class="badge badge-blue">L1</span></td>
+                                <td data-id="477" class="tabular-nums">25m 41s</td>
+                                <td data-id="478"><button data-id="479" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="480" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                            <tr data-id="481">
+                                <td data-id="482">14150 Newbrook Dr, Chantilly 20151</td>
+                                <td data-id="483">VA</td>
+                                <td data-id="484"><span data-id="485" class="badge badge-green">Valid</span></td>
+                                <td data-id="486" class="text-fluent-text-tertiary">1 hour ago</td>
+                                <td data-id="487"><span data-id="488" class="badge badge-teal">L2</span></td>
+                                <td data-id="489" class="tabular-nums">89d 23h</td>
+                                <td data-id="490"><button data-id="491" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="492" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                            <tr data-id="493">
+                                <td data-id="494">8283 Greensboro Dr, McLean 22102</td>
+                                <td data-id="495">VA</td>
+                                <td data-id="496"><span data-id="497" class="badge badge-green">Valid</span></td>
+                                <td data-id="498" class="text-fluent-text-tertiary">3 hours ago</td>
+                                <td data-id="499"><span data-id="500" class="badge badge-teal">L2</span></td>
+                                <td data-id="501" class="tabular-nums">89d 21h</td>
+                                <td data-id="502"><button data-id="503" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="504" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                            <tr data-id="505">
+                                <td data-id="506">2941 Fairview Park Dr, Falls Church 22042</td>
+                                <td data-id="507">VA</td>
+                                <td data-id="508"><span data-id="509" class="badge badge-yellow">Partial</span></td>
+                                <td data-id="510" class="text-fluent-text-tertiary">5 hours ago</td>
+                                <td data-id="511"><span data-id="512" class="badge badge-teal">L2</span></td>
+                                <td data-id="513" class="tabular-nums">89d 19h</td>
+                                <td data-id="514"><button data-id="515" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="516" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                            <tr data-id="517">
+                                <td data-id="518">1 Saarinen Cir, Dulles 20166</td>
+                                <td data-id="519">VA</td>
+                                <td data-id="520"><span data-id="521" class="badge badge-green">Valid</span></td>
+                                <td data-id="522" class="text-fluent-text-tertiary">1 day ago</td>
+                                <td data-id="523"><span data-id="524" class="badge badge-teal">L2</span></td>
+                                <td data-id="525" class="tabular-nums">88d 16h</td>
+                                <td data-id="526"><button data-id="527" class="p-1 rounded hover:bg-gray-100 fluent-focus" aria-label="Delete"><i data-id="528" data-lucide="trash-2" class="w-4 h-4 text-fluent-error"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div data-id="529" class="flex flex-wrap gap-3 mt-5 pt-4 border-t border-fluent-border">
+                    <button data-id="530" class="btn-warning fluent-focus" id="btn-flush-cache">
+                        <span data-id="531" class="flex items-center gap-1.5"><i data-id="532" data-lucide="alert-triangle" class="w-4 h-4"></i> Flush Redis Cache</span>
+                    </button>
+                    <button data-id="533" class="btn-secondary fluent-focus">
+                        <span data-id="534" class="flex items-center gap-1.5"><i data-id="535" data-lucide="download" class="w-4 h-4"></i> Export Cache Report</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: AUDIT LOG ========== -->
+        <section data-id="536" id="page-audit" class="page">
+            <div data-id="537" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="538" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="539">/</span>
+                <span data-id="540" class="text-fluent-text-primary font-medium">Audit Log</span>
+            </div>
+            <h1 data-id="541" class="text-xl font-semibold text-fluent-text-primary mb-1">Audit Log</h1>
+            <p data-id="542" class="text-sm text-fluent-text-secondary mb-5">Event sourcing audit trail</p>
+
+            <!-- Filters -->
+            <div data-id="543" class="fluent-card mb-4">
+                <div data-id="544" class="flex flex-wrap gap-3 items-end">
+                    <div data-id="545">
+                        <label data-id="546" class="block text-xs font-medium text-fluent-text-secondary mb-1">From</label>
+                        <input data-id="547" type="date" class="fluent-input fluent-focus" value="2026-05-05" style="width:auto;">
+                    </div>
+                    <div data-id="548">
+                        <label data-id="549" class="block text-xs font-medium text-fluent-text-secondary mb-1">To</label>
+                        <input data-id="550" type="date" class="fluent-input fluent-focus" value="2026-05-06" style="width:auto;">
+                    </div>
+                    <div data-id="551">
+                        <label data-id="552" class="block text-xs font-medium text-fluent-text-secondary mb-1">Event Type</label>
+                        <select data-id="553" class="fluent-select fluent-focus" style="width:auto;min-width:180px;">
+                            <option data-id="554">All Events</option>
+                            <option data-id="555">AddressValidated</option>
+                            <option data-id="556">CacheLookupCompleted</option>
+                            <option data-id="557">ProviderCallCompleted</option>
+                            <option data-id="558">ValidationFailed</option>
+                            <option data-id="559">CircuitBreakerStateChanged</option>
+                        </select>
+                    </div>
+                    <div data-id="560" class="flex-1" style="min-width:160px;">
+                        <label data-id="561" class="block text-xs font-medium text-fluent-text-secondary mb-1">Keyword</label>
+                        <div data-id="562" class="relative">
+                            <i data-id="563" data-lucide="search" class="w-4 h-4 text-fluent-text-tertiary absolute left-3 top-1/2 -translate-y-1/2"></i>
+                            <input data-id="564" type="text" class="fluent-input pl-9 fluent-focus" placeholder="Search events...">
+                        </div>
+                    </div>
+                    <button data-id="565" class="btn-primary fluent-focus" style="min-height:32px;">Apply Filters</button>
+                    <button data-id="566" class="btn-secondary fluent-focus" style="min-height:32px;">
+                        <span data-id="567" class="flex items-center gap-1"><i data-id="568" data-lucide="download" class="w-3.5 h-3.5"></i> Export CSV</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Audit Table -->
+            <div data-id="569" class="fluent-card">
+                <div data-id="570" class="overflow-x-auto">
+                    <table data-id="571" class="fluent-table" id="audit-table">
+                        <thead data-id="572">
+                            <tr data-id="573">
+                                <th data-id="574" style="width:24px;"></th>
+                                <th data-id="575">Timestamp</th>
+                                <th data-id="576">Event Type</th>
+                                <th data-id="577">Request ID</th>
+                                <th data-id="578">Cache Level</th>
+                                <th data-id="579">Duration</th>
+                                <th data-id="580">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody data-id="581">
+                            <tr data-id="582" class="audit-row" data-detail="detail-1">
+                                <td data-id="583"><i data-id="584" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="585" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:34:12</td>
+                                <td data-id="586"><span data-id="587" class="badge badge-blue">AddressValidated</span></td>
+                                <td data-id="588" class="font-mono text-xs">req-a3f8c1d2</td>
+                                <td data-id="589"><span data-id="590" class="badge badge-blue">L1</span></td>
+                                <td data-id="591" class="tabular-nums">3ms</td>
+                                <td data-id="592"><span data-id="593" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="594" class="hidden" id="detail-1"><td data-id="595" colspan="7"><div data-id="596" class="code-block"><span data-id="597" class="code-key">"eventType"</span>: <span data-id="598" class="code-string">"AddressValidated"</span>,
+<span data-id="599" class="code-key">"requestId"</span>: <span data-id="600" class="code-string">"req-a3f8c1d2"</span>,
+<span data-id="601" class="code-key">"input"</span>: { <span data-id="602" class="code-key">"street"</span>: <span data-id="603" class="code-string">"4400 University Dr"</span>, <span data-id="604" class="code-key">"city"</span>: <span data-id="605" class="code-string">"Fairfax"</span>, <span data-id="606" class="code-key">"state"</span>: <span data-id="607" class="code-string">"VA"</span> },
+<span data-id="608" class="code-key">"dpvMatchCode"</span>: <span data-id="609" class="code-string">"Y"</span>,
+<span data-id="610" class="code-key">"cacheLevel"</span>: <span data-id="611" class="code-string">"L1"</span>,
+<span data-id="612" class="code-key">"duration"</span>: <span data-id="613" class="code-number">3</span>,
+<span data-id="614" class="code-key">"success"</span>: <span data-id="615" class="code-bool">true</span></div></td></tr>
+                            <tr data-id="616" class="audit-row" data-detail="detail-2">
+                                <td data-id="617"><i data-id="618" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="619" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:34:12</td>
+                                <td data-id="620"><span data-id="621" class="badge badge-teal">CacheLookupCompleted</span></td>
+                                <td data-id="622" class="font-mono text-xs">req-a3f8c1d2</td>
+                                <td data-id="623"><span data-id="624" class="badge badge-blue">L1 Hit</span></td>
+                                <td data-id="625" class="tabular-nums">1ms</td>
+                                <td data-id="626"><span data-id="627" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="628" class="hidden" id="detail-2"><td data-id="629" colspan="7"><div data-id="630" class="code-block"><span data-id="631" class="code-key">"eventType"</span>: <span data-id="632" class="code-string">"CacheLookupCompleted"</span>,
+<span data-id="633" class="code-key">"requestId"</span>: <span data-id="634" class="code-string">"req-a3f8c1d2"</span>,
+<span data-id="635" class="code-key">"cacheLevel"</span>: <span data-id="636" class="code-string">"L1"</span>,
+<span data-id="637" class="code-key">"cacheHit"</span>: <span data-id="638" class="code-bool">true</span>,
+<span data-id="639" class="code-key">"duration"</span>: <span data-id="640" class="code-number">1</span></div></td></tr>
+                            <tr data-id="641" class="audit-row" data-detail="detail-3">
+                                <td data-id="642"><i data-id="643" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="644" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:33:58</td>
+                                <td data-id="645"><span data-id="646" class="badge badge-purple">ProviderCallCompleted</span></td>
+                                <td data-id="647" class="font-mono text-xs">req-b7e4f9a1</td>
+                                <td data-id="648"><span data-id="649" class="badge badge-gray">Miss</span></td>
+                                <td data-id="650" class="tabular-nums">287ms</td>
+                                <td data-id="651"><span data-id="652" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="653" class="hidden" id="detail-3"><td data-id="654" colspan="7"><div data-id="655" class="code-block"><span data-id="656" class="code-key">"eventType"</span>: <span data-id="657" class="code-string">"ProviderCallCompleted"</span>,
+<span data-id="658" class="code-key">"provider"</span>: <span data-id="659" class="code-string">"Smarty"</span>,
+<span data-id="660" class="code-key">"requestId"</span>: <span data-id="661" class="code-string">"req-b7e4f9a1"</span>,
+<span data-id="662" class="code-key">"httpStatus"</span>: <span data-id="663" class="code-number">200</span>,
+<span data-id="664" class="code-key">"duration"</span>: <span data-id="665" class="code-number">287</span></div></td></tr>
+                            <tr data-id="666" class="audit-row" data-detail="detail-4">
+                                <td data-id="667"><i data-id="668" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="669" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:33:41</td>
+                                <td data-id="670"><span data-id="671" class="badge badge-red">ValidationFailed</span></td>
+                                <td data-id="672" class="font-mono text-xs">req-c2d6e8b3</td>
+                                <td data-id="673"><span data-id="674" class="badge badge-gray">Miss</span></td>
+                                <td data-id="675" class="tabular-nums">287ms</td>
+                                <td data-id="676"><span data-id="677" class="badge badge-red">Failed</span></td>
+                            </tr>
+                            <tr data-id="678" class="hidden" id="detail-4"><td data-id="679" colspan="7"><div data-id="680" class="code-block"><span data-id="681" class="code-key">"eventType"</span>: <span data-id="682" class="code-string">"ValidationFailed"</span>,
+<span data-id="683" class="code-key">"requestId"</span>: <span data-id="684" class="code-string">"req-c2d6e8b3"</span>,
+<span data-id="685" class="code-key">"reason"</span>: <span data-id="686" class="code-string">"Address not found: 12345 Fake Blvd, Springfield VA 99999"</span>,
+<span data-id="687" class="code-key">"dpvMatchCode"</span>: <span data-id="688" class="code-string">"N"</span></div></td></tr>
+                            <tr data-id="689" class="audit-row" data-detail="detail-5">
+                                <td data-id="690"><i data-id="691" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="692" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:33:27</td>
+                                <td data-id="693"><span data-id="694" class="badge badge-blue">AddressValidated</span></td>
+                                <td data-id="695" class="font-mono text-xs">req-d9a1c5f7</td>
+                                <td data-id="696"><span data-id="697" class="badge badge-gray">Miss</span></td>
+                                <td data-id="698" class="tabular-nums">342ms</td>
+                                <td data-id="699"><span data-id="700" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="701" class="hidden" id="detail-5"><td data-id="702" colspan="7"><div data-id="703" class="code-block"><span data-id="704" class="code-key">"eventType"</span>: <span data-id="705" class="code-string">"AddressValidated"</span>,
+<span data-id="706" class="code-key">"requestId"</span>: <span data-id="707" class="code-string">"req-d9a1c5f7"</span>,
+<span data-id="708" class="code-key">"input"</span>: { <span data-id="709" class="code-key">"street"</span>: <span data-id="710" class="code-string">"14150 Newbrook Dr"</span>, <span data-id="711" class="code-key">"city"</span>: <span data-id="712" class="code-string">"Chantilly"</span>, <span data-id="713" class="code-key">"state"</span>: <span data-id="714" class="code-string">"VA"</span> },
+<span data-id="715" class="code-key">"dpvMatchCode"</span>: <span data-id="716" class="code-string">"Y"</span>,
+<span data-id="717" class="code-key">"cacheLevel"</span>: <span data-id="718" class="code-string">"Miss"</span>,
+<span data-id="719" class="code-key">"duration"</span>: <span data-id="720" class="code-number">342</span></div></td></tr>
+                            <tr data-id="721" class="audit-row" data-detail="detail-6">
+                                <td data-id="722"><i data-id="723" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="724" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:33:05</td>
+                                <td data-id="725"><span data-id="726" class="badge badge-teal">CacheLookupCompleted</span></td>
+                                <td data-id="727" class="font-mono text-xs">req-e4b2d8a6</td>
+                                <td data-id="728"><span data-id="729" class="badge badge-teal">L2 Hit</span></td>
+                                <td data-id="730" class="tabular-nums">8ms</td>
+                                <td data-id="731"><span data-id="732" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="733" class="hidden" id="detail-6"><td data-id="734" colspan="7"><div data-id="735" class="code-block"><span data-id="736" class="code-key">"eventType"</span>: <span data-id="737" class="code-string">"CacheLookupCompleted"</span>,
+<span data-id="738" class="code-key">"requestId"</span>: <span data-id="739" class="code-string">"req-e4b2d8a6"</span>,
+<span data-id="740" class="code-key">"cacheLevel"</span>: <span data-id="741" class="code-string">"L2"</span>,
+<span data-id="742" class="code-key">"cacheHit"</span>: <span data-id="743" class="code-bool">true</span>,
+<span data-id="744" class="code-key">"duration"</span>: <span data-id="745" class="code-number">8</span></div></td></tr>
+                            <tr data-id="746" class="audit-row" data-detail="detail-7">
+                                <td data-id="747"><i data-id="748" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="749" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:32:44</td>
+                                <td data-id="750"><span data-id="751" class="badge badge-orange">CircuitBreakerStateChanged</span></td>
+                                <td data-id="752" class="font-mono text-xs">sys-f1c3a5e9</td>
+                                <td data-id="753"><span data-id="754" class="badge badge-gray">—</span></td>
+                                <td data-id="755" class="tabular-nums">0ms</td>
+                                <td data-id="756"><span data-id="757" class="badge badge-yellow">Info</span></td>
+                            </tr>
+                            <tr data-id="758" class="hidden" id="detail-7"><td data-id="759" colspan="7"><div data-id="760" class="code-block"><span data-id="761" class="code-key">"eventType"</span>: <span data-id="762" class="code-string">"CircuitBreakerStateChanged"</span>,
+<span data-id="763" class="code-key">"previousState"</span>: <span data-id="764" class="code-string">"HalfOpen"</span>,
+<span data-id="765" class="code-key">"newState"</span>: <span data-id="766" class="code-string">"Closed"</span>,
+<span data-id="767" class="code-key">"reason"</span>: <span data-id="768" class="code-string">"Successful probe request"</span>,
+<span data-id="769" class="code-key">"consecutiveFailures"</span>: <span data-id="770" class="code-number">0</span></div></td></tr>
+                            <tr data-id="771" class="audit-row" data-detail="detail-8">
+                                <td data-id="772"><i data-id="773" data-lucide="chevron-right" class="w-3.5 h-3.5 text-fluent-text-tertiary expand-icon"></i></td>
+                                <td data-id="774" class="tabular-nums text-fluent-text-secondary whitespace-nowrap">2026-05-06 07:32:18</td>
+                                <td data-id="775"><span data-id="776" class="badge badge-purple">ProviderCallCompleted</span></td>
+                                <td data-id="777" class="font-mono text-xs">req-g8d4b2c1</td>
+                                <td data-id="778"><span data-id="779" class="badge badge-gray">Miss</span></td>
+                                <td data-id="780" class="tabular-nums">198ms</td>
+                                <td data-id="781"><span data-id="782" class="badge badge-green">Success</span></td>
+                            </tr>
+                            <tr data-id="783" class="hidden" id="detail-8"><td data-id="784" colspan="7"><div data-id="785" class="code-block"><span data-id="786" class="code-key">"eventType"</span>: <span data-id="787" class="code-string">"ProviderCallCompleted"</span>,
+<span data-id="788" class="code-key">"provider"</span>: <span data-id="789" class="code-string">"Smarty"</span>,
+<span data-id="790" class="code-key">"requestId"</span>: <span data-id="791" class="code-string">"req-g8d4b2c1"</span>,
+<span data-id="792" class="code-key">"httpStatus"</span>: <span data-id="793" class="code-number">200</span>,
+<span data-id="794" class="code-key">"duration"</span>: <span data-id="795" class="code-number">198</span></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div data-id="796" class="flex items-center justify-between mt-4 pt-3 border-t border-fluent-border text-xs text-fluent-text-secondary flex-wrap gap-2">
+                    <span data-id="797">Showing 1–8 of 1,247 events</span>
+                    <div data-id="798" class="flex gap-1">
+                        <button data-id="799" class="px-3 py-1 rounded border border-fluent-border bg-fluent-primary text-white font-semibold fluent-focus">1</button>
+                        <button data-id="800" class="px-3 py-1 rounded border border-fluent-border hover:bg-gray-100 fluent-focus">2</button>
+                        <button data-id="801" class="px-3 py-1 rounded border border-fluent-border hover:bg-gray-100 fluent-focus">3</button>
+                        <span data-id="802" class="px-2 py-1">...</span>
+                        <button data-id="803" class="px-3 py-1 rounded border border-fluent-border hover:bg-gray-100 fluent-focus">156</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: HEALTH & METRICS ========== -->
+        <section data-id="804" id="page-health" class="page">
+            <div data-id="805" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="806" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="807">/</span>
+                <span data-id="808" class="text-fluent-text-primary font-medium">Health &amp; Metrics</span>
+            </div>
+            <h1 data-id="809" class="text-xl font-semibold text-fluent-text-primary mb-5">Health &amp; Metrics</h1>
+
+            <!-- Health Cards -->
+            <div data-id="810" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div data-id="811" class="fluent-card">
+                    <div data-id="812" class="flex items-center gap-3 mb-3">
+                        <div data-id="813" class="w-10 h-10 rounded bg-fluent-error-bg flex items-center justify-center">
+                            <i data-id="814" data-lucide="database" class="w-5 h-5" style="color:#D13438;"></i>
+                        </div>
+                        <div data-id="815">
+                            <div data-id="816" class="text-sm font-semibold text-fluent-text-primary">Redis Cache</div>
+                            <div data-id="817" class="flex items-center gap-1.5">
+                                <span data-id="818" class="w-2 h-2 rounded-full bg-fluent-success pulse-dot"></span>
+                                <span data-id="819" class="text-xs font-semibold text-fluent-success">Healthy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-id="820" class="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-fluent-border">
+                        <div data-id="821"><span data-id="822" class="text-fluent-text-tertiary">Latency</span><div data-id="823" class="font-semibold tabular-nums">2ms</div></div>
+                        <div data-id="824"><span data-id="825" class="text-fluent-text-tertiary">Uptime</span><div data-id="826" class="font-semibold tabular-nums">99.99%</div></div>
+                    </div>
+                </div>
+                <div data-id="827" class="fluent-card">
+                    <div data-id="828" class="flex items-center gap-3 mb-3">
+                        <div data-id="829" class="w-10 h-10 rounded bg-fluent-info-bg flex items-center justify-center">
+                            <i data-id="830" data-lucide="hard-drive" class="w-5 h-5" style="color:#0078D4;"></i>
+                        </div>
+                        <div data-id="831">
+                            <div data-id="832" class="text-sm font-semibold text-fluent-text-primary">Azure CosmosDB</div>
+                            <div data-id="833" class="flex items-center gap-1.5">
+                                <span data-id="834" class="w-2 h-2 rounded-full bg-fluent-success pulse-dot"></span>
+                                <span data-id="835" class="text-xs font-semibold text-fluent-success">Healthy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-id="836" class="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-fluent-border">
+                        <div data-id="837"><span data-id="838" class="text-fluent-text-tertiary">Latency</span><div data-id="839" class="font-semibold tabular-nums">8ms</div></div>
+                        <div data-id="840"><span data-id="841" class="text-fluent-text-tertiary">RU/s</span><div data-id="842" class="font-semibold tabular-nums">412 / 4,000</div></div>
+                    </div>
+                </div>
+                <div data-id="843" class="fluent-card">
+                    <div data-id="844" class="flex items-center gap-3 mb-3">
+                        <div data-id="845" class="w-10 h-10 rounded bg-fluent-success-bg flex items-center justify-center">
+                            <i data-id="846" data-lucide="cloud" class="w-5 h-5" style="color:#107C10;"></i>
+                        </div>
+                        <div data-id="847">
+                            <div data-id="848" class="text-sm font-semibold text-fluent-text-primary">Smarty API</div>
+                            <div data-id="849" class="flex items-center gap-1.5">
+                                <span data-id="850" class="w-2 h-2 rounded-full bg-fluent-success pulse-dot"></span>
+                                <span data-id="851" class="text-xs font-semibold text-fluent-success">Healthy</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-id="852" class="grid grid-cols-2 gap-2 text-xs pt-3 border-t border-fluent-border">
+                        <div data-id="853"><span data-id="854" class="text-fluent-text-tertiary">Latency</span><div data-id="855" class="font-semibold tabular-nums">245ms</div></div>
+                        <div data-id="856"><span data-id="857" class="text-fluent-text-tertiary">Circuit</span><div data-id="858" class="font-semibold text-fluent-success">Closed</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Charts -->
+            <div data-id="859" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <div data-id="860" class="fluent-card">
+                    <h3 data-id="861" class="text-sm font-semibold text-fluent-text-primary mb-4">Response Latency Distribution</h3>
+                    <div data-id="862" class="relative h-56 md:h-64">
+                        <canvas data-id="863" id="chart-latency"></canvas>
+                    </div>
+                </div>
+                <div data-id="864" class="fluent-card">
+                    <h3 data-id="865" class="text-sm font-semibold text-fluent-text-primary mb-4">Throughput (Last Hour)</h3>
+                    <div data-id="866" class="relative h-56 md:h-64">
+                        <canvas data-id="867" id="chart-throughput"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circuit Breaker -->
+            <div data-id="868" class="fluent-card">
+                <h3 data-id="869" class="text-sm font-semibold text-fluent-text-primary mb-4">Circuit Breaker Status</h3>
+                <div data-id="870" class="flex flex-wrap items-center justify-center gap-3 mb-5 py-4">
+                    <div data-id="871" class="state-node border-fluent-success text-fluent-success state-active bg-fluent-success-bg">
+                        <i data-id="872" data-lucide="check-circle" class="w-4 h-4 inline mr-1"></i>Closed
+                    </div>
+                    <i data-id="873" data-lucide="arrow-right" class="w-5 h-5 text-fluent-text-tertiary hidden sm:block"></i>
+                    <i data-id="874" data-lucide="arrow-down" class="w-5 h-5 text-fluent-text-tertiary sm:hidden"></i>
+                    <div data-id="875" class="state-node border-fluent-error text-fluent-error bg-fluent-error-bg opacity-50">
+                        <i data-id="876" data-lucide="x-circle" class="w-4 h-4 inline mr-1"></i>Open
+                    </div>
+                    <i data-id="877" data-lucide="arrow-right" class="w-5 h-5 text-fluent-text-tertiary hidden sm:block"></i>
+                    <i data-id="878" data-lucide="arrow-down" class="w-5 h-5 text-fluent-text-tertiary sm:hidden"></i>
+                    <div data-id="879" class="state-node text-fluent-text-secondary opacity-50" style="border-color:#FFB900;background:#FFF4CE;">
+                        <i data-id="880" data-lucide="loader" class="w-4 h-4 inline mr-1"></i>Half-Open
+                    </div>
+                    <i data-id="881" data-lucide="arrow-right" class="w-5 h-5 text-fluent-text-tertiary hidden sm:block"></i>
+                    <i data-id="882" data-lucide="arrow-down" class="w-5 h-5 text-fluent-text-tertiary sm:hidden"></i>
+                    <div data-id="883" class="state-node border-fluent-success text-fluent-success opacity-50">
+                        Closed
+                    </div>
+                </div>
+                <div data-id="884" class="text-xs text-fluent-text-secondary text-center">
+                    Last state change: <strong data-id="885">3 days ago</strong> &nbsp;|&nbsp; Consecutive failures: <strong data-id="886">0 / 5</strong> threshold
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== PAGE: SETTINGS ========== -->
+        <section data-id="887" id="page-settings" class="page">
+            <div data-id="888" class="flex items-center gap-1.5 text-xs text-fluent-text-secondary mb-4">
+                <i data-id="889" data-lucide="home" class="w-3.5 h-3.5"></i>
+                <span data-id="890">/</span>
+                <span data-id="891" class="text-fluent-text-primary font-medium">Settings</span>
+            </div>
+            <h1 data-id="892" class="text-xl font-semibold text-fluent-text-primary mb-1">Settings</h1>
+            <p data-id="893" class="text-sm text-fluent-text-secondary mb-5">System configuration (read-only from environment)</p>
+
+            <div data-id="894" class="space-y-4 max-w-4xl">
+                <!-- API Versioning -->
+                <div data-id="895" class="fluent-card">
+                    <h3 data-id="896" class="text-sm font-semibold text-fluent-text-primary mb-3 flex items-center gap-2">
+                        <i data-id="897" data-lucide="git-branch" class="w-4 h-4 text-fluent-primary"></i>API Versioning
+                    </h3>
+                    <div data-id="898" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                        <div data-id="899"><span data-id="900" class="text-xs text-fluent-text-tertiary block">Current Version</span><span data-id="901" class="font-semibold">1.0</span></div>
+                        <div data-id="902"><span data-id="903" class="text-xs text-fluent-text-tertiary block">Header Name</span><span data-id="904" class="font-mono text-sm">Api-Version</span></div>
+                        <div data-id="905"><span data-id="906" class="text-xs text-fluent-text-tertiary block">Supported Versions</span><span data-id="907" class="badge badge-blue">1.0</span></div>
+                    </div>
+                </div>
+
+                <!-- Cache Configuration -->
+                <div data-id="908" class="fluent-card">
+                    <h3 data-id="909" class="text-sm font-semibold text-fluent-text-primary mb-3 flex items-center gap-2">
+                        <i data-id="910" data-lucide="database" class="w-4 h-4 text-fluent-primary"></i>Cache Configuration
+                    </h3>
+                    <div data-id="911" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div data-id="912"><span data-id="913" class="text-xs text-fluent-text-tertiary block">Redis TTL</span><span data-id="914" class="font-mono">3600s</span> <span data-id="915" class="text-fluent-text-tertiary">(1 hour)</span></div>
+                        <div data-id="916"><span data-id="917" class="text-xs text-fluent-text-tertiary block">CosmosDB TTL</span><span data-id="918" class="font-mono">7776000s</span> <span data-id="919" class="text-fluent-text-tertiary">(90 days)</span></div>
+                        <div data-id="920"><span data-id="921" class="text-xs text-fluent-text-tertiary block">Redis Eviction</span><span data-id="922" class="font-mono">allkeys-lru</span></div>
+                        <div data-id="923"><span data-id="924" class="text-xs text-fluent-text-tertiary block">CosmosDB Partition Key</span><span data-id="925" class="font-mono">/stateCode</span></div>
+                    </div>
+                </div>
+
+                <!-- Rate Limiting -->
+                <div data-id="926" class="fluent-card">
+                    <h3 data-id="927" class="text-sm font-semibold text-fluent-text-primary mb-3 flex items-center gap-2">
+                        <i data-id="928" data-lucide="shield" class="w-4 h-4 text-fluent-primary"></i>Rate Limiting
+                    </h3>
+                    <div data-id="929" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                        <div data-id="930"><span data-id="931" class="text-xs text-fluent-text-tertiary block">Requests / Minute</span><span data-id="932" class="font-semibold tabular-nums">1,000</span></div>
+                        <div data-id="933"><span data-id="934" class="text-xs text-fluent-text-tertiary block">Burst Limit</span><span data-id="935" class="font-semibold tabular-nums">50</span></div>
+                        <div data-id="936"><span data-id="937" class="text-xs text-fluent-text-tertiary block">Rate Limit Header</span><span data-id="938" class="font-mono">Retry-After</span></div>
+                    </div>
+                </div>
+
+                <!-- Provider Configuration -->
+                <div data-id="939" class="fluent-card">
+                    <h3 data-id="940" class="text-sm font-semibold text-fluent-text-primary mb-3 flex items-center gap-2">
+                        <i data-id="941" data-lucide="cloud" class="w-4 h-4 text-fluent-primary"></i>Provider Configuration
+                    </h3>
+                    <div data-id="942" class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div data-id="943"><span data-id="944" class="text-xs text-fluent-text-tertiary block">Active Provider</span><span data-id="945" class="font-semibold">Smarty</span></div>
+                        <div data-id="946"><span data-id="947" class="text-xs text-fluent-text-tertiary block">Base URL</span><span data-id="948" class="font-mono text-xs">us-street.api.smarty.com</span></div>
+                        <div data-id="949"><span data-id="950" class="text-xs text-fluent-text-tertiary block">Match Mode</span><span data-id="951" class="badge badge-blue">strict</span></div>
+                        <div data-id="952"><span data-id="953" class="text-xs text-fluent-text-tertiary block">Credentials</span><span data-id="954" class="font-mono">••••••••</span></div>
+                    </div>
+                </div>
+
+                <!-- Resilience Policies -->
+                <div data-id="955" class="fluent-card">
+                    <h3 data-id="956" class="text-sm font-semibold text-fluent-text-primary mb-3 flex items-center gap-2">
+                        <i data-id="957" data-lucide="refresh-cw" class="w-4 h-4 text-fluent-primary"></i>Resilience Policies
+                    </h3>
+                    <div data-id="958" class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                        <div data-id="959"><span data-id="960" class="text-xs text-fluent-text-tertiary block">Retry Count</span><span data-id="961" class="font-semibold tabular-nums">3</span></div>
+                        <div data-id="962"><span data-id="963" class="text-xs text-fluent-text-tertiary block">Retry Delay</span><span data-id="964" class="font-mono">200ms</span> <span data-id="965" class="text-fluent-text-tertiary">exponential</span></div>
+                        <div data-id="966"><span data-id="967" class="text-xs text-fluent-text-tertiary block">Circuit Breaker Threshold</span><span data-id="968" class="font-semibold tabular-nums">5</span></div>
+                        <div data-id="969"><span data-id="970" class="text-xs text-fluent-text-tertiary block">Half-Open Timeout</span><span data-id="971" class="font-mono">30s</span></div>
+                        <div data-id="972"><span data-id="973" class="text-xs text-fluent-text-tertiary block">Bulkhead Max Parallelism</span><span data-id="974" class="font-semibold tabular-nums">10</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Flush Cache Dialog -->
+<div data-id="975" id="flush-dialog" class="dialog-overlay hidden">
+    <div data-id="976" class="dialog-box">
+        <div data-id="977" class="flex items-start gap-3 mb-4">
+            <div data-id="978" class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#FFF0E0;">
+                <i data-id="979" data-lucide="alert-triangle" class="w-5 h-5" style="color:#CA5010;"></i>
+            </div>
+            <div data-id="980">
+                <h3 data-id="981" class="text-base font-semibold text-fluent-text-primary mb-1">Flush Redis Cache?</h3>
+                <p data-id="982" class="text-sm text-fluent-text-secondary">Are you sure you want to flush the Redis cache? This will remove all <strong data-id="983">3,421 L1 cache entries</strong>. CosmosDB entries will be preserved.</p>
+            </div>
+        </div>
+        <div data-id="984" class="flex justify-end gap-2">
+            <button data-id="985" class="btn-secondary fluent-focus" id="dialog-cancel">Cancel</button>
+            <button data-id="986" class="btn-warning fluent-focus" id="dialog-confirm">Flush Cache</button>
+        </div>
+    </div>
+</div>
+
+<footer data-id="987" class="py-4 text-center border-t border-fluent-border bg-white">
+    <p data-id="988" class="text-xs text-fluent-text-tertiary">Made by Copilot</p>
+</footer>
+
+<script>
+    lucide.createIcons();
+
+    // ---- Navigation ----
+    const navItems = document.querySelectorAll('.nav-item');
+    const pages = document.querySelectorAll('.page');
+    const sidebar = document.getElementById('sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+
+    function switchPage(pageId) {
+        pages.forEach(p => p.classList.remove('active'));
+        navItems.forEach(n => n.classList.remove('active'));
+        const target = document.getElementById('page-' + pageId);
+        if (target) target.classList.add('active');
+        const activeNav = document.querySelector('[data-page="' + pageId + '"]');
+        if (activeNav) activeNav.classList.add('active');
+        // Close mobile menu
+        sidebar.classList.remove('mobile-open');
+        mobileOverlay.classList.remove('visible');
+        // Init charts if needed
+        if (pageId === 'dashboard') initDashboardCharts();
+        if (pageId === 'health') initHealthCharts();
+        // Scroll to top
+        document.getElementById('main-content').scrollTo(0, 0);
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => switchPage(item.dataset.page));
+    });
+
+    // ---- Sidebar Toggle ----
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    sidebarToggle.addEventListener('click', () => {
+        const isMobile = window.innerWidth < 1024;
+        if (isMobile) {
+            sidebar.classList.toggle('mobile-open');
+            mobileOverlay.classList.toggle('visible');
+        } else {
+            sidebar.classList.toggle('collapsed');
+        }
+    });
+
+    mobileOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('mobile-open');
+        mobileOverlay.classList.remove('visible');
+    });
+
+    // ---- Accordion ----
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const targetId = header.getAttribute('data-accordion');
+            const body = document.getElementById(targetId);
+            const icon = header.querySelector('.accordion-icon');
+            body.classList.toggle('open');
+            if (icon) icon.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        });
+    });
+
+    // ---- Audit Row Expand ----
+    document.querySelectorAll('.audit-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const detailId = row.getAttribute('data-detail');
+            const detailRow = document.getElementById(detailId);
+            const icon = row.querySelector('.expand-icon');
+            detailRow.classList.toggle('hidden');
+            if (icon) {
+                if (detailRow.classList.contains('hidden')) {
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    icon.style.transform = 'rotate(90deg)';
+                }
+            }
+        });
+        row.style.cursor = 'pointer';
+    });
+
+    // ---- Flush Cache Dialog ----
+    const flushBtn = document.getElementById('btn-flush-cache');
+    const flushDialog = document.getElementById('flush-dialog');
+    const dialogCancel = document.getElementById('dialog-cancel');
+    const dialogConfirm = document.getElementById('dialog-confirm');
+
+    if (flushBtn) {
+        flushBtn.addEventListener('click', () => flushDialog.classList.remove('hidden'));
+    }
+    dialogCancel.addEventListener('click', () => flushDialog.classList.add('hidden'));
+    dialogConfirm.addEventListener('click', () => flushDialog.classList.add('hidden'));
+    flushDialog.addEventListener('click', (e) => { if (e.target === flushDialog) flushDialog.classList.add('hidden'); });
+
+    // ---- Charts ----
+    const chartDefaults = {
+        font: { family: "'Segoe UI', sans-serif" },
+    };
+    Chart.defaults.font.family = "'Segoe UI', sans-serif";
+    Chart.defaults.color = '#616161';
+
+    let volumeChart, cacheChart, latencyChart, throughputChart;
+
+    function initDashboardCharts() {
+        // Volume Chart
+        const volCtx = document.getElementById('chart-volume');
+        if (!volCtx) return;
+        if (volumeChart) volumeChart.destroy();
+        const hours = [];
+        const volumes = [];
+        for (let i = 23; i >= 0; i--) {
+            const h = (7 - i + 24) % 24;
+            hours.push(String(h).padStart(2, '0') + ':00');
+            volumes.push(Math.floor(300 + Math.random() * 400 + (h >= 8 && h <= 18 ? 300 : 0)));
+        }
+        volumeChart = new Chart(volCtx, {
+            type: 'bar',
+            data: {
+                labels: hours,
+                datasets: [{
+                    label: 'Validations',
+                    data: volumes,
+                    backgroundColor: '#0078D4',
+                    borderRadius: 2,
+                    barPercentage: 0.7,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 12, font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { font: { size: 10 } }, beginAtZero: true }
+                }
+            }
+        });
+
+        // Cache Donut
+        const cacheCtx = document.getElementById('chart-cache');
+        if (!cacheCtx) return;
+        if (cacheChart) cacheChart.destroy();
+        cacheChart = new Chart(cacheCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Redis Hits (45%)', 'CosmosDB Hits (33.4%)', 'Smarty Calls (21.6%)'],
+                datasets: [{
+                    data: [45, 33.4, 21.6],
+                    backgroundColor: ['#0078D4', '#038387', '#CA5010'],
+                    borderWidth: 0,
+                    cutout: '70%',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } } }
+                }
+            }
+        });
+    }
+
+    function initHealthCharts() {
+        // Latency Distribution
+        const latCtx = document.getElementById('chart-latency');
+        if (!latCtx) return;
+        if (latencyChart) latencyChart.destroy();
+        latencyChart = new Chart(latCtx, {
+            type: 'bar',
+            data: {
+                labels: ['p50', 'p95', 'p99'],
+                datasets: [{
+                    label: 'Latency (ms)',
+                    data: [23, 145, 312],
+                    backgroundColor: ['#0078D4', '#FFB900', '#D13438'],
+                    borderRadius: 2,
+                    barPercentage: 0.5,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    annotation: undefined,
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 12, weight: '600' } } },
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        ticks: { font: { size: 10 }, callback: v => v + 'ms' },
+                        beginAtZero: true,
+                        max: 400,
+                    }
+                }
+            },
+            plugins: [{
+                afterDraw: function(chart) {
+                    const yScale = chart.scales.y;
+                    const ctx2 = chart.ctx;
+                    const y = yScale.getPixelForValue(200);
+                    ctx2.save();
+                    ctx2.beginPath();
+                    ctx2.setLineDash([6, 4]);
+                    ctx2.strokeStyle = '#D13438';
+                    ctx2.lineWidth = 1.5;
+                    ctx2.moveTo(chart.chartArea.left, y);
+                    ctx2.lineTo(chart.chartArea.right, y);
+                    ctx2.stroke();
+                    ctx2.fillStyle = '#D13438';
+                    ctx2.font = '10px Segoe UI';
+                    ctx2.fillText('SLA: 200ms', chart.chartArea.right - 62, y - 6);
+                    ctx2.restore();
+                }
+            }]
+        });
+
+        // Throughput Line
+        const tpCtx = document.getElementById('chart-throughput');
+        if (!tpCtx) return;
+        if (throughputChart) throughputChart.destroy();
+        const mins = [];
+        const rpm = [];
+        for (let i = 60; i >= 0; i -= 5) {
+            mins.push(i + 'm ago');
+            rpm.push(Math.floor(450 + Math.random() * 70));
+        }
+        throughputChart = new Chart(tpCtx, {
+            type: 'line',
+            data: {
+                labels: mins,
+                datasets: [{
+                    label: 'RPM',
+                    data: rpm,
+                    borderColor: '#0078D4',
+                    backgroundColor: 'rgba(0,120,212,0.08)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#0078D4',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { font: { size: 10 } }, beginAtZero: false, min: 400, max: 560 }
+                }
+            }
+        });
+    }
+
+    // Init dashboard on load
+    initDashboardCharts();
+
+    // ---- Validate Button ----
+    const validateBtn = document.getElementById('btn-validate');
+    const clearBtn = document.getElementById('btn-clear');
+    const resultPanel = document.getElementById('validation-result');
+
+    if (validateBtn) {
+        validateBtn.addEventListener('click', () => {
+            resultPanel.style.opacity = '0.5';
+            setTimeout(() => { resultPanel.style.opacity = '1'; }, 400);
+        });
+    }
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            document.getElementById('input-street').value = '';
+            document.getElementById('input-street2').value = '';
+            document.getElementById('input-city').value = '';
+            document.getElementById('input-state').value = '';
+            document.getElementById('input-zip').value = '';
+            document.getElementById('input-addressee').value = '';
+        });
+    }
+</script>
+</body>
+</html>

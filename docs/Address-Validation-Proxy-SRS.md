@@ -60,6 +60,7 @@ Author: Alex Khorozov
    - 3.1 [Vertical Slice Architecture (VSA)](#31-architectural-style-vertical-slice-architecture-vsa)
    - 3.2 [Header-Based API Versioning Strategy](#32-header-based-api-versioning-strategy)
    - 3.3 [Caching Architecture (Two-Tier)](#33-caching-architecture-two-tier)
+   - 3.4 [YARP Reverse Proxy Gateway](#34-yarp-reverse-proxy-gateway)
 4. [Functional Requirements](#4-functional-requirements)
    - 4.1 [FR-001: Validate Single Address](#41-fr-001-validate-single-address)
    - 4.2 [FR-002: Validate Batch Addresses](#42-fr-002-validate-batch-addresses)
@@ -308,6 +309,8 @@ graph TB
 | --- | --- | --- |
 | Runtime | .NET 10, C# 13 | Latest LTS runtime with modern language features |
 | Framework | ASP.NET Core Minimal API | Lightweight, high-performance HTTP endpoints |
+| Gateway | YARP (Yet Another Reverse Proxy) | API gateway for traffic routing, load balancing, and cross-cutting concerns |
+| Package Management | Central Package Management (CPM) | Centralized NuGet versioning via Directory.Packages.props |
 | Orchestration | .NET Aspire | Cloud-ready stack for local orchestration and service discovery |
 | HTTP Client | Refit | Typed HTTP client generation from interface definitions |
 | Persistent Cache | Azure Cosmos DB (NoSQL, SQL API) | Globally distributed document store, partition key: `/stateCode` |
@@ -510,6 +513,124 @@ flowchart TD
     style RET3 fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
 ```
 
+
+## 3.4 YARP Reverse Proxy Gateway
+
+
+The **AddressValidation.Gateway** project implements a YARP (Yet Another Reverse Proxy) reverse proxy layer that acts as a single entry point for all client requests. This gateway pattern provides several architectural benefits:
+
+### 3.4.1 Gateway Responsibilities
+
+- **Request Routing**: Routes `/api/address/*` traffic to the Address Validation API
+- **Cross-Cutting Concerns**: Centralized security headers, CORS handling, request correlation
+- **Health Checks**: Exposes `/health` endpoint for orchestrator probes
+- **Observable Traffic Flow**: Logs and traces all traffic for monitoring and debugging
+
+### 3.4.2 Architecture Diagram
+
+```mermaid
+graph LR
+    CLIENT["Client Requests\n(Port 5001)"]
+
+    subgraph GATEWAY["YARP Gateway\n(AddressValidation.Gateway)"]
+        YARP["YARP Routing"]
+        SECURITY["Security Headers\nMiddleware"]
+        CORS["CORS\nHandling"]
+        HEALTH["Health Check\nEndpoint"]
+        TRACE["Request Correlation\n& Tracing"]
+    end
+
+    subgraph API["API Service\n(AddressValidation.Api:5000)"]
+        ROUTES["Routes:\n/api/address/validate\n/api/address/validate/batch"]
+        HANDLERS["Handlers:\nValidateSingle\nValidateBatch"]
+        FEATURES["Features:\nCaching\nValidation\nAudit"]
+    end
+
+    CLIENT --> GATEWAY
+    HEALTH --> HEALTH
+    YARP --> ROUTES
+    SECURITY --> ROUTES
+    CORS --> ROUTES
+    TRACE --> API
+    ROUTES --> HANDLERS
+    HANDLERS --> FEATURES
+
+    style GATEWAY fill:#0c63e4,stroke:#0078D4,color:#fff
+    style API fill:#107C10,stroke:#107C10,color:#fff
+    style CLIENT fill:#1e293b,stroke:#64748b,color:#f1f5f9
+```
+
+### 3.4.3 Configuration (appsettings.json)
+
+```json
+{
+  "ReverseProxy": {
+    "Routes": {
+      "addressValidationRoute": {
+        "ClusterId": "addressValidationCluster",
+        "Match": {
+          "Path": "/api/address/{**catch-all}"
+        },
+        "Transforms": [
+          { "PathPrefix": "/api/address" }
+        ]
+      }
+    },
+    "Clusters": {
+      "addressValidationCluster": {
+        "HttpClient": {
+          "Timeout": "00:00:30"
+        },
+        "Destinations": {
+          "destination1": {
+            "Address": "http://localhost:5000"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+### 3.4.4 Middleware Pipeline
+
+```
+Request
+  ↓
+[Security Headers Middleware]  ← Add X-Content-Type-Options, X-Frame-Options, etc.
+  ↓
+[CORS Middleware]              ← Handle cross-origin requests
+  ↓
+[Correlation ID Middleware]    ← Generate/propagate correlation ID
+  ↓
+[YARP Routing]                 ← Route to destination cluster
+  ↓
+[Destination: AddressValidation.Api]
+  ↓
+Response
+```
+
+### 3.4.5 Health Check Endpoint
+
+- **Path**: `GET /health`
+- **Response**: `200 OK` with `{ "status": "Healthy" }`
+- **Purpose**: Used by Aspire AppHost for liveness probes
+
+### 3.4.6 Aspire Integration
+
+The Gateway is integrated into the Aspire AppHost:
+
+```csharp
+var gateway = builder
+    .AddProject<Projects.AddressValidation_Gateway>("gateway")
+    .WithReference(api)
+    .WithHttpEndpoint(port: 5001, targetPort: 5001, name: "http");
+```
+
+This ensures:
+- Gateway automatically discovers API service location via Aspire's service discovery
+- Both services run in the same Aspire orchestration context
+- Easy scaling and configuration changes
 
 # 4. Functional Requirements
 

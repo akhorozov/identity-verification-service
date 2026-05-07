@@ -1,0 +1,199 @@
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
+using AddressValidation.Api.Infrastructure;
+using AddressValidation.Api.Infrastructure.Configuration;
+using AddressValidation.Api.Infrastructure.Middleware;
+using Serilog;
+using Asp.Versioning;
+using FluentValidation.AspNetCore;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ==================== Configuration Setup ====================
+// Load configuration from appsettings
+var configuration = builder.Configuration;
+
+// Add Azure Key Vault if enabled
+if (configuration.GetValue<bool>("AzureKeyVault:Enabled"))
+{
+    configuration.AddAzureKeyVault(builder);
+}
+
+// ==================== Serilog Setup ====================
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(configuration)
+    .Enrich.WithProperty("Application", "AddressValidation.Api")
+    .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+try
+{
+    // ==================== Services Registration ====================
+
+    // Add API versioning
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1, 0);
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ReportApiVersions = true;
+        options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+    });
+
+    // Add CORS
+    var corsPolicy = configuration.GetSection("Security:Cors");
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("default", policy =>
+        {
+            policy
+                .WithOrigins(corsPolicy.GetSection("AllowedOrigins").Get<string[]>() ?? [])
+                .WithMethods(corsPolicy.GetSection("AllowedMethods").Get<string[]>() ?? [])
+                .WithHeaders(corsPolicy.GetSection("AllowedHeaders").Get<string[]>() ?? [])
+                .WithExposedHeaders("api-version")
+                .SetPreflightMaxAge(TimeSpan.FromSeconds(corsPolicy.GetValue<int>("MaxAgeInSeconds", 3600)));
+
+            if (corsPolicy.GetValue<bool>("AllowCredentials"))
+            {
+                policy.AllowCredentials();
+            }
+        });
+    });
+
+    // Add rate limiting
+    var rateLimitConfig = configuration.GetSection("Security:RateLimiting");
+    if (rateLimitConfig.GetValue<bool>("Enabled"))
+    {
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.AddFixedWindowLimiter("fixed", opt =>
+            {
+                opt.PermitLimit = rateLimitConfig.GetValue<int>("PermitLimit", 1000);
+                opt.Window = TimeSpan.FromSeconds(rateLimitConfig.GetValue<int>("WindowSizeInSeconds", 60));
+                opt.QueueLimit = rateLimitConfig.GetValue<int>("QueueLimit", 5);
+                opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+            });
+        });
+    }
+
+    // Add health checks
+    builder.Services.AddHealthChecks()
+        .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
+
+    // Add FluentValidation
+    builder.Services
+        .AddFluentValidationAutoValidation()
+        .AddFluentValidationClientsideAdapters();
+
+    // Add OpenTelemetry
+    if (configuration.GetValue<bool>("OpenTelemetry:Enabled"))
+    {
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracerProvider =>
+            {
+                if (configuration.GetValue<bool>("OpenTelemetry:Tracing:Enabled"))
+                {
+                    tracerProvider
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation();
+                }
+            })
+            .WithMetrics(meterProvider =>
+            {
+                if (configuration.GetValue<bool>("OpenTelemetry:Metrics:Enabled"))
+                {
+                    meterProvider
+                        .AddAspNetCoreInstrumentation()
+                        .AddHttpClientInstrumentation();
+                }
+            });
+    }
+
+    // Add infrastructure services
+    builder.Services.AddInfrastructure(configuration);
+
+    // Add controllers and minimal APIs
+    builder.Services.AddControllers();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    var app = builder.Build();
+
+    // ==================== Middleware Pipeline ====================
+
+    // Security headers
+    if (configuration.GetValue<bool>("Security:SecurityHeaders:EnableHSTS"))
+    {
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+
+    // Add security headers middleware
+    app.UseMiddleware<SecurityHeadersMiddleware>();
+
+    // Add correlation ID middleware
+    app.UseMiddleware<CorrelationIdMiddleware>();
+
+    // Add exception handling middleware
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    // OpenAPI/Swagger
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "AddressValidation.Api v1");
+        });
+    }
+
+    // CORS
+    app.UseCors("default");
+
+    // Rate limiting
+    if (configuration.GetValue<bool>("Security:RateLimiting:Enabled"))
+    {
+        app.UseRateLimiter();
+    }
+
+    // Logging
+    app.UseSerilogRequestLogging(options =>
+    {
+        options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000}ms";
+        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+        {
+            diagnosticContext.Set("CorrelationId", httpContext.Items["CorrelationId"]);
+            diagnosticContext.Set("RequestId", httpContext.TraceIdentifier);
+            diagnosticContext.Set("UserId", httpContext.User?.Identity?.Name ?? "anonymous");
+        };
+    });
+
+    // Routing
+    app.UseRouting();
+
+    // Authorization
+    app.UseAuthorization();
+
+    // Health checks
+    app.MapHealthChecks("/health");
+
+    // Map controllers
+    app.MapControllers();
+
+    // ==================== Run Application ====================
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+

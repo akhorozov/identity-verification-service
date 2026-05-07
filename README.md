@@ -56,6 +56,43 @@ The Address Validation Proxy Service receives address validation requests from i
 
 ## Architecture
 
+The service uses **Vertical Slice Architecture** with the following key components:
+
+### Solution Structure
+
+```
+AddressValidation/
+├── AddressValidation.Api                 # Core validation service
+├── AddressValidation.Gateway             # YARP reverse proxy (NEW)
+├── AddressValidation.AppHost             # Aspire orchestrator
+├── AddressValidation.ServiceDefaults     # Shared infrastructure
+├── AddressValidation.Tests.Unit          # Unit tests
+├── AddressValidation.Tests.Integration   # Integration tests
+└── Directory.Packages.props              # Central Package Management (NEW)
+```
+
+### Key Architectural Patterns
+
+- **Vertical Slice Architecture (VSA)**: Each feature organized as an isolated slice
+- **YARP Gateway**: Reverse proxy for traffic routing and load balancing
+- **Central Package Management (CPM)**: Centralized NuGet versioning
+- **Aspire Orchestration**: Local development with Redis and CosmosDB emulator
+- **Distributed Tracing**: OpenTelemetry integration for observability
+
+### Gateway Layer
+
+The **AddressValidation.Gateway** project routes all requests through YARP:
+
+```
+Client → Gateway (YARP) → API Service
+         ├── Security Headers
+         ├── CORS Handling
+         ├── Health Checks
+         └── Request Correlation
+```
+
+See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for detailed architecture documentation.
+
 The service uses **Vertical Slice Architecture (VSA)** — each feature is a self-contained folder with its own endpoint, handler, validator, and request/response models. Shared infrastructure (caching, providers, events) lives in a dedicated `Infrastructure` namespace.
 
 ### Project Structure
@@ -95,6 +132,8 @@ The service applies a **CQRS-lite** pattern:
 |-------|-----------|
 | Runtime | .NET 10, C# 13 |
 | Framework | ASP.NET Core Minimal API |
+| Gateway | YARP (Yet Another Reverse Proxy) |
+| Package Management | Central Package Management (CPM) via Directory.Packages.props |
 | Orchestration | .NET Aspire |
 | HTTP Client | Refit |
 | Persistent Cache | Azure Cosmos DB (NoSQL, SQL API) |

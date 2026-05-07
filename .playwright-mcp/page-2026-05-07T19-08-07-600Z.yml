@@ -1,0 +1,314 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e9]:
+        - button "Toggle navigation" [ref=e11] [cursor=pointer]
+        - link "Homepage" [ref=e17] [cursor=pointer]:
+          - /url: /
+          - img [ref=e18]
+        - generic [ref=e20]:
+          - link "Sign in" [ref=e21] [cursor=pointer]:
+            - /url: /login?return_to=https%3A%2F%2Fgithub.com%2Fakhorozov%2Fidentity-verification-service%2Fcompare%2Fmain...project-planning
+          - button "Appearance settings" [ref=e24] [cursor=pointer]:
+            - img
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - img [ref=e33]
+          - link "akhorozov" [ref=e36] [cursor=pointer]:
+            - /url: /akhorozov
+          - generic [ref=e37]: /
+          - strong [ref=e38]:
+            - link "identity-verification-service" [ref=e39] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service
+          - generic [ref=e40]: Public
+        - generic [ref=e41]:
+          - list:
+            - listitem [ref=e42]:
+              - link "You must be signed in to change notification settings" [ref=e43] [cursor=pointer]:
+                - /url: /login?return_to=%2Fakhorozov%2Fidentity-verification-service
+                - img [ref=e44]
+                - text: Notifications
+            - listitem [ref=e46]:
+              - link "Fork 0" [ref=e47] [cursor=pointer]:
+                - /url: /login?return_to=%2Fakhorozov%2Fidentity-verification-service
+                - img [ref=e48]
+                - text: Fork
+                - generic "0" [ref=e50]
+            - listitem [ref=e51]:
+              - link "You must be signed in to star a repository" [ref=e53] [cursor=pointer]:
+                - /url: /login?return_to=%2Fakhorozov%2Fidentity-verification-service
+                - img [ref=e54]
+                - text: Star
+                - generic "0 users starred this repository" [ref=e56]: "0"
+      - navigation "Repository" [ref=e57]:
+        - list [ref=e58]:
+          - listitem [ref=e59]:
+            - link "Code" [ref=e60] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service
+              - img [ref=e61]
+              - generic [ref=e63]: Code
+          - listitem [ref=e64]:
+            - link "Issues 130" [ref=e65] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/issues
+              - img [ref=e66]
+              - generic [ref=e69]: Issues
+              - generic "130" [ref=e70]
+          - listitem [ref=e71]:
+            - link "Pull requests" [ref=e72] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/pulls
+              - img [ref=e73]
+              - generic [ref=e75]: Pull requests
+          - listitem [ref=e76]:
+            - link "Actions" [ref=e77] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/actions
+              - img [ref=e78]
+              - generic [ref=e80]: Actions
+          - listitem [ref=e81]:
+            - link "Projects" [ref=e82] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/projects
+              - img [ref=e83]
+              - generic [ref=e85]: Projects
+          - listitem [ref=e86]:
+            - link "Security and quality" [ref=e87] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/security
+              - img [ref=e88]
+              - generic [ref=e90]: Security and quality
+          - listitem [ref=e91]:
+            - link "Insights" [ref=e92] [cursor=pointer]:
+              - /url: /akhorozov/identity-verification-service/pulse
+              - img [ref=e93]
+              - generic [ref=e95]: Insights
+    - generic [ref=e98]:
+      - generic [ref=e99]:
+        - heading "Comparing changes" [level=1] [ref=e100]
+        - generic [ref=e101]:
+          - text: Choose two branches to see what’s changed or to start a new pull request. If you need to, you can also
+          - button "compare across forks" [ref=e102] [cursor=pointer]
+          - text: or
+          - link "learn more about diff comparisons" [ref=e103] [cursor=pointer]:
+            - /url: https://docs.github.com/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-comparing-branches-in-pull-requests#three-dot-and-two-dot-git-diff-comparisons
+          - text: .
+      - generic [ref=e104]:
+        - img [ref=e105]
+        - group [ref=e108]:
+          - 'generic "base: main" [ref=e109] [cursor=pointer]':
+            - generic [ref=e111]:
+              - text: "base:"
+              - generic [ref=e112]: main
+            - generic:
+              - img
+        - generic [ref=e114]:
+          - 'img "Three-dot diff: changes since branches diverged" [ref=e115]'
+          - generic [ref=e117]: ...
+        - group [ref=e119]:
+          - 'generic "compare: project-planning" [ref=e120] [cursor=pointer]':
+            - generic [ref=e122]:
+              - text: "compare:"
+              - generic [ref=e123]: project-planning
+            - generic:
+              - img
+        - generic [ref=e124]:
+          - strong [ref=e125]:
+            - img [ref=e126]
+            - text: Able to merge.
+          - text: These branches can be automatically merged.
+      - list [ref=e129]:
+        - listitem [ref=e130]:
+          - img [ref=e131]
+          - text: 6 commits
+        - listitem [ref=e133]:
+          - img [ref=e134]
+          - text: 98 files changed
+        - listitem [ref=e136]:
+          - img [ref=e137]
+          - text: 2 contributors
+      - generic [ref=e139]:
+        - generic [ref=e140]:
+          - img [ref=e142]
+          - generic [ref=e144]:
+            - heading "Commits on May 6, 2026" [level=3] [ref=e145]
+            - list [ref=e146]:
+              - listitem [ref=e147]:
+                - generic [ref=e148]:
+                  - paragraph [ref=e149]:
+                    - link "add documents" [ref=e150] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/1e6c0f7bfa9f8977a91997be631a0e903ac65f7e
+                  - generic [ref=e151]:
+                    - link "@akhorozov" [ref=e154] [cursor=pointer]:
+                      - /url: /akhorozov
+                      - img "@akhorozov" [ref=e155]
+                    - generic [ref=e156]:
+                      - link "akhorozov" [ref=e157] [cursor=pointer]:
+                        - /url: /akhorozov/identity-verification-service/commits?author=akhorozov
+                      - text: committed May 6, 2026yesterday
+                - generic [ref=e158]:
+                  - generic [ref=e159]:
+                    - button "Copy the full SHA" [ref=e162] [cursor=pointer]:
+                      - img [ref=e163]
+                    - link "1e6c0f7" [ref=e168] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/1e6c0f7bfa9f8977a91997be631a0e903ac65f7e
+                      - generic [ref=e170]: 1e6c0f7
+                  - link "Browse the repository at this point in the history" [ref=e173] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/1e6c0f7bfa9f8977a91997be631a0e903ac65f7e
+                    - img
+              - listitem [ref=e174]:
+                - generic [ref=e175]:
+                  - paragraph [ref=e176]:
+                    - link "Create Address-Validation-Proxy-UI-Mockups.html" [ref=e177] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/70b0cdd33a3df9af27dec2c42c72883e3537c8a7
+                  - generic [ref=e180]: Alex Khorozov committed May 6, 2026yesterday
+                - generic [ref=e181]:
+                  - generic [ref=e182]:
+                    - button "Copy the full SHA" [ref=e185] [cursor=pointer]:
+                      - img [ref=e186]
+                    - link "70b0cdd" [ref=e191] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/70b0cdd33a3df9af27dec2c42c72883e3537c8a7
+                      - generic [ref=e193]: 70b0cdd
+                  - link "Browse the repository at this point in the history" [ref=e196] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/70b0cdd33a3df9af27dec2c42c72883e3537c8a7
+                    - img
+              - listitem [ref=e197]:
+                - generic [ref=e198]:
+                  - paragraph [ref=e199]:
+                    - link "Office documents added" [ref=e200] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/51a79d37a9fa09d829cd50784d5f42c2d1119ea3
+                  - generic [ref=e201]:
+                    - link "@akhorozov" [ref=e204] [cursor=pointer]:
+                      - /url: /akhorozov
+                      - img "@akhorozov" [ref=e205]
+                    - generic [ref=e206]:
+                      - link "akhorozov" [ref=e207] [cursor=pointer]:
+                        - /url: /akhorozov/identity-verification-service/commits?author=akhorozov
+                      - text: committed May 6, 2026yesterday
+                - generic [ref=e208]:
+                  - generic [ref=e209]:
+                    - button "Copy the full SHA" [ref=e212] [cursor=pointer]:
+                      - img [ref=e213]
+                    - link "51a79d3" [ref=e218] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/51a79d37a9fa09d829cd50784d5f42c2d1119ea3
+                      - generic [ref=e220]: 51a79d3
+                  - link "Browse the repository at this point in the history" [ref=e223] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/51a79d37a9fa09d829cd50784d5f42c2d1119ea3
+                    - img
+        - generic [ref=e224]:
+          - img [ref=e226]
+          - generic [ref=e228]:
+            - heading "Commits on May 7, 2026" [level=3] [ref=e229]
+            - list [ref=e230]:
+              - listitem [ref=e231]:
+                - generic [ref=e232]:
+                  - paragraph [ref=e233]:
+                    - link "Add agent instructions and Jira breakdown for AVP" [ref=e234] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/94fa6e595c7651c1feb3d1636159d3a829733330
+                    - button "Commit message body" [ref=e236] [cursor=pointer]: …
+                  - generic [ref=e237]:
+                    - link "@akhorozov" [ref=e240] [cursor=pointer]:
+                      - /url: /akhorozov
+                      - img "@akhorozov" [ref=e241]
+                    - generic [ref=e242]:
+                      - link "akhorozov" [ref=e243] [cursor=pointer]:
+                        - /url: /akhorozov/identity-verification-service/commits?author=akhorozov
+                      - text: committed May 7, 20263 hours ago
+                - generic [ref=e244]:
+                  - generic [ref=e245]:
+                    - button "Copy the full SHA" [ref=e248] [cursor=pointer]:
+                      - img [ref=e249]
+                    - link "94fa6e5" [ref=e254] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/94fa6e595c7651c1feb3d1636159d3a829733330
+                      - generic [ref=e256]: 94fa6e5
+                  - link "Browse the repository at this point in the history" [ref=e259] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/94fa6e595c7651c1feb3d1636159d3a829733330
+                    - img
+              - listitem [ref=e260]:
+                - generic [ref=e261]:
+                  - paragraph [ref=e262]:
+                    - link "Rewrite README for Address Validation Proxy" [ref=e263] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/c354f2b9a4fdb1afece352e0b841c1ac61eea903
+                    - button "Commit message body" [ref=e265] [cursor=pointer]: …
+                  - generic [ref=e266]:
+                    - link "@akhorozov" [ref=e269] [cursor=pointer]:
+                      - /url: /akhorozov
+                      - img "@akhorozov" [ref=e270]
+                    - generic [ref=e271]:
+                      - link "akhorozov" [ref=e272] [cursor=pointer]:
+                        - /url: /akhorozov/identity-verification-service/commits?author=akhorozov
+                      - text: committed May 7, 20262 hours ago
+                - generic [ref=e273]:
+                  - generic [ref=e274]:
+                    - button "Copy the full SHA" [ref=e277] [cursor=pointer]:
+                      - img [ref=e278]
+                    - link "c354f2b" [ref=e283] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/c354f2b9a4fdb1afece352e0b841c1ac61eea903
+                      - generic [ref=e285]: c354f2b
+                  - link "Browse the repository at this point in the history" [ref=e288] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/c354f2b9a4fdb1afece352e0b841c1ac61eea903
+                    - img
+              - listitem [ref=e289]:
+                - generic [ref=e290]:
+                  - paragraph [ref=e291]:
+                    - 'link "feat(T2): Implement core domain models for address validation" [ref=e292] [cursor=pointer]':
+                      - /url: /akhorozov/identity-verification-service/commit/3b2f22c697f13af86e1c78df17c5f0575316b379
+                    - button "Commit message body" [ref=e294] [cursor=pointer]: …
+                  - generic [ref=e295]:
+                    - link "@akhorozov" [ref=e298] [cursor=pointer]:
+                      - /url: /akhorozov
+                      - img "@akhorozov" [ref=e299]
+                    - generic [ref=e300]:
+                      - link "akhorozov" [ref=e301] [cursor=pointer]:
+                        - /url: /akhorozov/identity-verification-service/commits?author=akhorozov
+                      - text: committed May 7, 20261 minute ago
+                - generic [ref=e302]:
+                  - generic [ref=e303]:
+                    - button "Copy the full SHA" [ref=e306] [cursor=pointer]:
+                      - img [ref=e307]
+                    - link "3b2f22c" [ref=e312] [cursor=pointer]:
+                      - /url: /akhorozov/identity-verification-service/commit/3b2f22c697f13af86e1c78df17c5f0575316b379
+                      - generic [ref=e314]: 3b2f22c
+                  - link "Browse the repository at this point in the history" [ref=e317] [cursor=pointer]:
+                    - /url: /akhorozov/identity-verification-service/tree/3b2f22c697f13af86e1c78df17c5f0575316b379
+                    - img
+      - generic "Loading Files" [ref=e319]:
+        - generic [ref=e321]:
+          - img [ref=e322]
+          - generic [ref=e325]: Loading
+  - contentinfo [ref=e326]:
+    - heading "Footer" [level=2] [ref=e327]
+    - generic [ref=e328]:
+      - generic [ref=e329]:
+        - link "GitHub Homepage" [ref=e330] [cursor=pointer]:
+          - /url: https://github.com
+          - img [ref=e331]
+        - generic [ref=e333]: © 2026 GitHub, Inc.
+      - navigation "Footer" [ref=e334]:
+        - heading "Footer navigation" [level=3] [ref=e335]
+        - list "Footer navigation" [ref=e336]:
+          - listitem [ref=e337]:
+            - link "Terms" [ref=e338] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+          - listitem [ref=e339]:
+            - link "Privacy" [ref=e340] [cursor=pointer]:
+              - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+          - listitem [ref=e341]:
+            - link "Security" [ref=e342] [cursor=pointer]:
+              - /url: https://github.com/security
+          - listitem [ref=e343]:
+            - link "Status" [ref=e344] [cursor=pointer]:
+              - /url: https://www.githubstatus.com/
+          - listitem [ref=e345]:
+            - link "Community" [ref=e346] [cursor=pointer]:
+              - /url: https://github.community/
+          - listitem [ref=e347]:
+            - link "Docs" [ref=e348] [cursor=pointer]:
+              - /url: https://docs.github.com/
+          - listitem [ref=e349]:
+            - link "Contact" [ref=e350] [cursor=pointer]:
+              - /url: https://support.github.com?tags=dotcom-footer
+          - listitem [ref=e351]:
+            - button "Manage cookies" [ref=e353] [cursor=pointer]
+          - listitem [ref=e354]:
+            - button "Do not share my personal information" [ref=e356] [cursor=pointer]

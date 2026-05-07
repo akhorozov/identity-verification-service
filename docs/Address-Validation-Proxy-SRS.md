@@ -1,4 +1,4 @@
-
+﻿
 
 
 INTERNAL — CONFIDENTIAL
@@ -45,236 +45,83 @@ Author: Alex Khorozov
 
 ## Table of Contents
 
-
-1. Introduction
-
-
-1.1 Purpose
-
-
-1.2 Scope
-
-
-1.3 Definitions, Acronyms, and Abbreviations
-
-
-1.4 References
-
-
-1.5 Document Conventions
-
-
-2. System Overview
-
-
-2.1 System Context
-
-
-2.2 Key Stakeholders
-
-
-2.3 System Boundaries
-
-
-2.4 Technology Stack
-
-
-3. Architecture
-
-
-3.1 Vertical Slice Architecture (VSA)
-
-
-3.2 Header-Based API Versioning Strategy
-
-
-3.3 Caching Architecture (Two-Tier)
-
-
-4. Functional Requirements
-
-
-4.1 FR-001: Validate Single Address
-
-
-4.2 FR-002: Validate Batch Addresses
-
-
-4.3 FR-003: Cache Management
-
-
-4.4 FR-004: Audit Logging
-
-
-4.5 FR-005: Health Check Endpoints
-
-
-4.6 FR-006: Metrics Exposure
-
-
-4.7 FR-007: Provider Abstraction
-
-
-5. Non-Functional Requirements
-
-
-5.1 Performance
-
-
-5.2 Availability & Reliability
-
-
-5.3 Scalability
-
-
-5.4 Security
-
-
-5.5 Observability
-
-
-5.6 Maintainability
-
-
-6. CQRS Flow
-
-
-6.1 Command Side (Write Path)
-
-
-6.2 Query Side (Read Path)
-
-
-6.3 CQRS Flow Diagram
-
-
-7. Event Sourcing
-
-
-7.1 Event Store
-
-
-7.2 Domain Events
-
-
-7.3 Event Schema
-
-
-7.4 Event Replay & Analytics
-
-
-8. Database Schema
-
-
-8.1 CosmosDB — Validated Addresses Container
-
-
-8.2 CosmosDB — Audit Events Container
-
-
-8.3 Redis Cache Schema
-
-
-9. API Specifications
-
-
-9.1 Versioning
-
-
-9.2 Authentication
-
-
-9.3 Endpoint Specifications
-
-
-9.4 Error Response Schema
-
-
-9.5 Rate Limiting
-
-
-10. Sequence Diagrams
-
-
-10.1 Single Address Validation — Cache Hit (Redis)
-
-
-10.2 Single Address Validation — Cache Miss (Full Flow)
-
-
-10.3 Batch Validation — Partial Cache Hits
-
-
-10.4 Circuit Breaker Activation
-
-
-11. Class Diagrams
-
-
-11.1 Core Domain Models
-
-
-11.2 Infrastructure Interfaces
-
-
-11.3 Handler Classes
-
-
-12. C4 Model
-
-
-12.1 Level 1 — System Context
-
-
-12.2 Level 2 — Container Diagram
-
-
-12.3 Level 3 — Component Diagram
-
-
-12.4 Level 4 — Code Diagram
-
-
-13. Architecture Decision Records (ADRs)
-
-
-13.1 ADR-001: Header-Based API Versioning
-
-
-13.2 ADR-002: CosmosDB for Persistent Caching
-
-
-13.3 ADR-003: Vertical Slice Architecture
-
-
-13.4 ADR-004: Two-Tier Caching Strategy
-
-
-13.5 ADR-005: Event Sourcing for Audit Trail
-
-
-13.6 ADR-006: Provider Abstraction via Interface
-
-
-14. Domain Storytelling Diagram
-
-
-15. Glossary
-
-
-Appendix A: Environment Configuration
-
-
-Appendix B: Deployment Model
-
-
-Appendix C: Testing Strategy
-
-
-Appendix D: Smarty API Reference Summary
-
-
-Appendix E: CosmosDB Capacity Planning
+1. [Introduction](#1-introduction)
+   - 1.1 [Purpose](#11-purpose)
+   - 1.2 [Scope](#12-scope)
+   - 1.3 [Definitions, Acronyms, and Abbreviations](#13-definitions-acronyms-and-abbreviations)
+   - 1.4 [References](#14-references)
+   - 1.5 [Document Conventions](#15-document-conventions)
+2. [System Overview](#2-system-overview)
+   - 2.1 [System Context](#21-system-context)
+   - 2.2 [Key Stakeholders](#22-key-stakeholders)
+   - 2.3 [System Boundaries](#23-system-boundaries)
+   - 2.4 [Technology Stack](#24-technology-stack)
+3. [Architecture](#3-architecture)
+   - 3.1 [Vertical Slice Architecture (VSA)](#31-architectural-style-vertical-slice-architecture-vsa)
+   - 3.2 [Header-Based API Versioning Strategy](#32-header-based-api-versioning-strategy)
+   - 3.3 [Caching Architecture (Two-Tier)](#33-caching-architecture-two-tier)
+4. [Functional Requirements](#4-functional-requirements)
+   - 4.1 [FR-001: Validate Single Address](#41-fr-001-validate-single-address)
+   - 4.2 [FR-002: Validate Batch Addresses](#42-fr-002-validate-batch-addresses)
+   - 4.3 [FR-003: Cache Management](#43-fr-003-cache-management)
+   - 4.4 [FR-004: Audit Logging](#44-fr-004-audit-logging)
+   - 4.5 [FR-005: Health Check Endpoints](#45-fr-005-health-check-endpoints)
+   - 4.6 [FR-006: Metrics Exposure](#46-fr-006-metrics-exposure)
+   - 4.7 [FR-007: Provider Abstraction](#47-fr-007-provider-abstraction)
+5. [Non-Functional Requirements](#5-non-functional-requirements)
+   - 5.1 [Performance](#51-performance)
+   - 5.2 [Availability & Reliability](#52-availability--reliability)
+   - 5.3 [Scalability](#53-scalability)
+   - 5.4 [Security](#54-security)
+   - 5.5 [Observability](#55-observability)
+   - 5.6 [Maintainability](#56-maintainability)
+6. [CQRS Flow](#6-cqrs-flow)
+   - 6.1 [Command Side (Write Path)](#61-command-side-write-path)
+   - 6.2 [Query Side (Read Path)](#62-query-side-read-path)
+   - 6.3 [CQRS Flow Diagram](#63-cqrs-flow-diagram)
+7. [Event Sourcing](#7-event-sourcing)
+   - 7.1 [Event Store](#71-event-store)
+   - 7.2 [Domain Events](#72-domain-events)
+   - 7.3 [Event Schema](#73-event-schema)
+   - 7.4 [Event Replay & Analytics](#74-event-replay--analytics)
+8. [Database Schema](#8-database-schema)
+   - 8.1 [CosmosDB — Validated Addresses Container](#81-cosmosdb--validated-addresses-container)
+   - 8.2 [CosmosDB — Audit Events Container](#82-cosmosdb--audit-events-container)
+   - 8.3 [Redis Cache Schema](#83-redis-cache-schema)
+9. [API Specifications](#9-api-specifications)
+   - 9.1 [Versioning](#91-versioning)
+   - 9.2 [Authentication](#92-authentication)
+   - 9.3 [Endpoint Specifications](#93-endpoint-specifications)
+   - 9.4 [Error Response Schema](#94-error-response-schema)
+   - 9.5 [Rate Limiting](#95-rate-limiting)
+10. [Sequence Diagrams](#10-sequence-diagrams)
+    - 10.1 [Single Address Validation — Cache Hit (Redis)](#101-diagram-1-single-address-validation--cache-hit-redis-l1)
+    - 10.2 [Single Address Validation — Cache Miss (Full Flow)](#102-diagram-2-single-address-validation--cache-miss-full-flow)
+    - 10.3 [Batch Validation — Partial Cache Hits](#103-diagram-3-batch-validation--partial-cache-hits)
+    - 10.4 [Circuit Breaker Activation](#104-diagram-4-circuit-breaker-activation)
+11. [Class Diagrams](#11-class-diagrams)
+    - 11.1 [Core Domain Models](#111-core-domain-models)
+    - 11.2 [Infrastructure Interfaces](#112-infrastructure-interfaces)
+    - 11.3 [Handler Classes](#113-handler-classes)
+12. [C4 Model](#12-c4-model)
+    - 12.1 [Level 1 — System Context](#121-level-1--system-context)
+    - 12.2 [Level 2 — Container Diagram](#122-level-2--container-diagram)
+    - 12.3 [Level 3 — Component Diagram](#123-level-3--component-diagram-api-container)
+    - 12.4 [Level 4 — Code Diagram](#124-level-4--code-diagram-validatesingle-feature)
+13. [Architecture Decision Records (ADRs)](#13-architecture-decision-records-adrs)
+    - 13.1 [ADR-001: Header-Based API Versioning](#131-adr-001-use-header-based-api-versioning)
+    - 13.2 [ADR-002: CosmosDB for Persistent Caching](#132-adr-002-use-cosmosdb-for-persistent-address-caching)
+    - 13.3 [ADR-003: Vertical Slice Architecture](#133-adr-003-use-vertical-slice-architecture-over-layered-architecture)
+    - 13.4 [ADR-004: Two-Tier Caching Strategy](#134-adr-004-two-tier-caching-strategy-redis--cosmosdb)
+    - 13.5 [ADR-005: Event Sourcing for Audit Trail](#135-adr-005-event-sourcing-for-audit-trail)
+    - 13.6 [ADR-006: Provider Abstraction via Interface](#136-adr-006-provider-abstraction-via-interface)
+14. [Domain Storytelling Diagram](#14-domain-storytelling-diagram)
+15. [Glossary](#15-glossary)
+- [Appendix A: Environment Configuration](#appendix-a-environment-configuration)
+- [Appendix B: Deployment Model](#appendix-b-deployment-model)
+- [Appendix C: Testing Strategy](#appendix-c-testing-strategy)
+- [Appendix D: Smarty API Reference Summary](#appendix-d-smarty-api-reference-summary)
+- [Appendix E: CosmosDB Capacity Planning](#appendix-e-cosmosdb-capacity-planning)
 
 
 # 1. Introduction
@@ -471,6 +318,7 @@ graph TB
 | Deployment (Prod) | Azure Container Apps (ACA) | Serverless containers with auto-scaling and Dapr support |
 | Deployment (Non-Prod) | .NET Aspire local orchestration | Containerized dependencies for local development |
 | API Versioning | Asp.Versioning.Http | Header-based versioning via `Api-Version` header |
+| CI/CD | Azure DevOps Pipelines (YAML multi-stage) | Build, test, Docker package, and deploy to ACA via staged pipeline with approval gate |
 | Testing | xUnit, FluentAssertions, NSubstitute, Testcontainers, Verify | Full testing pyramid with snapshot verification |
 
 
@@ -495,62 +343,81 @@ This approach offers several advantages for this service:
 ### 3.1.1 Project Structure
 
 
-```
+```mermaid
+graph TD
+    ROOT["src/AddressValidation.Api/"]
 
-src/AddressValidation.Api/
-+-- Features/
-|   +-- ValidateSingle/
-|   |   +-- ValidateSingleEndpoint.cs
-|   |   +-- ValidateSingleHandler.cs
-|   |   +-- ValidateSingleRequest.cs
-|   |   +-- ValidateSingleResponse.cs
-|   |   +-- ValidateSingleValidator.cs
-|   +-- ValidateBatch/
-|   |   +-- ValidateBatchEndpoint.cs
-|   |   +-- ValidateBatchHandler.cs
-|   |   +-- ValidateBatchRequest.cs
-|   |   +-- ValidateBatchResponse.cs
-|   |   +-- ValidateBatchValidator.cs
-|   +-- CacheManagement/
-|   |   +-- CacheStatsEndpoint.cs
-|   |   +-- InvalidateCacheEndpoint.cs
-|   |   +-- FlushCacheEndpoint.cs
-|   |   +-- CacheStatsHandler.cs
-|   +-- HealthCheck/
-|       +-- HealthCheckEndpoint.cs
-|       +-- ReadinessCheckHandler.cs
-+-- Infrastructure/
-|   +-- Caching/
-|   |   +-- ICacheService.cs
-|   |   +-- RedisCacheService.cs
-|   |   +-- CosmosCacheService.cs
-|   |   +-- CacheOrchestrator.cs
-|   +-- Providers/
-|   |   +-- IAddressValidationProvider.cs
-|   |   +-- SmartyProvider.cs
-|   |   +-- ISmartyApi.cs           (Refit interface)
-|   +-- Resilience/
-|   |   +-- PollyPolicies.cs
-|   |   +-- ResiliencePipelineConfig.cs
-|   +-- Versioning/
-|   |   +-- ApiVersioningConfig.cs
-|   +-- Events/
-|       +-- IAuditEventStore.cs
-|       +-- CosmosAuditEventStore.cs
-|       +-- DomainEvent.cs
-+-- Shared/
-|   +-- Models/
-|   |   +-- AddressInput.cs
-|   |   +-- ValidatedAddress.cs
-|   |   +-- AddressAnalysis.cs
-|   |   +-- GeocodingResult.cs
-|   |   +-- ValidationMetadata.cs
-|   +-- Extensions/
-|       +-- ServiceCollectionExtensions.cs
-|       +-- AddressHashExtensions.cs
-+-- Program.cs
-+-- appsettings.json
+    ROOT --> FEAT["Features/"]
+    ROOT --> INFRA["Infrastructure/"]
+    ROOT --> SHARED["Shared/"]
+    ROOT --> PROG["Program.cs"]
+    ROOT --> APPSETT["appsettings.json"]
 
+    FEAT --> VS["ValidateSingle/"]
+    FEAT --> VB["ValidateBatch/"]
+    FEAT --> CM["CacheManagement/"]
+    FEAT --> HC["HealthCheck/"]
+
+    VS --> VS1["ValidateSingleEndpoint.cs"]
+    VS --> VS2["ValidateSingleHandler.cs"]
+    VS --> VS3["ValidateSingleRequest.cs"]
+    VS --> VS4["ValidateSingleResponse.cs"]
+    VS --> VS5["ValidateSingleValidator.cs"]
+
+    VB --> VB1["ValidateBatchEndpoint.cs"]
+    VB --> VB2["ValidateBatchHandler.cs"]
+    VB --> VB3["ValidateBatchRequest.cs"]
+    VB --> VB4["ValidateBatchResponse.cs"]
+    VB --> VB5["ValidateBatchValidator.cs"]
+
+    CM --> CM1["CacheStatsEndpoint.cs"]
+    CM --> CM2["InvalidateCacheEndpoint.cs"]
+    CM --> CM3["FlushCacheEndpoint.cs"]
+    CM --> CM4["CacheStatsHandler.cs"]
+
+    HC --> HC1["HealthCheckEndpoint.cs"]
+    HC --> HC2["ReadinessCheckHandler.cs"]
+
+    INFRA --> CACHING["Caching/"]
+    INFRA --> PROVIDERS["Providers/"]
+    INFRA --> RESILIENCE["Resilience/"]
+    INFRA --> VERSIONING["Versioning/"]
+    INFRA --> EVENTS["Events/"]
+
+    CACHING --> C1["ICacheService.cs"]
+    CACHING --> C2["RedisCacheService.cs"]
+    CACHING --> C3["CosmosCacheService.cs"]
+    CACHING --> C4["CacheOrchestrator.cs"]
+
+    PROVIDERS --> P1["IAddressValidationProvider.cs"]
+    PROVIDERS --> P2["SmartyProvider.cs"]
+    PROVIDERS --> P3["ISmartyApi.cs (Refit interface)"]
+
+    RESILIENCE --> R1["PollyPolicies.cs"]
+    RESILIENCE --> R2["ResiliencePipelineConfig.cs"]
+
+    VERSIONING --> V1["ApiVersioningConfig.cs"]
+
+    EVENTS --> E1["IAuditEventStore.cs"]
+    EVENTS --> E2["CosmosAuditEventStore.cs"]
+    EVENTS --> E3["DomainEvent.cs"]
+
+    SHARED --> MODELS["Models/"]
+    SHARED --> EXTENSIONS["Extensions/"]
+
+    MODELS --> M1["AddressInput.cs"]
+    MODELS --> M2["ValidatedAddress.cs"]
+    MODELS --> M3["AddressAnalysis.cs"]
+    MODELS --> M4["GeocodingResult.cs"]
+    MODELS --> M5["ValidationMetadata.cs"]
+
+    EXTENSIONS --> X1["ServiceCollectionExtensions.cs"]
+    EXTENSIONS --> X2["AddressHashExtensions.cs"]
+
+    style ROOT fill:#0d1b3e,stroke:#0078D4,color:#f1f5f9
+    style FEAT fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
+    style INFRA fill:#14532d,stroke:#22c55e,color:#f1f5f9
+    style SHARED fill:#3b1f5e,stroke:#8b5cf6,color:#f1f5f9
 ```
 
 ## 3.2 Header-Based API Versioning Strategy
@@ -619,29 +486,28 @@ Example:     addr:v1:a3f2b8c9d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e
 ### 3.3.2 Lookup Flow
 
 
-```
+```mermaid
+flowchart TD
+    REQ(["Request arrives"]) --> L1{Redis L1\nCache Hit?}
 
-  Request arrives
-       |
-       v
-  +----------+     HIT     +-------------------+
-  |  Redis   | ----------> | Return cached     |
-  |  (L1)    |             | result            |
-  +----+-----+             +-------------------+
-       | MISS
-       v
-  +----------+     HIT     +-------------------+
-  | CosmosDB | ----------> | Write to Redis    |
-  |  (L2)    |             | Return result     |
-  +----+-----+             +-------------------+
-       | MISS
-       v
-  +----------+             +-------------------+
-  | Smarty   | ----------> | Write to CosmosDB |
-  | API      |             | Write to Redis    |
-  +----------+             | Return result     |
-                           +-------------------+
+    L1 -- HIT --> RET1(["Return cached result\n⚡ &lt;5ms"])
+    L1 -- MISS --> L2{CosmosDB L2\nCache Hit?}
 
+    L2 -- HIT --> WARM["Write back to Redis L1\n(TTL: 1h)"]
+    WARM --> RET2(["Return result\n⚡ &lt;15ms"])
+    L2 -- MISS --> SMARTY["Call Smarty API\n(via Polly pipeline)"]
+
+    SMARTY --> W1["Write to CosmosDB L2\n(TTL: 90d)"]
+    W1 --> W2["Write to Redis L1\n(TTL: 1h)"]
+    W2 --> RET3(["Return result\n⏱ &lt;500ms"])
+
+    style REQ fill:#0d1b3e,stroke:#0078D4,color:#f1f5f9
+    style L1 fill:#dc2626,stroke:#dc2626,color:#fff
+    style L2 fill:#107C10,stroke:#107C10,color:#fff
+    style SMARTY fill:#7f1d1d,stroke:#dc2626,color:#fff
+    style RET1 fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
+    style RET2 fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
+    style RET3 fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
 ```
 
 
@@ -1996,25 +1862,38 @@ Sensitive configuration values (`Smarty:AuthId`, `Smarty:AuthToken`, `CosmosDb:K
 
 ## B.3 CI/CD Pipeline
 
+The CI/CD pipeline is implemented using **Azure DevOps Pipelines** (YAML-based multi-stage pipeline). The pipeline is defined in `.azure-pipelines/azure-pipelines.yml` and triggered on commits to the `main` branch. A manual approval gate guards production deployments.
 
-```
+| Property | Value |
+| --- | --- |
+| Platform | Azure DevOps Pipelines |
+| Trigger | Push to `main` branch (CI trigger) |
+| Pipeline File | `.azure-pipelines/azure-pipelines.yml` |
+| Artifact Store | Azure Artifacts |
+| Container Registry | Azure Container Registry (ACR) |
+| Approval Gate | Azure DevOps Environment approval (pre-production stage) |
+| Agent Pool | `ubuntu-latest` (Microsoft-hosted) |
 
-  GitHub (main branch)
-       |
-       v
-  GitHub Actions Workflow
-       |
-       +--> Step 1: Restore + Build (.NET 10)
-       +--> Step 2: Run Unit Tests (xUnit + FluentAssertions)
-       +--> Step 3: Run Integration Tests (Testcontainers)
-       +--> Step 4: Code Coverage Report (Coverlet >= 80%)
-       +--> Step 5: Verify Snapshots (Verify library)
-       +--> Step 6: Docker Build (multi-stage, Linux)
-       +--> Step 7: Push to Azure Container Registry (ACR)
-       +--> Step 8: Deploy to ACA (staging environment)
-       +--> Step 9: Smoke Tests (health endpoints)
-       +--> Step 10: Deploy to ACA (production) [manual approval gate]
+```mermaid
+flowchart TD
+    ADO(["Azure DevOps\nmain branch push"]) --> PIPE["Azure Pipelines\nMulti-stage pipeline triggered"]
 
+    PIPE --> S1["Stage: Build\nRestore + Build (.NET 10)\nPublish build artifacts"]
+    S1 --> S2["Stage: Test\nUnit Tests — xUnit + FluentAssertions\nIntegration Tests — Testcontainers"]
+    S2 --> S3["Stage: Quality\nCode Coverage Report (Coverlet ≥ 80%)\nVerify Snapshots (Verify library)"]
+    S3 --> S4["Stage: Package\nDocker Build (multi-stage, Linux)\nPush image to ACR"]
+    S4 --> S5["Stage: Deploy — Staging\nDeploy to ACA staging\nRun smoke tests (health endpoints)"]
+    S5 --> GATE{{"Azure DevOps\nEnvironment Approval"}}
+    GATE -- Approved --> S6["Stage: Deploy — Production\nDeploy to ACA production"]
+    GATE -- Rejected --> STOP(["❌ Deployment\nHalted"])
+    S6 --> DONE(["✅ Production\nDeployment Complete"])
+
+    style ADO fill:#0078D4,stroke:#0078D4,color:#fff
+    style PIPE fill:#1e293b,stroke:#0078D4,color:#f1f5f9
+    style GATE fill:#92400e,stroke:#f59e0b,color:#fff
+    style S6 fill:#14532d,stroke:#22c55e,color:#f1f5f9
+    style DONE fill:#14532d,stroke:#22c55e,color:#f1f5f9
+    style STOP fill:#7f1d1d,stroke:#dc2626,color:#fff
 ```
 
 

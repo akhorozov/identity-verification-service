@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AddressValidation.Api\AddressValidation.Api.csproj" />
-    <ProjectReference Include="..\AddressValidation.Gateway\AddressValidation.Gateway.csproj" />
+    <ProjectReference Include="..\src\AddressValidation.Api\AddressValidation.Api.csproj" />
+    <ProjectReference Include="..\src\AddressValidation.Gateway\AddressValidation.Gateway.csproj" />
     <ProjectReference Include="..\AddressValidation.ServiceDefaults\AddressValidation.ServiceDefaults.csproj" />
   </ItemGroup>
 

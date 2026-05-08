@@ -52,7 +52,12 @@ public class ExceptionHandlingMiddleware
             if (isDevelopment)
                 problem.Extensions["exceptionType"] = exception.GetType().Name;
 
-            await context.Response.WriteAsJsonAsync(problem);
+            var json = System.Text.Json.JsonSerializer.Serialize(problem, new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+            });
+            await context.Response.WriteAsync(json);
         }
     }
 }

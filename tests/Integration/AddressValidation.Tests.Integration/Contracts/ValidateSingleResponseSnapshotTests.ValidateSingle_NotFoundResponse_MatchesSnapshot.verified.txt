@@ -1,0 +1,7 @@
+﻿{
+  type: https://tools.ietf.org/html/rfc7807,
+  title: Address Not Found,
+  status: 404,
+  detail: The address could not be validated or is undeliverable.,
+  traceId: scrubbed
+}

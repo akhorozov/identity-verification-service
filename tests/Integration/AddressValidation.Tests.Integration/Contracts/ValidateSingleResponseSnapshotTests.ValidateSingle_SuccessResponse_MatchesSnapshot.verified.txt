@@ -1,0 +1,35 @@
+﻿{
+  input: {
+    street: 1 Infinite Loop,
+    street2: null,
+    city: Cupertino,
+    state: CA,
+    zipCode: 95014,
+    addressee: null
+  },
+  address: {
+    deliveryLine1: 1 Infinite Loop,
+    lastLine: Cupertino CA 95014,
+    primaryNumber: null,
+    streetName: null,
+    streetSuffix: null,
+    secondaryDesignator: null,
+    secondaryNumber: null,
+    cityName: CUPERTINO,
+    stateAbbreviation: CA,
+    zipCode: 95014,
+    plus4Code: null,
+    deliveryPoint: null,
+    deliveryPointCheckDigit: null
+  },
+  analysis: null,
+  geocoding: null,
+  metadata: {
+    providerName: Smarty,
+    validatedAt: DateTimeOffset_1,
+    cacheSource: PROVIDER,
+    apiVersion: 1.0,
+    requestDurationMs: 0,
+    correlationId: Guid_1
+  }
+}

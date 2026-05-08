@@ -1,9 +1,9 @@
-﻿namespace AddressValidation.Tests.Integration;
+﻿namespace AddressValidation.Tests.Unit;
 
 /// <summary>
-/// Placeholder integration test class - remove after adding real tests
+/// Placeholder test class - remove after adding real tests
 /// </summary>
-public class IntegrationTest1
+public class UnitTest1
 {
     [Fact]
     public void ShouldPassInitialTest()
@@ -15,7 +15,7 @@ public class IntegrationTest1
         var result = true;
 
         // Assert
-        Assert.Equal(expected, result);
+        result.ShouldBe(expected);
     }
 }
 

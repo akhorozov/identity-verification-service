@@ -41,6 +41,7 @@ Author: Alex Khorozov
 | 1.0 | 2026-04-01 | Alex Khorozov | Initial draft with core requirements |
 | 1.5 | 2026-04-15 | Alex Khorozov | Added NFRs, sequence diagrams, deployment model |
 | 2.0 | 2026-05-06 | Alex Khorozov | Full expansion: C4 model, ADRs, class diagrams, CQRS flow, event sourcing, domain storytelling, CosmosDB migration, header-based API versioning |
+| 2.1 | 2026-05-08 | Alex Khorozov | T3 caching layer: ICacheService&lt;T&gt;, CacheOrchestrator&lt;T&gt;, RedisCacheService&lt;T&gt;, CosmosCacheService&lt;T&gt;, CacheWarmingService; actual solution structure (IdentityVerification.slnx, flat Domain/, tests/ at root) |
 
 
 ## Table of Contents
@@ -345,83 +346,50 @@ This approach offers several advantages for this service:
 
 ### 3.1.1 Project Structure
 
-
 ```mermaid
 graph TD
+
     ROOT["src/AddressValidation.Api/"]
 
-    ROOT --> FEAT["Features/"]
+    ROOT --> DOMAIN["Domain/"]
     ROOT --> INFRA["Infrastructure/"]
-    ROOT --> SHARED["Shared/"]
     ROOT --> PROG["Program.cs"]
     ROOT --> APPSETT["appsettings.json"]
 
-    FEAT --> VS["ValidateSingle/"]
-    FEAT --> VB["ValidateBatch/"]
-    FEAT --> CM["CacheManagement/"]
-    FEAT --> HC["HealthCheck/"]
+    DOMAIN --> M1["AddressInput.cs"]
+    DOMAIN --> M2["ValidatedAddress.cs"]
+    DOMAIN --> M3["AddressAnalysis.cs"]
+    DOMAIN --> M4["GeocodingResult.cs"]
+    DOMAIN --> M5["ValidationMetadata.cs"]
+    DOMAIN --> M6["ValidationResponse.cs"]
+    DOMAIN --> M7["AddressHashExtensions.cs"]
 
-    VS --> VS1["ValidateSingleEndpoint.cs"]
-    VS --> VS2["ValidateSingleHandler.cs"]
-    VS --> VS3["ValidateSingleRequest.cs"]
-    VS --> VS4["ValidateSingleResponse.cs"]
-    VS --> VS5["ValidateSingleValidator.cs"]
+    INFRA --> SVC["Services/Caching/  T3"]
+    INFRA --> MW["Middleware/"]
+    INFRA --> CFG["Configuration/"]
+    INFRA --> LEGACY["Caching/ Redis/ CosmosDb/ — legacy"]
+    INFRA --> SE["ServiceCollectionExtensions.cs"]
 
-    VB --> VB1["ValidateBatchEndpoint.cs"]
-    VB --> VB2["ValidateBatchHandler.cs"]
-    VB --> VB3["ValidateBatchRequest.cs"]
-    VB --> VB4["ValidateBatchResponse.cs"]
-    VB --> VB5["ValidateBatchValidator.cs"]
+    SVC --> C1["ICacheService.cs"]
+    SVC --> C2["CacheOrchestrator.cs"]
+    SVC --> C3["RedisCacheService.cs"]
+    SVC --> C4["CosmosCacheService.cs"]
+    SVC --> C5["CacheWarmingService.cs"]
+    SVC --> C6["CosmosDbInitializationService.cs"]
 
-    CM --> CM1["CacheStatsEndpoint.cs"]
-    CM --> CM2["InvalidateCacheEndpoint.cs"]
-    CM --> CM3["FlushCacheEndpoint.cs"]
-    CM --> CM4["CacheStatsHandler.cs"]
+    MW --> MW1["CorrelationIdMiddleware.cs"]
+    MW --> MW2["ExceptionHandlingMiddleware.cs"]
+    MW --> MW3["SecurityHeadersMiddleware.cs"]
 
-    HC --> HC1["HealthCheckEndpoint.cs"]
-    HC --> HC2["ReadinessCheckHandler.cs"]
-
-    INFRA --> CACHING["Caching/"]
-    INFRA --> PROVIDERS["Providers/"]
-    INFRA --> RESILIENCE["Resilience/"]
-    INFRA --> VERSIONING["Versioning/"]
-    INFRA --> EVENTS["Events/"]
-
-    CACHING --> C1["ICacheService.cs"]
-    CACHING --> C2["RedisCacheService.cs"]
-    CACHING --> C3["CosmosCacheService.cs"]
-    CACHING --> C4["CacheOrchestrator.cs"]
-
-    PROVIDERS --> P1["IAddressValidationProvider.cs"]
-    PROVIDERS --> P2["SmartyProvider.cs"]
-    PROVIDERS --> P3["ISmartyApi.cs (Refit interface)"]
-
-    RESILIENCE --> R1["PollyPolicies.cs"]
-    RESILIENCE --> R2["ResiliencePipelineConfig.cs"]
-
-    VERSIONING --> V1["ApiVersioningConfig.cs"]
-
-    EVENTS --> E1["IAuditEventStore.cs"]
-    EVENTS --> E2["CosmosAuditEventStore.cs"]
-    EVENTS --> E3["DomainEvent.cs"]
-
-    SHARED --> MODELS["Models/"]
-    SHARED --> EXTENSIONS["Extensions/"]
-
-    MODELS --> M1["AddressInput.cs"]
-    MODELS --> M2["ValidatedAddress.cs"]
-    MODELS --> M3["AddressAnalysis.cs"]
-    MODELS --> M4["GeocodingResult.cs"]
-    MODELS --> M5["ValidationMetadata.cs"]
-
-    EXTENSIONS --> X1["ServiceCollectionExtensions.cs"]
-    EXTENSIONS --> X2["AddressHashExtensions.cs"]
+    CFG --> CFG1["AzureKeyVaultConfiguration.cs"]
 
     style ROOT fill:#0d1b3e,stroke:#0078D4,color:#f1f5f9
-    style FEAT fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
+    style DOMAIN fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9
     style INFRA fill:#14532d,stroke:#22c55e,color:#f1f5f9
-    style SHARED fill:#3b1f5e,stroke:#8b5cf6,color:#f1f5f9
+    style SVC fill:#7c2d12,stroke:#f97316,color:#f1f5f9
 ```
+
+> **Note:** VSA vertical slices (`Features/ValidateSingle`, `Features/ValidateBatch`, etc.) are planned but not yet implemented. Domain models currently reside in a flat `Domain/` folder.
 
 ## 3.2 Header-Based API Versioning Strategy
 
@@ -467,24 +435,36 @@ The `AssumeDefaultVersionWhenUnspecified` property is explicitly set to `false`.
 The service implements a two-tier caching strategy to balance performance and durability:
 
 
-| Tier | Technology | TTL | Latency Target | Purpose |
-| --- | --- | --- | --- | --- |
-| **L1 — Hot** | Redis | 1 hour (3,600s) | < 5ms p99 | Sub-millisecond reads for frequently accessed addresses; absorbs burst traffic |
-| **L2 — Persistent** | Azure Cosmos DB | 90 days (7,776,000s) | < 15ms p99 | Durable store of all validated addresses; survives Redis evictions and restarts |
+| Tier | Technology | Implementation | TTL | Latency Target | Purpose |
+| --- | --- | --- | --- | --- | --- |
+| **L1 — Hot** | Redis | `RedisCacheService<T>` | 1 hour (3,600s) | < 5ms p99 | Sub-millisecond reads for hot addresses; absorbs burst traffic |
+| **L2 — Persistent** | Azure Cosmos DB | `CosmosCacheService<T>` | 90 days (7,776,000s) | < 15ms p99 | Durable store of all validated addresses; survives Redis evictions and restarts |
+
+The T3 milestone introduced a fully generic, multi-level cache abstraction:
+
+| Type | Responsibility |
+| --- | --- |
+| `ICacheService<T>` | Generic interface: `GetAsync`, `SetAsync`, `RemoveAsync`, `ExistsAsync` |
+| `CacheOrchestrator<T>` | L1 → L2 → Provider lookup with write-through on miss; returns `CacheResult<T>` with `CacheSourceMetadata` |
+| `RedisCacheService<T>` | L1 implementation (`StackExchange.Redis`); JSON serialized, configurable TTL |
+| `CosmosCacheService<T>` | L2 implementation (Azure Cosmos DB); stores items with native TTL field |
+| `CacheWarmingService` | Hosted service that pre-warms caches on startup (extensible placeholder) |
+| `CosmosDbInitializationService` | Ensures Cosmos DB database and cache container exist at startup |
 
 
 ### 3.3.1 Cache Key Strategy
 
 
-Cache keys are generated by normalizing the input address (lowercase, trim whitespace, remove punctuation) and computing a SHA-256 hash. The key format includes the API version to prevent cross-version cache contamination:
+Cache keys are generated by `AddressHashExtensions.ComputeCacheKey`. The address is normalized (uppercase, trimmed) before hashing. The key format includes a version prefix to prevent cross-version cache contamination:
 
 
 ```
-
-Key Format:  addr:v{apiVersion}:{sha256\_hash}
+Key Format:  addr:v1:{64-char-SHA-256-hex}
 Example:     addr:v1:a3f2b8c9d1e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0
-
 ```
+
+Bumping `v1` → `v2` automatically invalidates all prior entries.
+
 
 ### 3.3.2 Lookup Flow
 

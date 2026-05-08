@@ -61,14 +61,25 @@ The service uses **Vertical Slice Architecture** with the following key componen
 ### Solution Structure
 
 ```
-AddressValidation/
-├── AddressValidation.Api                 # Core validation service
-├── AddressValidation.Gateway             # YARP reverse proxy (NEW)
-├── AddressValidation.AppHost             # Aspire orchestrator
-├── AddressValidation.ServiceDefaults     # Shared infrastructure
-├── AddressValidation.Tests.Unit          # Unit tests
-├── AddressValidation.Tests.Integration   # Integration tests
-└── Directory.Packages.props              # Central Package Management (NEW)
+IdentityVerification.slnx
+├── src/
+│   ├── AddressValidation.Api/               # Core validation service (port 5000)
+│   │   ├── Domain/                          # Domain models (flat layout)
+│   │   └── Infrastructure/
+│   │       ├── Services/Caching/            # T3: ICacheService<T>, CacheOrchestrator<T>
+│   │       ├── Middleware/                  # CorrelationId, ExceptionHandling, SecurityHeaders
+│   │       ├── Configuration/               # AzureKeyVaultConfiguration
+│   │       ├── Caching/                     # IDistributedCache abstraction (legacy)
+│   │       ├── Redis/                       # RedisCache (legacy)
+│   │       └── CosmosDb/                    # CosmosDbCache (legacy)
+│   └── AddressValidation.Gateway/           # YARP reverse proxy (port 5001)
+├── AddressValidation.AppHost/               # Aspire orchestrator
+├── AddressValidation.ServiceDefaults/       # Shared telemetry & resilience
+├── tests/
+│   ├── Unit/AddressValidation.Tests.Unit/
+│   └── Integration/AddressValidation.Tests.Integration/
+├── Directory.Packages.props                 # Central Package Management
+└── docs/
 ```
 
 ### Key Architectural Patterns
@@ -99,20 +110,25 @@ The service uses **Vertical Slice Architecture (VSA)** — each feature is a sel
 
 ```
 src/AddressValidation.Api/
-├── Features/
-│   ├── ValidateSingle/          # Endpoint, Handler, Validator, Request/Response
-│   ├── ValidateBatch/           # Endpoint, Handler, Validator, Request/Response
-│   ├── CacheManagement/         # Stats, Invalidate, Flush endpoints
-│   └── HealthCheck/             # Liveness, Readiness handlers
+├── Domain/
+│   ├── AddressInput.cs              # Request model with cross-field validation
+│   ├── ValidatedAddress.cs          # USPS CASS-certified standardized address
+│   ├── AddressAnalysis.cs           # DPV deliverability indicators
+│   ├── GeocodingResult.cs           # Latitude, longitude, precision
+│   ├── ValidationMetadata.cs        # Provider, timing, cache source
+│   ├── ValidationResponse.cs        # Aggregate response model
+│   └── AddressHashExtensions.cs     # SHA-256 hashing & cache key utilities
 ├── Infrastructure/
-│   ├── Caching/                 # ICacheService, RedisCacheService, CosmosCacheService, CacheOrchestrator
-│   ├── Providers/               # IAddressValidationProvider, SmartyProvider, ISmartyApi (Refit)
-│   ├── Resilience/              # PollyPolicies, ResiliencePipelineConfig
-│   ├── Versioning/              # ApiVersioningConfig
-│   └── Events/                  # IAuditEventStore, CosmosAuditEventStore, DomainEvent
-├── Shared/
-│   ├── Models/                  # AddressInput, ValidatedAddress, AddressAnalysis, GeocodingResult, ValidationMetadata
-│   └── Extensions/              # ServiceCollectionExtensions, AddressHashExtensions
+│   ├── Services/Caching/            # T3 multi-level cache layer
+│   │   ├── ICacheService.cs         # Generic cache interface
+│   │   ├── CacheOrchestrator.cs     # L1 → L2 → Provider strategy
+│   │   ├── RedisCacheService.cs     # L1 Redis implementation
+│   │   ├── CosmosCacheService.cs    # L2 Cosmos DB implementation
+│   │   ├── CacheWarmingService.cs   # Hosted startup cache warmer
+│   │   └── CosmosDbInitializationService.cs
+│   ├── Middleware/
+│   ├── Configuration/
+│   └── ServiceCollectionExtensions.cs
 ├── Program.cs
 └── appsettings.json
 ```
@@ -263,12 +279,14 @@ All errors follow [RFC 7807 Problem Details](https://tools.ietf.org/html/rfc7807
 
 | Tier | Technology | TTL | Latency Target | Purpose |
 |------|-----------|-----|----------------|---------|
-| **L1 — Hot** | Redis | 1 hour | < 5ms p99 | Sub-millisecond reads for frequently accessed addresses |
-| **L2 — Persistent** | Azure Cosmos DB | 90 days | < 15ms p99 | Durable store surviving Redis evictions and restarts |
+| **L1 — Hot** | Redis (`RedisCacheService<T>`) | 1 hour | < 5ms p99 | Sub-millisecond reads for hot addresses |
+| **L2 — Persistent** | Azure Cosmos DB (`CosmosCacheService<T>`) | 90 days | < 15ms p99 | Durable store surviving Redis evictions/restarts |
 
-**Cache key format:** `addr:v{apiVersion}:{sha256_hash}` — normalized input (lowercase, trimmed, punctuation removed), hashed with SHA-256, prefixed with the API version to prevent cross-version contamination.
+**Orchestration:** `CacheOrchestrator<T>` implements the L1 → L2 → Provider lookup. On a miss at any level, the resolved value is written through to all higher tiers (write-through strategy). Each `CacheResult<T>` carries a `CacheSourceMetadata` identifying whether the value came from `L1`, `L2`, or `PROVIDER`, plus the retrieval latency.
 
-**Lookup flow:** L1 (Redis) → L2 (CosmosDB) → Smarty API. On any miss, the result is written to both tiers.
+**Cache key format:** `addr:v1:{64-char-SHA-256-hex}` — input normalized (uppercase, trimmed), hashed by `AddressHashExtensions`. Incrementing the version prefix auto-invalidates all prior entries.
+
+**Lookup flow:** L1 (Redis) → L2 (CosmosDB) → Smarty API. On any miss the result is written to both tiers.
 
 ---
 

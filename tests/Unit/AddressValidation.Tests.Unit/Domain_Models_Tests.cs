@@ -27,8 +27,8 @@ public class DomainModelsTests
         bool isValid = Validator.TryValidateObject(address, context, results, validateAllProperties: true);
 
         // Assert
-        Assert.True(isValid);
-        Assert.Empty(results);
+        isValid.ShouldBeTrue();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -47,8 +47,8 @@ public class DomainModelsTests
         bool isValid = Validator.TryValidateObject(address, context, results, validateAllProperties: true);
 
         // Assert
-        Assert.True(isValid);
-        Assert.Empty(results);
+        isValid.ShouldBeTrue();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class DomainModelsTests
         bool isValid = Validator.TryValidateObject(address, context, results, validateAllProperties: true);
 
         // Assert
-        Assert.True(isValid);
-        Assert.Empty(results);
+        isValid.ShouldBeTrue();
+        results.ShouldBeEmpty();
     }
 
     [Fact]
@@ -86,10 +86,10 @@ public class DomainModelsTests
         bool isValid = Validator.TryValidateObject(address, context, results, validateAllProperties: true);
 
         // Assert
-        Assert.False(isValid);
-        Assert.NotEmpty(results);
-        // Check that error message contains the expected content (ignore period differences)
-        Assert.True(results.Any(r => r.ErrorMessage?.Contains("Either (City + State) or ZipCode must be provided") == true));
+        isValid.ShouldBeFalse();
+        results.ShouldNotBeEmpty();
+        var errorWithExpectedMessage = results.FirstOrDefault(r => r.ErrorMessage?.Contains("Either (City + State) or ZipCode must be provided") == true);
+        errorWithExpectedMessage.ShouldNotBeNull();
     }
 
     [Fact]
@@ -109,7 +109,7 @@ public class DomainModelsTests
         bool isValid = Validator.TryValidateObject(address, context, results, validateAllProperties: true);
 
         // Assert
-        Assert.False(isValid);
+        isValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -129,8 +129,8 @@ public class DomainModelsTests
         string hash2 = address.ComputeHash();
 
         // Assert
-        Assert.Equal(hash1, hash2);
-        Assert.Equal(64, hash1.Length); // SHA-256 = 64 hex characters
+        hash1.ShouldBe(hash2);
+        hash1.Length.ShouldBe(64); // SHA-256 = 64 hex characters
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class DomainModelsTests
         string hash2 = address2.ComputeHash();
 
         // Assert
-        Assert.Equal(hash1, hash2);
+        hash1.ShouldBe(hash2);
     }
 
     [Fact]
@@ -184,7 +184,7 @@ public class DomainModelsTests
         string hash2 = address2.ComputeHash();
 
         // Assert
-        Assert.NotEqual(hash1, hash2);
+        hash1.ShouldNotBe(hash2);
     }
 
     [Fact]
@@ -202,8 +202,8 @@ public class DomainModelsTests
         string cacheKey = address.GenerateCacheKey();
 
         // Assert
-        Assert.StartsWith("addr:v1:", cacheKey);
-        Assert.Equal("addr:v1:".Length + 64, cacheKey.Length); // Version + hash
+        cacheKey.ShouldStartWith("addr:v1:");
+        cacheKey.Length.ShouldBe("addr:v1:".Length + 64); // Version + hash
     }
 
     [Fact]
@@ -222,14 +222,13 @@ public class DomainModelsTests
         bool isValid = AddressHashExtensions.IsValidCacheKey(validKey);
 
         // Assert
-        Assert.True(isValid);
+        isValid.ShouldBeTrue();
     }
 
     [Theory]
     [InlineData("invalid:key:format")]
     [InlineData("addr:v2:abc")] // Wrong length hash
     [InlineData("addr:v1:xyz")] // Invalid hex characters
-    [InlineData(null)]
     [InlineData("")]
     public void CacheKey_Validation_InvalidKeysFail(string invalidKey)
     {
@@ -237,7 +236,17 @@ public class DomainModelsTests
         bool isValid = AddressHashExtensions.IsValidCacheKey(invalidKey);
 
         // Assert
-        Assert.False(isValid);
+        isValid.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void CacheKey_Validation_NullKeyFails()
+    {
+        // Act
+        bool isValid = AddressHashExtensions.IsValidCacheKey(null!);
+
+        // Assert
+        isValid.ShouldBeFalse();
     }
 
     [Fact]
@@ -254,10 +263,10 @@ public class DomainModelsTests
         string expectedHash = address.ComputeHash();
 
         // Act
-        string extractedHash = AddressHashExtensions.ExtractHashFromCacheKey(cacheKey);
+        string? extractedHash = AddressHashExtensions.ExtractHashFromCacheKey(cacheKey);
 
         // Assert
-        Assert.Equal(expectedHash, extractedHash);
+        extractedHash.ShouldBe(expectedHash);
     }
 
     [Fact]
@@ -289,12 +298,12 @@ public class DomainModelsTests
         };
 
         // Assert
-        Assert.NotNull(response.InputAddress);
-        Assert.NotNull(response.ValidatedAddress);
-        Assert.NotNull(response.Analysis);
-        Assert.NotNull(response.Geocoding);
-        Assert.NotNull(response.Metadata);
-        Assert.Equal("validated", response.Status);
-        Assert.Equal("Smarty", response.Metadata.ProviderName);
+        response.InputAddress.ShouldNotBeNull();
+        response.ValidatedAddress.ShouldNotBeNull();
+        response.Analysis.ShouldNotBeNull();
+        response.Geocoding.ShouldNotBeNull();
+        response.Metadata.ShouldNotBeNull();
+        response.Status.ShouldBe("validated");
+        response.Metadata.ProviderName.ShouldBe("Smarty");
     }
 }

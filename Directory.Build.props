@@ -1,0 +1,19 @@
+<Project>
+  <!-- Global build properties for all projects -->
+
+  <PropertyGroup>
+    <!-- Treat warnings as errors to enforce high code quality -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Code style and nullable reference types -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- Suppress specific warnings across all projects -->
+    <!-- CS1591: Missing XML comment for publicly visible type or member -->
+    <!-- NU1902/NU1903/NU1904: NuGet vulnerability warnings (handled separately) -->
+    <NoWarn>$(NoWarn);CS1591;NU1902;NU1903;NU1904</NoWarn>
+  </PropertyGroup>
+
+</Project>

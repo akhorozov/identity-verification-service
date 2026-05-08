@@ -1,5 +1,38 @@
 # Implementation Status & Tracking
 
+## T3: Multi-Level Cache Layer — ✅ COMPLETED
+
+**Branch**: `feat/t3-caching-layer`  
+**Completion Date**: 2026-05-08  
+**Build Status**: ✅ Successful (0 errors, 0 warnings)  
+
+### What's Included
+
+#### Cache Abstractions & Implementations
+
+| File | Description |
+|------|-------------|
+| `Infrastructure/Services/Caching/ICacheService.cs` | Generic cache interface: `GetAsync`, `SetAsync`, `RemoveAsync`, `ExistsAsync` |
+| `Infrastructure/Services/Caching/CacheOrchestrator.cs` | L1 → L2 → Provider orchestration; `CacheResult<T>` with `CacheSourceMetadata` |
+| `Infrastructure/Services/Caching/RedisCacheService.cs` | L1 Redis implementation (StackExchange.Redis, JSON, configurable TTL) |
+| `Infrastructure/Services/Caching/CosmosCacheService.cs` | L2 Cosmos DB implementation (native TTL, partition key `/pk`) |
+| `Infrastructure/Services/Caching/CacheWarmingService.cs` | Hosted startup cache warmer (extensible placeholder) |
+| `Infrastructure/Services/Caching/CosmosDbInitializationService.cs` | Startup service ensuring Cosmos DB database + container exist |
+
+#### Cache Key Format
+
+`addr:v1:{64-char-SHA-256-hex}` — computed by `AddressHashExtensions.ComputeCacheKey` over normalized (uppercase, trimmed) address fields.
+
+#### Design Decisions
+
+1. **Generic `ICacheService<T>`** — supports any serializable type; allows future cache providers without changes to orchestration logic
+2. **`CacheOrchestrator<T>` with write-through** — on L2 hit, back-fills L1; on provider hit, writes L1 + L2; ensures cache consistency
+3. **`CacheResult<T>` record** — carries value, `CacheSourceMetadata` (source name, timestamp, latency), and `IsHit` flag for observability
+4. **`CosmosCacheService` internal `CacheItem`** — wraps value as serialized JSON string with `id`, `pk`, `type`, `ttl` fields for native Cosmos TTL support
+5. **`CacheWarmingService`** — non-blocking on failure; designed to be extended with L2→L1 pre-population strategies
+
+---
+
 ## T2: Core Domain Models — ✅ COMPLETED
 
 **Completion Date**: 2026-05-08  

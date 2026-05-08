@@ -1,12 +1,14 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AddressValidation.Api.Domain;
 using AddressValidation.Api.Infrastructure.Caching;
 using AddressValidation.Api.Infrastructure.CosmosDb;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Providers.Smarty;
 using AddressValidation.Api.Infrastructure.Redis;
 using AddressValidation.Api.Infrastructure.Services.Audit;
+using AddressValidation.Api.Infrastructure.Services.Caching;
 using Refit;
 using StackExchange.Redis;
 
@@ -130,6 +132,37 @@ public static class ServiceCollectionExtensions
             .AddProviderResilience();
 
         services.AddScoped<IAddressValidationProvider, SmartyProvider>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the T3 multi-level cache orchestrator for <see cref="ValidationResponse"/>.
+    /// Wires <see cref="RedisCacheService{T}"/> (L1) and <see cref="CosmosCacheService{T}"/> (L2)
+    /// into a <see cref="CacheOrchestrator{T}"/> available for injection.
+    /// </summary>
+    public static IServiceCollection AddValidationCaching(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        services.AddSingleton<ICacheService<ValidationResponse>, RedisCacheService<ValidationResponse>>();
+        services.AddSingleton<ICacheService<ValidationResponse>>(sp =>
+            new CosmosCacheService<ValidationResponse>(
+                sp.GetRequiredService<CosmosClient>(),
+                configuration,
+                sp.GetRequiredService<ILogger<CosmosCacheService<ValidationResponse>>>()));
+
+        services.AddSingleton<CacheOrchestrator<ValidationResponse>>(sp =>
+        {
+            var all = sp.GetServices<ICacheService<ValidationResponse>>().ToArray();
+            // First registered = L1 (Redis), second = L2 (CosmosDB)
+            return new CacheOrchestrator<ValidationResponse>(
+                all[0],
+                all[1],
+                sp.GetRequiredService<ILogger<CacheOrchestrator<ValidationResponse>>>());
+        });
 
         return services;
     }

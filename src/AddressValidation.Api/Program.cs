@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
+using AddressValidation.Api.Features.Validation.ValidateSingle;
 using AddressValidation.Api.Infrastructure;
+using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
 using AddressValidation.Api.Infrastructure.Middleware;
 using Serilog;
@@ -115,6 +117,13 @@ try
 
     // Add infrastructure services
     builder.Services.AddInfrastructure(configuration);
+    builder.Services.AddProviders(configuration);
+    builder.Services.AddAuditEventStore(configuration);
+    builder.Services.AddValidationCaching(configuration);
+
+    // Register ValidateSingle feature
+    builder.Services.AddScoped<ValidateSingleHandler>();
+    builder.Services.AddScoped<IValidator<ValidateSingleRequest>, ValidateSingleRequestValidator>();
 
     // Add controllers and minimal APIs
     builder.Services.AddControllers();
@@ -184,6 +193,9 @@ try
 
     // Map controllers
     app.MapControllers();
+
+    // Map feature endpoints
+    app.MapValidateSingle();
 
     // ==================== Run Application ====================
     app.Run();

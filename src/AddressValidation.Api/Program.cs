@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using AddressValidation.Api.Features.Validation.ValidateSingle;
+using AddressValidation.Api.Features.Validation.ValidateBatch;
 using AddressValidation.Api.Infrastructure;
 using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
@@ -40,9 +41,9 @@ try
     builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(1, 0);
-        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.AssumeDefaultVersionWhenUnspecified = true; // Defaults to v1.0 when Api-Version header is omitted
         options.ReportApiVersions = true;
-        options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+        options.ApiVersionReader = new HeaderApiVersionReader("Api-Version");
     });
 
     // Add CORS
@@ -125,6 +126,10 @@ try
     builder.Services.AddScoped<ValidateSingleHandler>();
     builder.Services.AddScoped<IValidator<ValidateSingleRequest>, ValidateSingleRequestValidator>();
 
+    // Register ValidateBatch feature
+    builder.Services.AddScoped<ValidateBatchHandler>();
+    builder.Services.AddScoped<IValidator<ValidateBatchRequest>, ValidateBatchRequestValidator>();
+
     // Add controllers and minimal APIs
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
@@ -196,6 +201,7 @@ try
 
     // Map feature endpoints
     app.MapValidateSingle();
+    app.MapValidateBatch();
 
     // ==================== Run Application ====================
     app.Run();

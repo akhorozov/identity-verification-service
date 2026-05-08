@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace AddressValidation.Api.Infrastructure.Middleware;
 
 /// <summary>
-/// Global exception handling middleware
+/// Global exception handling middleware. Returns RFC 7807 ProblemDetails
+/// with <c>application/problem+json</c> content type on all unhandled exceptions.
 /// </summary>
 public class ExceptionHandlingMiddleware
 {
@@ -27,24 +30,29 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "An unhandled exception occurred while processing the request");
+            _logger.LogError(exception, "Unhandled exception for {Method} {Path}", context.Request.Method, context.Request.Path);
 
-            context.Response.ContentType = "application/json";
+            context.Response.ContentType = "application/problem+json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
             var isDevelopment = _configuration.GetValue<bool>("AddressValidation:EnableDetailedErrors");
-            var response = new
-            {
-                type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-                title = "An error occurred processing your request",
-                status = StatusCodes.Status500InternalServerError,
-                traceId = context.TraceIdentifier,
-                correlationId = context.Items.ContainsKey("CorrelationId") ? context.Items["CorrelationId"] : null,
-                detail = isDevelopment ? exception.Message : null,
-                exception = isDevelopment ? exception.GetType().Name : null
-            };
+            var correlationId = context.Items.TryGetValue("CorrelationId", out var cid) ? cid?.ToString() : null;
 
-            await context.Response.WriteAsJsonAsync(response);
+            var problem = new ProblemDetails
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                Title = "An unexpected error occurred.",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = isDevelopment ? exception.Message : null,
+                Instance = context.Request.Path,
+            };
+            problem.Extensions["traceId"] = context.TraceIdentifier;
+            if (correlationId is not null)
+                problem.Extensions["correlationId"] = correlationId;
+            if (isDevelopment)
+                problem.Extensions["exceptionType"] = exception.GetType().Name;
+
+            await context.Response.WriteAsJsonAsync(problem);
         }
     }
 }

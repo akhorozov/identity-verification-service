@@ -59,12 +59,16 @@ public class MetricsMiddlewareTests
         var middleware = new MetricsMiddleware(_ => Task.CompletedTask, metrics);
         var context = MakeContext("/health/live");
 
+        // Capture baseline before the call (Prometheus counters are process-wide)
+        var before = metrics.ValidationRequestsTotal
+            .WithLabels("validate_single", "200", "1.0").Value;
+
         await middleware.InvokeAsync(context);
 
-        // No labels were created for this path — the counter family exists but the
-        // specific label combination should have 0 value (or not exist at all)
-        Assert.Equal(0, metrics.ValidationRequestsTotal
-            .WithLabels("validate_single", "200", "1.0").Value);
+        // Counter must not have increased — non-api path should not be instrumented
+        var after = metrics.ValidationRequestsTotal
+            .WithLabels("validate_single", "200", "1.0").Value;
+        Assert.Equal(before, after);
     }
 
     [Fact]

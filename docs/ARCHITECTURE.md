@@ -19,46 +19,72 @@ This document outlines the architecture, design patterns, and infrastructure set
 
 ## Solution Structure
 
-The solution uses a **Vertical Slice Architecture (VSA)** with clear separation of concerns:
+The solution uses a **Vertical Slice Architecture (VSA)** with clear separation of concerns. The orchestration and shared-defaults projects reside at the solution root; application code lives under `src/`; tests under `tests/`.
 
 ```
-AddressValidation.sln
+IdentityVerification.slnx
 ├── src/
-│   ├── AddressValidation.Api/
+│   ├── AddressValidation.Api/               # Core validation service (port 5000)
 │   │   ├── Program.cs
+│   │   ├── Domain/                          # Domain models (flat, no slice folders yet)
+│   │   │   ├── AddressInput.cs
+│   │   │   ├── ValidatedAddress.cs
+│   │   │   ├── AddressAnalysis.cs
+│   │   │   ├── GeocodingResult.cs
+│   │   │   ├── ValidationMetadata.cs
+│   │   │   ├── ValidationResponse.cs
+│   │   │   └── AddressHashExtensions.cs
 │   │   ├── Infrastructure/
+│   │   │   ├── Caching/                     # Legacy IDistributedCache abstraction
+│   │   │   │   └── IDistributedCache.cs
+│   │   │   ├── CosmosDb/                    # Legacy CosmosDbCache (pre-T3)
+│   │   │   │   └── CosmosDbCache.cs
+│   │   │   ├── Redis/                       # Legacy RedisCache (pre-T3)
+│   │   │   │   └── RedisCache.cs
+│   │   │   ├── Services/
+│   │   │   │   └── Caching/                 # T3 multi-level cache services
+│   │   │   │       ├── ICacheService.cs
+│   │   │   │       ├── CacheOrchestrator.cs
+│   │   │   │       ├── RedisCacheService.cs
+│   │   │   │       ├── CosmosCacheService.cs
+│   │   │   │       ├── CacheWarmingService.cs
+│   │   │   │       └── CosmosDbInitializationService.cs
 │   │   │   ├── Middleware/
+│   │   │   │   ├── CorrelationIdMiddleware.cs
+│   │   │   │   ├── ExceptionHandlingMiddleware.cs
+│   │   │   │   └── SecurityHeadersMiddleware.cs
 │   │   │   ├── Configuration/
-│   │   │   ├── Caching/
+│   │   │   │   └── AzureKeyVaultConfiguration.cs
 │   │   │   └── ServiceCollectionExtensions.cs
-│   │   ├── Features/
-│   │   │   └── AddressValidation/
-│   │   │       ├── Domain/
-│   │   │       ├── Application/
-│   │   │       └── Endpoints/
 │   │   └── appsettings*.json
 │   │
-│   ├── AddressValidation.Gateway/
-│   │   ├── Program.cs
-│   │   ├── appsettings.json (YARP config)
-│   │   └── Middleware/
-│   │
-│   ├── AddressValidation.AppHost/
-│   │   ├── AppHost.cs
-│   │   └── Properties/
-│   │
-│   ├── AddressValidation.ServiceDefaults/
-│   │   ├── Extensions/
-│   │   └── Properties/
-│   │
-│   ├── AddressValidation.Tests.Unit/
-│   │   └── [Unit test files]
-│   │
-│   └── AddressValidation.Tests.Integration/
-│       └── [Integration test files]
+│   └── AddressValidation.Gateway/           # YARP reverse proxy (port 5001)
+│       ├── Program.cs
+│       └── appsettings.json
 │
-├── Directory.Packages.props (Central Package Management)
-├── AddressValidation.slnx
+├── AddressValidation.AppHost/               # Aspire orchestrator
+│   ├── AppHost.cs
+│   └── aspire.config.json
+│
+├── AddressValidation.ServiceDefaults/       # Shared telemetry & resilience defaults
+│   └── Extensions.cs
+│
+├── tests/
+│   ├── Unit/
+│   │   └── AddressValidation.Tests.Unit/
+│   │       ├── Domain_Models_Tests.cs
+│   │       ├── Infrastructure/
+│   │       │   └── Services/Caching/
+│   │       │       └── CacheServiceTests.cs
+│   │       └── UnitTestFixture.cs
+│   └── Integration/
+│       └── AddressValidation.Tests.Integration/
+│           ├── Caching/
+│           │   └── CacheHierarchyIntegrationTests.cs
+│           └── IntegrationTestFixture.cs
+│
+├── Directory.Packages.props                 # Central Package Management
+├── IdentityVerification.slnx
 ├── README.md
 └── docs/
 ```
@@ -67,11 +93,12 @@ AddressValidation.sln
 
 | Project | Purpose |
 |---------|---------|
-| **AddressValidation.Api** | Core API service for address validation; contains features, middleware, caching logic |
-| **AddressValidation.Gateway** | YARP reverse proxy for traffic routing and load balancing |
-| **AddressValidation.AppHost** | Aspire orchestrator for local development with Redis & CosmosDB |
-| **AddressValidation.ServiceDefaults** | Shared configuration for observability, resilience, and service discovery |
-| **Tests** | Unit and integration test projects with xUnit framework |
+| **AddressValidation.Api** | Core validation service; domain models, T3 multi-level caching, middleware, resilience |
+| **AddressValidation.Gateway** | YARP reverse proxy for traffic routing, security headers, and CORS |
+| **AddressValidation.AppHost** | Aspire orchestrator — wires Redis, CosmosDB emulator, Api, and Gateway for local dev |
+| **AddressValidation.ServiceDefaults** | Shared defaults for OpenTelemetry, health checks, and resilience across services |
+| **AddressValidation.Tests.Unit** | xUnit unit tests for domain models and caching services (NSubstitute mocks) |
+| **AddressValidation.Tests.Integration** | xUnit integration tests for cache hierarchy using Testcontainers |
 
 ---
 
@@ -79,18 +106,30 @@ AddressValidation.sln
 
 ### 1. Vertical Slice Architecture (VSA)
 
-Each feature (e.g., `AddressValidation`) is organized as a vertical slice:
+Domain models are currently organized in a flat `Domain/` folder inside `AddressValidation.Api`. Future iterations will reorganize per-feature into vertical slices:
 
 ```
-Features/
+Features/                    ← planned; not yet implemented
 └── AddressValidation/
     ├── Domain/           # Core business entities & value objects
     ├── Application/      # Use cases, validators, business logic
     ├── Endpoints/        # API route handlers
-    └── [optional: Repositories, Services]
+    └── [Repositories, Services]
 ```
 
-**Benefits:**
+Current `Domain/` models (flat layout, all implemented):
+
+| Model | Responsibility |
+|-------|---------------|
+| `AddressInput` | Client request with data annotations + cross-field validation |
+| `ValidatedAddress` | USPS CASS-certified standardized address |
+| `AddressAnalysis` | DPV deliverability indicators |
+| `GeocodingResult` | Latitude, longitude, precision |
+| `ValidationMetadata` | Provider name, timing, cache source |
+| `ValidationResponse` | Aggregate response combining all models |
+| `AddressHashExtensions` | Deterministic SHA-256 hashing & cache key utilities (`addr:v1:{hash}`) |
+
+**Benefits of VSA (target state):**
 - Feature isolation and independent deployment
 - Clear feature ownership
 - Easier testing and maintenance
@@ -123,6 +162,71 @@ Client Requests
 - **Application Layer**: Business logic & use cases
 - **Infrastructure Layer**: Database, caching, external APIs
 - **Presentation Layer**: API endpoints via Minimal APIs
+
+---
+
+## T3 Caching Layer (feat/t3-caching-layer)
+
+The T3 milestone introduced a generic, multi-level cache abstraction that replaces the earlier single-provider `IDistributedCache` pattern.
+
+### Core Abstractions
+
+| Type | Role |
+|------|------|
+| `ICacheService<T>` | Generic interface: `GetAsync`, `SetAsync`, `RemoveAsync`, `ExistsAsync` |
+| `CacheOrchestrator<T>` | L1 → L2 → Provider lookup with write-through on miss |
+| `RedisCacheService<T>` | L1 implementation using `StackExchange.Redis`; default TTL 1 h |
+| `CosmosCacheService<T>` | L2 implementation using Azure Cosmos DB; default TTL 90 days |
+| `CacheWarmingService` | Hosted service that pre-warms caches on startup (placeholder, extensible) |
+| `CosmosDbInitializationService` | Ensures Cosmos DB database and cache container exist at startup |
+
+### Cache Hierarchy
+
+```
+Client Request
+      ↓
+[CacheOrchestrator<T>]
+      ↓
+ L1: RedisCacheService<T>        (hit → return + record latency)
+      ↓ miss
+ L2: CosmosCacheService<T>       (hit → back-fill L1 + return)
+      ↓ miss
+ Provider (Smarty API)           (hit → write-through to L2 + L1 + return)
+```
+
+`CacheResult<T>` carries the value and a `CacheSourceMetadata` record identifying the source (`L1`, `L2`, or `PROVIDER`) plus retrieval latency.
+
+### Cache Key Format
+
+```
+addr:v1:{64-char-SHA-256-hex}
+```
+
+The hash is computed over the normalized (uppercase, trimmed) address fields by `AddressHashExtensions.ComputeCacheKey`. Bumping the version prefix (`v1` → `v2`) invalidates all prior entries automatically.
+
+### Configuration
+
+```json
+"Redis": {
+  "Enabled": true,
+  "ConnectionString": "localhost:6379",
+  "DefaultDatabase": 0,
+  "DefaultTtlSeconds": 3600,
+  "Ssl": false,
+  "AbortOnConnectFail": true,
+  "KeepAlive": 180,
+  "ConnectTimeout": 5000,
+  "SyncTimeout": 5000
+},
+"Cosmos": {
+  "Enabled": true,
+  "Endpoint": "https://...",
+  "DatabaseId": "AddressValidation",
+  "CacheContainerId": "ValidatedAddresses",
+  "PartitionKeyPath": "/pk",
+  "DefaultTtlSeconds": 7776000
+}
+```
 
 ---
 

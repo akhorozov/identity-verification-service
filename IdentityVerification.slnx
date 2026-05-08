@@ -1,0 +1,16 @@
+<Solution>
+    <Project Path="AddressValidation.AppHost/AddressValidation.AppHost.csproj" />
+    <Project Path="AddressValidation.ServiceDefaults/AddressValidation.ServiceDefaults.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/AddressValidation.Api/AddressValidation.Api.csproj" />
+    <Project Path="src/AddressValidation.Gateway/AddressValidation.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Folder Name="/Integration/">
+		<Project Path="tests/Integration/AddressValidation.Tests.Integration/AddressValidation.Tests.Integration.csproj" />
+	</Folder>
+	<Folder Name="/Unit/">
+		<Project Path="tests/Unit/AddressValidation.Tests.Unit/AddressValidation.Tests.Unit.csproj" />
+	</Folder>
+  </Folder>
+</Solution>

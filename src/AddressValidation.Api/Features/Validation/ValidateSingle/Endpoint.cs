@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
 /// Minimal API endpoint for single address validation (FR-001).
-/// POST /api/v1/addresses/validate
+/// POST /api/addresses/validate
 ///
 /// Response headers:
 ///   X-Cache-Source : L1 | L2 | PROVIDER
@@ -18,11 +18,12 @@ public static class ValidateSingleEndpoint
     /// <summary>Maps the endpoint onto the provided <see cref="IEndpointRouteBuilder"/>.</summary>
     public static IEndpointRouteBuilder MapValidateSingle(this IEndpointRouteBuilder routes)
     {
-        routes.MapPost("/api/v1/addresses/validate", HandleAsync)
+        routes.MapPost("/api/addresses/validate", HandleAsync)
             .WithName("ValidateSingleAddress")
             .WithSummary("Validate a single US address")
             .WithDescription(
                 "Validates a US postal address via the cache hierarchy (L1 → L2 → Provider). " +
+                "Requires Api-Version: 1.0 request header. " +
                 "Returns a standardised address or 404 for undeliverable addresses.")
             .WithTags("Validation")
             .Produces<ValidateSingleResponse>(StatusCodes.Status200OK)

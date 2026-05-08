@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Infrastructure.Authentication;
 using AddressValidation.Api.Infrastructure.Caching;
 using AddressValidation.Api.Infrastructure.CosmosDb;
+using AddressValidation.Api.Infrastructure.HealthChecks;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Providers.Smarty;
 using AddressValidation.Api.Infrastructure.Redis;
@@ -216,6 +218,46 @@ public static class ServiceCollectionExtensions
                     .AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName)
                     .RequireAuthenticatedUser()
                     .RequireRole("admin"));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers health checks for all dependencies (FR-005 / T9).
+    /// Adds tagged checks for liveness, readiness, and startup probes.
+    /// </summary>
+    public static IServiceCollection AddAppHealthChecks(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        var builder = services.AddHealthChecks();
+
+        // Self / liveness — always passes (process is alive)
+        builder.AddCheck("self", () => HealthCheckResult.Healthy("Process is alive."),
+            tags: ["live", "ready", "startup"]);
+
+        // Redis — readiness + startup
+        if (configuration.GetValue<bool>("Redis:Enabled"))
+        {
+            builder.AddCheck<RedisHealthCheck>("redis",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["ready", "startup"]);
+        }
+
+        // Cosmos DB — readiness + startup
+        if (configuration.GetValue<bool>("Cosmos:Enabled"))
+        {
+            builder.AddCheck<CosmosDbHealthCheck>("cosmosdb",
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["ready", "startup"]);
+        }
+
+        // Smarty API — readiness + startup
+        builder.AddCheck<SmartyHealthCheck>("smarty",
+            failureStatus: HealthStatus.Degraded,
+            tags: ["ready", "startup"]);
 
         return services;
     }

@@ -268,8 +268,9 @@ builder.Services.AddApiVersioning(options =>
 | `GET` | `/api/cache/stats` | FR-003 Cache Stats | ✅ Live (T8) | — |
 | `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | ✅ Live (T8) | — |
 | `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | ✅ Live (T8) | — |
-| `GET` | `/health/live` | FR-005 Health | ⏳ Planned (T9) | — |
-| `GET` | `/health/ready` | FR-005 Health | ⏳ Planned (T9) | — |
+| `GET` | `/health/live` | FR-005 Health | ✅ Live (T9) | — |
+| `GET` | `/health/ready` | FR-005 Health | ✅ Live (T9) | — |
+| `GET` | `/health/startup` | FR-005 Health | ✅ Live (T9) | — |
 | `GET` | `/metrics` | FR-006 Metrics | ⏳ Planned (T10) | — |
 
 
@@ -534,6 +535,7 @@ Exposes metrics on `/metrics` endpoint (when configured):
   - `ApiKeyReadOnly` — any valid API key; used by `GET /api/cache/stats`
   - `ApiKeyAdmin` — requires `role: admin`; used by `DELETE /api/cache/{key}` and `DELETE /api/cache/flush`
 - Non-admin DELETE requests return `403 Forbidden`; unauthenticated requests return `401 Unauthorized`
+- **Health endpoints** (`/health/live`, `/health/ready`, `/health/startup`) are explicitly `AllowAnonymous` — no API key required (SRS FR-005 / issue #84)
 
 ### Resilience Patterns
 

@@ -2,6 +2,69 @@
 
 ---
 
+## T9: FR-005 Health Checks — ✅ COMPLETED
+
+**Branch**: `feat/t9-health-checks` → merged to `main`
+**Completion Date**: 2026-05-09
+**GitHub Issues Closed**: #80–#85, parent #10
+**Build Status**: ✅ Successful (0 errors, 0 warnings)
+**Test Status**: ✅ 201/201 passing
+
+### What's Included
+
+#### Feature — Health Response Writer (`src/AddressValidation.Api/Features/Health/`)
+
+| File | Description |
+|------|-------------|
+| `HealthCheckResponseWriter.cs` | Structured JSON writer per SRS FR-005 schema: `{ status, totalDuration, checks: [{ name, status, durationMs, description, exception }] }` |
+
+#### Infrastructure — Health Checks (`src/AddressValidation.Api/Infrastructure/HealthChecks/`)
+
+| File | Description |
+|------|-------------|
+| `RedisHealthCheck.cs` | PING-based L1 probe: Healthy (<1 s), Degraded (≥1 s), Unhealthy (disconnected/exception) |
+| `CosmosDbHealthCheck.cs` | `Database.ReadAsync()` L2 probe: Healthy (200 OK), Degraded (unexpected status), Unhealthy (CosmosException/exception) |
+| `SmartyHealthCheck.cs` | API reachability probe: Healthy (any success), Degraded (4xx response), Unhealthy (network exception) |
+
+#### Service Registration (`ServiceCollectionExtensions.cs`)
+
+`AddAppHealthChecks(configuration)` registers tagged checks:
+
+| Check | Tags | Failure Status |
+|-------|------|---------------|
+| `self` | live, ready, startup | — |
+| `redis` | ready, startup | Unhealthy |
+| `cosmosdb` | ready, startup | Unhealthy |
+| `smarty` | ready, startup | Degraded |
+
+#### Probe Endpoints (`Program.cs`)
+
+| Endpoint | Tag Filter | Auth | 200 / 503 |
+|----------|-----------|------|-----------|
+| `GET /health/live` | `live` | None (AllowAnonymous) | Healthy/Degraded / Unhealthy |
+| `GET /health/ready` | `ready` | None (AllowAnonymous) | Healthy/Degraded / Unhealthy |
+| `GET /health/startup` | `startup` | None (AllowAnonymous) | Healthy/Degraded / Unhealthy |
+
+#### Unit Tests
+
+| File | Coverage |
+|------|---------|
+| `HealthCheckResponseWriterTests.cs` | JSON schema, content-type, healthy/unhealthy/exception output |
+| `RedisHealthCheckTests.cs` | Fast ping, slow ping, not connected, exception |
+| `CosmosDbHealthCheckTests.cs` | OK response, missing config, CosmosException, unexpected exception |
+| `SmartyHealthCheckTests.cs` | Success, 4xx degraded, network exception |
+
+### Acceptance Criteria Status
+
+- [x] `GET /health/live` returns 200 (process alive) or 503
+- [x] `GET /health/ready` returns 200 (Redis + CosmosDB + Smarty reachable) or 503
+- [x] `GET /health/startup` returns 200 (all dependencies verified) or 503
+- [x] Structured JSON response: `{ status, totalDuration, checks[] }`
+- [x] Health endpoints excluded from API-key authentication
+- [x] HTTP 503 returned when any dependency is unhealthy
+
+---
+
 ## T8: FR-003 Cache Management — ✅ COMPLETED
 
 **Branch**: `feat/t8-cache-management` → merged to `main`

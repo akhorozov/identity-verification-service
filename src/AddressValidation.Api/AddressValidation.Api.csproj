@@ -27,9 +27,11 @@
     <!-- Resilience -->
     <PackageReference Include="Polly" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" />
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" />
 
     <!-- HTTP Client -->
     <PackageReference Include="Refit" />
+    <PackageReference Include="Refit.HttpClientFactory" />
 
     <!-- OpenTelemetry -->
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />

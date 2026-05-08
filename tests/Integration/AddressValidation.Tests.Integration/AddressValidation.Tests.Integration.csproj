@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AddressValidation.Api\AddressValidation.Api.csproj" />
+    <ProjectReference Include="..\..\..\src\AddressValidation.Api\AddressValidation.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

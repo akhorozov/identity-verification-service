@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AddressValidation.ServiceDefaults\AddressValidation.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\AddressValidation.ServiceDefaults\AddressValidation.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

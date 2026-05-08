@@ -13,6 +13,7 @@ using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
 using AddressValidation.Api.Infrastructure.Middleware;
 using AddressValidation.Api.Infrastructure.Logging;
+using AddressValidation.Api.Infrastructure.Services.ChangeFeed;
 using AddressValidation.Api.Infrastructure.Telemetry;
 using Serilog;
 using Asp.Versioning;
@@ -146,6 +147,7 @@ try
     builder.Services.AddAuditEventStore(configuration);
     builder.Services.AddValidationCaching(configuration);
     builder.Services.AddCacheManagement(configuration);
+    builder.Services.AddChangeFeedProcessor();
     builder.Services.AddApiKeyAuthentication();
 
     // Register ValidateSingle feature

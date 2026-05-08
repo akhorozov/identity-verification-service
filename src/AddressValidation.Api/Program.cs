@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Net.Security;
+using System.Security.Authentication;
 using AddressValidation.Api.Features.Validation.ValidateSingle;
 using AddressValidation.Api.Features.Validation.ValidateBatch;
 using AddressValidation.Api.Features.Cache;
@@ -10,6 +12,7 @@ using AddressValidation.Api.Infrastructure.Metrics;
 using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
 using AddressValidation.Api.Infrastructure.Middleware;
+using AddressValidation.Api.Infrastructure.Logging;
 using Serilog;
 using Asp.Versioning;
 using FluentValidation.AspNetCore;
@@ -18,6 +21,20 @@ using OpenTelemetry.Trace;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ==================== TLS Enforcement ====================
+// NFR-016: Enforce minimum TLS 1.2 for all Kestrel HTTPS connections
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ConfigureHttpsDefaults(httpsOptions =>
+    {
+        httpsOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+        httpsOptions.OnAuthenticate = (context, sslOptions) =>
+        {
+            sslOptions.EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+        };
+    });
+});
 
 // ==================== Configuration Setup ====================
 // Load configuration from appsettings
@@ -34,6 +51,7 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .Enrich.WithProperty("Application", "AddressValidation.Api")
     .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
+    .Enrich.With<PiiSanitizingEnricher>()
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -75,13 +93,33 @@ try
     var rateLimitConfig = configuration.GetSection("Security:RateLimiting");
     if (rateLimitConfig.GetValue<bool>("Enabled"))
     {
+        var permitLimit = rateLimitConfig.GetValue<int>("PermitLimit", 1000);
+        var windowSeconds = rateLimitConfig.GetValue<int>("WindowSizeInSeconds", 60);
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.OnRejected = async (ctx, ct) =>
+            {
+                var window = TimeSpan.FromSeconds(windowSeconds);
+                var resetAt = DateTimeOffset.UtcNow.Add(window);
+                ctx.HttpContext.Response.Headers["Retry-After"] = window.TotalSeconds.ToString("0");
+                ctx.HttpContext.Response.Headers["X-RateLimit-Limit"] = permitLimit.ToString();
+                ctx.HttpContext.Response.Headers["X-RateLimit-Remaining"] = "0";
+                ctx.HttpContext.Response.Headers["X-RateLimit-Reset"] = resetAt.ToUnixTimeSeconds().ToString();
+                ctx.HttpContext.Response.ContentType = "application/problem+json";
+                await ctx.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    type = "https://tools.ietf.org/html/rfc6585#section-4",
+                    title = "Too Many Requests",
+                    status = StatusCodes.Status429TooManyRequests,
+                    detail = $"Rate limit of {permitLimit} requests per {windowSeconds}s exceeded. Retry after {window.TotalSeconds}s.",
+                    retryAfter = (int)window.TotalSeconds,
+                }, ct);
+            };
             options.AddFixedWindowLimiter("fixed", opt =>
             {
-                opt.PermitLimit = rateLimitConfig.GetValue<int>("PermitLimit", 1000);
-                opt.Window = TimeSpan.FromSeconds(rateLimitConfig.GetValue<int>("WindowSizeInSeconds", 60));
+                opt.PermitLimit = permitLimit;
+                opt.Window = TimeSpan.FromSeconds(windowSeconds);
                 opt.QueueLimit = rateLimitConfig.GetValue<int>("QueueLimit", 5);
                 opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
             });
@@ -90,6 +128,9 @@ try
 
     // Add health checks (FR-005 / T9)
     builder.Services.AddAppHealthChecks(configuration);
+
+    // RFC 7807 ProblemDetails support
+    builder.Services.AddProblemDetails();
 
     // Add FluentValidation
     builder.Services
@@ -169,6 +210,12 @@ try
 
     // Add exception handling middleware
     app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+    // Enforce Api-Version header on all /api/* paths (NFR-015 / issue #99)
+    app.UseMiddleware<ApiVersionRequiredMiddleware>();
+
+    // Add Sunset header for deprecated API versions (RFC 8594 / issue #101)
+    app.UseMiddleware<SunsetHeaderMiddleware>();
 
     // OpenAPI/Swagger
     if (app.Environment.IsDevelopment())

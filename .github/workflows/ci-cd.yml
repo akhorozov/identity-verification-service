@@ -1,0 +1,249 @@
+name: CI/CD — Address Validation Service
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      deploy_env:
+        description: 'Target environment (staging | prod)'
+        required: true
+        default: staging
+        type: choice
+        options: [staging, prod]
+
+permissions:
+  contents: read
+  id-token: write       # OIDC for Azure login
+  packages: write
+  checks: write         # test result annotations
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  APP_NAME: addr-validation
+  REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+  IMAGE_NAME: addr-validation
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Step 1: Build & unit test
+# ─────────────────────────────────────────────────────────────────────────────
+jobs:
+  build-and-test:
+    name: 1 · Build & Unit Test
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # ── Step 2: Run unit tests with coverage ────────────────────────────────
+      - name: Unit tests (coverage gate 80%)
+        run: |
+          dotnet test tests/Unit/AddressValidation.Tests.Unit \
+            --no-restore \
+            --configuration Release \
+            --logger "trx;LogFileName=unit-results.trx" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutputFormat=cobertura \
+            /p:CoverletOutput=coverage/unit/ \
+            /p:Threshold=80 \
+            /p:ThresholdType=line \
+            /p:ThresholdStat=total
+
+      - name: Publish unit test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Unit Tests
+          path: '**/unit-results.trx'
+          reporter: dotnet-trx
+
+      # ── Step 3: Run integration tests ───────────────────────────────────────
+      - name: Integration tests
+        run: |
+          dotnet test tests/Integration/AddressValidation.Tests.Integration \
+            --no-restore \
+            --configuration Release \
+            --filter "Category!=CosmosDb" \
+            --logger "trx;LogFileName=integration-results.trx"
+
+      - name: Publish integration test results
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Integration Tests
+          path: '**/integration-results.trx'
+          reporter: dotnet-trx
+
+      # ── Step 4: Docker metadata ──────────────────────────────────────────────
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      # ── Step 5: Build Docker image ───────────────────────────────────────────
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Build & push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to:   type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Step 6: Deploy to staging
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-staging:
+    name: 6 · Deploy → Staging
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name != 'pull_request'
+    environment:
+      name: staging
+      url: https://${{ steps.deploy.outputs.fqdn }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # ── Step 7: Bicep preflight validation ──────────────────────────────────
+      - name: Bicep what-if (preflight)
+        run: |
+          az deployment group what-if \
+            --resource-group ${{ secrets.RG_STAGING }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters environment=staging \
+                         imageTag=${{ needs.build-and-test.outputs.image-tag }} \
+                         smartyAuthId="${{ secrets.SMARTY_AUTH_ID }}" \
+                         smartyAuthToken="${{ secrets.SMARTY_AUTH_TOKEN }}" \
+                         apiKeys="${{ secrets.API_KEYS }}"
+
+      - name: Deploy Bicep to staging
+        id: deploy
+        run: |
+          OUTPUT=$(az deployment group create \
+            --resource-group ${{ secrets.RG_STAGING }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters environment=staging \
+                         imageTag=${{ needs.build-and-test.outputs.image-tag }} \
+                         smartyAuthId="${{ secrets.SMARTY_AUTH_ID }}" \
+                         smartyAuthToken="${{ secrets.SMARTY_AUTH_TOKEN }}" \
+                         apiKeys="${{ secrets.API_KEYS }}" \
+            --query "properties.outputs" -o json)
+          echo "fqdn=$(echo $OUTPUT | jq -r '.containerAppUrl.value')" >> $GITHUB_OUTPUT
+
+      # ── Step 8: Smoke test post-staging deploy ───────────────────────────────
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update && sudo apt-get install -y k6
+
+      - name: k6 smoke test (staging)
+        run: |
+          k6 run tests/k6/scenarios/smoke.js \
+            -e BASE_URL=https://${{ steps.deploy.outputs.fqdn }} \
+            -e API_KEY=${{ secrets.SMOKE_API_KEY }}
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Step 9: Manual approval gate for prod (#133)
+  # ─────────────────────────────────────────────────────────────────────────────
+  approve-prod:
+    name: 9 · Approve → Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production   # GitHub environment with required reviewers configured
+
+    steps:
+      - name: Approval gate
+        run: echo "Production deployment approved — proceeding."
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Step 10: Deploy to production
+  # ─────────────────────────────────────────────────────────────────────────────
+  deploy-prod:
+    name: 10 · Deploy → Production
+    runs-on: ubuntu-latest
+    needs: [build-and-test, approve-prod]
+    environment:
+      name: production
+      url: https://${{ steps.deploy-prod.outputs.fqdn }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id:       ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id:       ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep to production
+        id: deploy-prod
+        run: |
+          OUTPUT=$(az deployment group create \
+            --resource-group ${{ secrets.RG_PROD }} \
+            --template-file infra/bicep/main.bicep \
+            --parameters environment=prod \
+                         imageTag=${{ needs.build-and-test.outputs.image-tag }} \
+                         smartyAuthId="${{ secrets.SMARTY_AUTH_ID_PROD }}" \
+                         smartyAuthToken="${{ secrets.SMARTY_AUTH_TOKEN_PROD }}" \
+                         apiKeys="${{ secrets.API_KEYS_PROD }}" \
+            --query "properties.outputs" -o json)
+          echo "fqdn=$(echo $OUTPUT | jq -r '.containerAppUrl.value')" >> $GITHUB_OUTPUT
+
+      - name: k6 smoke test (prod)
+        run: |
+          k6 run tests/k6/scenarios/smoke.js \
+            -e BASE_URL=https://${{ steps.deploy-prod.outputs.fqdn }} \
+            -e API_KEY=${{ secrets.SMOKE_API_KEY_PROD }}

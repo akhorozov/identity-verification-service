@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: address-validation-pubsub
+  namespace: default
+spec:
+  type: pubsub.azure.servicebus.topics
+  version: v1
+  metadata:
+    - name: connectionString
+      secretKeyRef:
+        name: servicebus-connection-string
+        key:  connectionString
+    - name: consumerID
+      value: address-validation-api
+    - name: maxRetriableErrorsPerSec
+      value: "10"
+    - name: maxDeliveryCount
+      value: "5"
+auth:
+  secretStore: azure-keyvault

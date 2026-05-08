@@ -2,9 +2,11 @@
 
 ---
 
-## T8: FR-003 Cache Management — 🟡 IN PROGRESS
+## T8: FR-003 Cache Management — ✅ COMPLETED
 
-**Branch**: `feat/t8-cache-management`
+**Branch**: `feat/t8-cache-management` → merged to `main`
+**Completion Date**: 2026-05-09
+**GitHub Issues Closed**: #73–#79, parent #9
 **Build Status**: ✅ Successful (0 errors, 0 warnings)
 **Test Status**: ✅ 187/187 passing
 
@@ -79,8 +81,8 @@ app.MapCacheStats();        // GET    /api/cache/stats
 - [x] `CacheEntryInvalidated` domain event emitted on per-key invalidation
 - [x] `CacheFlushed` domain event emitted on flush
 - [x] Unit tests: 12 new tests, all passing (187 total)
-- [ ] PR created and merged to `main`
-- [ ] GitHub issues #73–#79 and parent #9 closed
+- [x] PR #157 created and merged to `main`
+- [x] GitHub issues #73–#79 and parent #9 closed
 
 ---
 

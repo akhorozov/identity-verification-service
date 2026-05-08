@@ -265,9 +265,9 @@ builder.Services.AddApiVersioning(options =>
 |--------|------|---------|--------|-----------------|
 | `POST` | `/api/addresses/validate` | FR-001 ValidateSingle | ✅ Live | `X-Cache-Source`, `X-Cache-Stale` |
 | `POST` | `/api/addresses/validate/batch` | FR-002 ValidateBatch | ✅ Live | `X-Batch-Summary` |
-| `GET` | `/api/cache/stats` | FR-003 Cache Stats | 🟡 In Progress (T8) | — |
-| `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | 🟡 In Progress (T8) | — |
-| `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | 🟡 In Progress (T8) | — |
+| `GET` | `/api/cache/stats` | FR-003 Cache Stats | ✅ Live (T8) | — |
+| `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | ✅ Live (T8) | — |
+| `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | ✅ Live (T8) | — |
 | `GET` | `/health/live` | FR-005 Health | ⏳ Planned (T9) | — |
 | `GET` | `/health/ready` | FR-005 Health | ⏳ Planned (T9) | — |
 | `GET` | `/metrics` | FR-006 Metrics | ⏳ Planned (T10) | — |

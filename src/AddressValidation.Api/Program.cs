@@ -13,11 +13,10 @@ using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
 using AddressValidation.Api.Infrastructure.Middleware;
 using AddressValidation.Api.Infrastructure.Logging;
+using AddressValidation.Api.Infrastructure.Telemetry;
 using Serilog;
 using Asp.Versioning;
 using FluentValidation.AspNetCore;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +51,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("Application", "AddressValidation.Api")
     .Enrich.WithProperty("Environment", builder.Environment.EnvironmentName)
     .Enrich.With<PiiSanitizingEnricher>()
+    .Enrich.With<TraceContextEnricher>()
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -137,29 +137,8 @@ try
         .AddFluentValidationAutoValidation()
         .AddFluentValidationClientsideAdapters();
 
-    // Add OpenTelemetry
-    if (configuration.GetValue<bool>("OpenTelemetry:Enabled"))
-    {
-        builder.Services.AddOpenTelemetry()
-            .WithTracing(tracerProvider =>
-            {
-                if (configuration.GetValue<bool>("OpenTelemetry:Tracing:Enabled"))
-                {
-                    tracerProvider
-                        .AddAspNetCoreInstrumentation()
-                        .AddHttpClientInstrumentation();
-                }
-            })
-            .WithMetrics(meterProvider =>
-            {
-                if (configuration.GetValue<bool>("OpenTelemetry:Metrics:Enabled"))
-                {
-                    meterProvider
-                        .AddAspNetCoreInstrumentation()
-                        .AddHttpClientInstrumentation();
-                }
-            });
-    }
+    // Add OpenTelemetry tracing + metrics (T12 / issue #13)
+    builder.Services.AddObservability(configuration);
 
     // Add infrastructure services
     builder.Services.AddInfrastructure(configuration);

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using AddressValidation.Api.Features.Validation.ValidateSingle;
 using AddressValidation.Api.Features.Validation.ValidateBatch;
 using AddressValidation.Api.Features.Cache;
+using AddressValidation.Api.Features.Health;
 using AddressValidation.Api.Infrastructure;
 using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
@@ -84,9 +86,8 @@ try
         });
     }
 
-    // Add health checks
-    builder.Services.AddHealthChecks()
-        .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
+    // Add health checks (FR-005 / T9)
+    builder.Services.AddAppHealthChecks(configuration);
 
     // Add FluentValidation
     builder.Services
@@ -202,8 +203,47 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // Health checks
-    app.MapHealthChecks("/health");
+    // Health check probes (FR-005) — no auth required (issue #84)
+    var healthCheckOptions = new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        ResponseWriter = HealthCheckResponseWriter.WriteResponse,
+    };
+
+    app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("live"),
+        ResultStatusCodes =
+        {
+            [HealthStatus.Healthy] = StatusCodes.Status200OK,
+            [HealthStatus.Degraded] = StatusCodes.Status200OK,
+            [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+        },
+        ResponseWriter = HealthCheckResponseWriter.WriteResponse,
+    }).AllowAnonymous();
+
+    app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("ready"),
+        ResultStatusCodes =
+        {
+            [HealthStatus.Healthy] = StatusCodes.Status200OK,
+            [HealthStatus.Degraded] = StatusCodes.Status200OK,
+            [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+        },
+        ResponseWriter = HealthCheckResponseWriter.WriteResponse,
+    }).AllowAnonymous();
+
+    app.MapHealthChecks("/health/startup", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("startup"),
+        ResultStatusCodes =
+        {
+            [HealthStatus.Healthy] = StatusCodes.Status200OK,
+            [HealthStatus.Degraded] = StatusCodes.Status200OK,
+            [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable,
+        },
+        ResponseWriter = HealthCheckResponseWriter.WriteResponse,
+    }).AllowAnonymous();
 
     // Map controllers
     app.MapControllers();

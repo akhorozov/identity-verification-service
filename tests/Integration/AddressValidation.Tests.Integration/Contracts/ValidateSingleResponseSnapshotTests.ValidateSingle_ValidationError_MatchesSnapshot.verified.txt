@@ -1,0 +1,11 @@
+﻿{
+  type: https://tools.ietf.org/html/rfc7807,
+  title: Validation failed,
+  status: 400,
+  errors: {
+    Location: [
+      Either City and State, or ZipCode must be provided.
+    ]
+  },
+  traceId: scrubbed
+}

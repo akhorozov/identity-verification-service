@@ -9,6 +9,7 @@ using AddressValidation.Api.Infrastructure.Authentication;
 using AddressValidation.Api.Infrastructure.Caching;
 using AddressValidation.Api.Infrastructure.CosmosDb;
 using AddressValidation.Api.Infrastructure.HealthChecks;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Providers.Smarty;
 using AddressValidation.Api.Infrastructure.Redis;
@@ -259,6 +260,17 @@ public static class ServiceCollectionExtensions
             failureStatus: HealthStatus.Degraded,
             tags: ["ready", "startup"]);
 
+        return services;
+    }
+    /// <summary>
+    /// Registers Prometheus metrics (FR-006 / T10).
+    /// Wires <see cref="AppMetrics"/> singleton and the prometheus-net HTTP metrics middleware.
+    /// The <c>GET /metrics</c> endpoint is mapped in <c>Program.cs</c>.
+    /// </summary>
+    public static IServiceCollection AddAppMetrics(this IServiceCollection services)
+    {
+        // Singleton so all handlers share the same metric instances
+        services.AddSingleton<AppMetrics>();
         return services;
     }
 }

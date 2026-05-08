@@ -6,6 +6,7 @@ using AddressValidation.Api.Features.Validation.ValidateBatch;
 using AddressValidation.Api.Features.Cache;
 using AddressValidation.Api.Features.Health;
 using AddressValidation.Api.Infrastructure;
+using AddressValidation.Api.Infrastructure.Metrics;
 using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
 using AddressValidation.Api.Infrastructure.Middleware;
@@ -14,6 +15,7 @@ using Asp.Versioning;
 using FluentValidation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -139,6 +141,9 @@ try
     builder.Services.AddScoped<InvalidateCacheHandler>();
     builder.Services.AddScoped<FlushCacheHandler>();
 
+    // Register Prometheus metrics (T10 / FR-006)
+    builder.Services.AddAppMetrics();
+
     // Add controllers and minimal APIs
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
@@ -199,6 +204,9 @@ try
     // Routing
     app.UseRouting();
 
+    // Prometheus HTTP metrics middleware (FR-006) — records validation counters/histograms
+    app.UseMiddleware<MetricsMiddleware>();
+
     // Authentication + Authorization
     app.UseAuthentication();
     app.UseAuthorization();
@@ -247,6 +255,10 @@ try
 
     // Map controllers
     app.MapControllers();
+
+    // Prometheus metrics endpoint (FR-006) — no auth required (SRS §9.3.6)
+    // UseMetricServer registers GET /metrics returning Prometheus text exposition format
+    app.UseMetricServer("/metrics");
 
     // Map feature endpoints
     app.MapValidateSingle();

@@ -1,4 +1,5 @@
 using AddressValidation.Api.Domain;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Providers.Smarty;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,6 +64,7 @@ public class SmartyProviderTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton(api);
+        services.AddSingleton<AppMetrics>();
         services.AddScoped<IAddressValidationProvider, SmartyProvider>();
         var sp = services.BuildServiceProvider();
         return sp.GetRequiredService<IAddressValidationProvider>();

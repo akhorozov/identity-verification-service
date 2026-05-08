@@ -3,6 +3,7 @@ namespace AddressValidation.Api.Features.Validation.ValidateSingle;
 using System.Diagnostics;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Domain.Events;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Services.Audit;
 using AddressValidation.Api.Infrastructure.Services.Caching;
@@ -28,22 +29,26 @@ public sealed class ValidateSingleHandler
     private readonly IAddressValidationProvider _provider;
     private readonly IAuditEventStore _audit;
     private readonly ILogger<ValidateSingleHandler> _logger;
+    private readonly AppMetrics _metrics;
 
     public ValidateSingleHandler(
         CacheOrchestrator<ValidationResponse> cache,
         IAddressValidationProvider provider,
         IAuditEventStore audit,
-        ILogger<ValidateSingleHandler> logger)
+        ILogger<ValidateSingleHandler> logger,
+        AppMetrics metrics)
     {
         ArgumentNullException.ThrowIfNull(cache);
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(metrics);
 
         _cache    = cache;
         _provider = provider;
         _audit    = audit;
         _logger   = logger;
+        _metrics  = metrics;
     }
 
     /// <summary>
@@ -77,6 +82,11 @@ public sealed class ValidateSingleHandler
 
             domainResponse = cacheResult.Value;
             cacheSource    = NormaliseSource(cacheResult.Source?.Source ?? "PROVIDER");
+
+            // Update cache hit ratio gauge (FR-006)
+            var isHit = cacheSource != "PROVIDER";
+            var tier  = cacheSource == "L1" ? "L1-Redis" : cacheSource == "L2" ? "L2-CosmosDB" : "provider";
+            _metrics.CacheHitRatio.WithLabels(tier).Set(isHit ? 1.0 : 0.0);
 
             // Provider miss — address not found by provider
             if (domainResponse is null)

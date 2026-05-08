@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using AddressValidation.Api.Features.Validation.ValidateSingle;
 using AddressValidation.Api.Features.Validation.ValidateBatch;
+using AddressValidation.Api.Features.Cache;
 using AddressValidation.Api.Infrastructure;
 using FluentValidation;
 using AddressValidation.Api.Infrastructure.Configuration;
@@ -121,6 +122,8 @@ try
     builder.Services.AddProviders(configuration);
     builder.Services.AddAuditEventStore(configuration);
     builder.Services.AddValidationCaching(configuration);
+    builder.Services.AddCacheManagement(configuration);
+    builder.Services.AddApiKeyAuthentication();
 
     // Register ValidateSingle feature
     builder.Services.AddScoped<ValidateSingleHandler>();
@@ -129,6 +132,11 @@ try
     // Register ValidateBatch feature
     builder.Services.AddScoped<ValidateBatchHandler>();
     builder.Services.AddScoped<IValidator<ValidateBatchRequest>, ValidateBatchRequestValidator>();
+
+    // Register Cache Management feature (T8 / FR-003)
+    builder.Services.AddSingleton<CacheStatsHandler>();
+    builder.Services.AddScoped<InvalidateCacheHandler>();
+    builder.Services.AddScoped<FlushCacheHandler>();
 
     // Add controllers and minimal APIs
     builder.Services.AddControllers();
@@ -190,7 +198,8 @@ try
     // Routing
     app.UseRouting();
 
-    // Authorization
+    // Authentication + Authorization
+    app.UseAuthentication();
     app.UseAuthorization();
 
     // Health checks
@@ -202,6 +211,12 @@ try
     // Map feature endpoints
     app.MapValidateSingle();
     app.MapValidateBatch();
+
+    // Map cache management endpoints (T8 / FR-003)
+    // Flush must be registered before the parameterised {key} route to win routing.
+    app.MapFlushCache();
+    app.MapInvalidateCache();
+    app.MapCacheStats();
 
     // ==================== Run Application ====================
     app.Run();

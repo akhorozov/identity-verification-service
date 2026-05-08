@@ -264,10 +264,10 @@ builder.Services.AddApiVersioning(options =>
 | Method | Path | Feature | Status | Response Headers |
 |--------|------|---------|--------|-----------------|
 | `POST` | `/api/addresses/validate` | FR-001 ValidateSingle | ✅ Live | `X-Cache-Source`, `X-Cache-Stale` |
-| `POST` | `/api/addresses/validate/batch` | FR-002 ValidateBatch | 🟡 In Progress | `X-Batch-Summary` |
-| `GET` | `/api/cache/stats` | FR-003 Cache Stats | ⏳ Planned (T8) | — |
-| `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | ⏳ Planned (T8) | — |
-| `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | ⏳ Planned (T8) | — |
+| `POST` | `/api/addresses/validate/batch` | FR-002 ValidateBatch | ✅ Live | `X-Batch-Summary` |
+| `GET` | `/api/cache/stats` | FR-003 Cache Stats | 🟡 In Progress (T8) | — |
+| `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | 🟡 In Progress (T8) | — |
+| `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | 🟡 In Progress (T8) | — |
 | `GET` | `/health/live` | FR-005 Health | ⏳ Planned (T9) | — |
 | `GET` | `/health/ready` | FR-005 Health | ⏳ Planned (T9) | — |
 | `GET` | `/metrics` | FR-006 Metrics | ⏳ Planned (T10) | — |
@@ -528,9 +528,12 @@ Exposes metrics on `/metrics` endpoint (when configured):
 
 ### Authentication & Authorization
 
-- JWT token validation (configured at API layer)
-- Claims-based authorization
-- API key support for service-to-service calls
+- **API Key authentication** (`X-Api-Key` header) — implemented in T8 via `ApiKeyAuthenticationHandler`
+- Keys and roles configured in `Security:ApiKeys` (use Azure Key Vault / user-secrets for production)
+- Two authorization policies:
+  - `ApiKeyReadOnly` — any valid API key; used by `GET /api/cache/stats`
+  - `ApiKeyAdmin` — requires `role: admin`; used by `DELETE /api/cache/{key}` and `DELETE /api/cache/flush`
+- Non-admin DELETE requests return `403 Forbidden`; unauthenticated requests return `401 Unauthorized`
 
 ### Resilience Patterns
 

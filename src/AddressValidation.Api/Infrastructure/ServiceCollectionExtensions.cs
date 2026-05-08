@@ -1,7 +1,10 @@
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using AddressValidation.Api.Domain;
+using AddressValidation.Api.Infrastructure.Authentication;
 using AddressValidation.Api.Infrastructure.Caching;
 using AddressValidation.Api.Infrastructure.CosmosDb;
 using AddressValidation.Api.Infrastructure.Providers;
@@ -163,6 +166,56 @@ public static class ServiceCollectionExtensions
                 all[1],
                 sp.GetRequiredService<ILogger<CacheOrchestrator<ValidationResponse>>>());
         });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the T8 cache management services (FR-003): per-layer management plane
+    /// implementations used by cache stats, invalidation, and flush handlers.
+    /// </summary>
+    public static IServiceCollection AddCacheManagement(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        // L1 — Redis management service
+        services.AddSingleton<ICacheManagementService, RedisCacheManagementService>();
+
+        // L2 — CosmosDB management service (flush is a no-op per SRS FR-003)
+        services.AddSingleton<ICacheManagementService>(sp =>
+            new CosmosCacheManagementService(
+                sp.GetRequiredService<CosmosClient>(),
+                configuration,
+                sp.GetRequiredService<ILogger<CosmosCacheManagementService>>()));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers API key authentication and RBAC authorization policies (FR-003 / issue #78).
+    /// Keys are read from <c>Security:ApiKeys</c> in configuration.
+    /// Roles: <c>readonly</c> (stats access), <c>admin</c> (invalidate + flush).
+    /// </summary>
+    public static IServiceCollection AddApiKeyAuthentication(
+        this IServiceCollection services)
+    {
+        services
+            .AddAuthentication(ApiKeyAuthenticationHandler.SchemeName)
+            .AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+                ApiKeyAuthenticationHandler.SchemeName, _ => { });
+
+        services.AddAuthorizationBuilder()
+            .AddPolicy(ApiKeyAuthorizationPolicy.ReadOnly, policy =>
+                policy
+                    .AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName)
+                    .RequireAuthenticatedUser())
+            .AddPolicy(ApiKeyAuthorizationPolicy.Admin, policy =>
+                policy
+                    .AddAuthenticationSchemes(ApiKeyAuthenticationHandler.SchemeName)
+                    .RequireAuthenticatedUser()
+                    .RequireRole("admin"));
 
         return services;
     }

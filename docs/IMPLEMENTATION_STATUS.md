@@ -2,64 +2,93 @@
 
 ---
 
-## T7: FR-002 Validate Batch Addresses — 🟡 IN PROGRESS
+## T8: FR-003 Cache Management — 🟡 IN PROGRESS
 
-**Branch**: `feat/t7-validate-batch-endpoint`
+**Branch**: `feat/t8-cache-management`
 **Build Status**: ✅ Successful (0 errors, 0 warnings)
+**Test Status**: ✅ 187/187 passing
 
 ### What's Included
 
-#### Feature Slice (`src/AddressValidation.Api/Features/Validation/ValidateBatch/`)
+#### Infrastructure — Cache Management Plane (`src/AddressValidation.Api/Infrastructure/Services/Caching/`)
 
 | File | Description |
 |------|-------------|
-| `Models.cs` | `ValidateBatchItem`, `ValidateBatchResultItem`, `ValidateBatchSummary`, `ValidateBatchRequest`, `ValidateBatchResponse` with domain mapping helpers |
-| `Validator.cs` | `ValidateBatchRequestValidator` — max 100 addresses, per-item field rules (street, state, ZIP, Plus4, location presence) |
-| `Handler.cs` | `ValidateBatchHandler` — parallel cache lookups (L1→L2), provider fallback, result merge preserving `inputIndex` order, audit event emission, batch summary stats |
-| `Endpoint.cs` | `POST /api/addresses/validate/batch` — 200 (all pass) / 207 Multi-Status (partial failure) / 400 (invalid request); `X-Batch-Summary` response header |
+| `ICacheManagementService.cs` | Management-plane interface: `GetStatsAsync`, `InvalidateAsync`, `FlushAsync`, `LayerName` |
+| `CacheLayerStats.cs` (record in interface file) | `Layer`, `EntryCount`, `HitCount`, `MissCount` snapshot record |
+| `RedisCacheManagementService.cs` | L1 Redis impl — `KeysAsync("addr:*")` scan for stats/flush, `KeyDeleteAsync` for invalidation |
+| `CosmosCacheManagementService.cs` | L2 Cosmos impl — LINQ count for stats, TTL patch for stale-marking, flush is no-op (SRS FR-003) |
+
+#### Infrastructure — Authentication (`src/AddressValidation.Api/Infrastructure/Authentication/`)
+
+| File | Description |
+|------|-------------|
+| `ApiKeyAuthenticationHandler.cs` | ASP.NET Core auth handler reading `X-Api-Key` header; validates against `Security:ApiKeys` config section |
+| `ApiKeyAuthorizationPolicy.cs` | Policy name constants: `ReadOnly` (any valid key) and `Admin` (role = `admin`) |
+
+#### Feature Slice (`src/AddressValidation.Api/Features/Cache/`)
+
+| File | Description |
+|------|-------------|
+| `Models.cs` | `LayerStatsResponse`, `CacheStatsResponse`, `InvalidateCacheResult`, `FlushCacheResult` |
+| `CacheStatsHandler.cs` | Aggregates stats from all `ICacheManagementService` layers; computes hit ratio |
+| `CacheStatsEndpoint.cs` | `GET /api/cache/stats` — any valid API key; returns `200 CacheStatsResponse` |
+| `InvalidateCacheHandler.cs` | Iterates all layers calling `InvalidateAsync`; emits `CacheEntryInvalidated` audit event |
+| `InvalidateCacheEndpoint.cs` | `DELETE /api/cache/{key}` — admin role required; `204` / `404` |
+| `FlushCacheHandler.cs` | Calls `FlushAsync` on all layers (L2 is no-op); emits `CacheFlushed` audit event |
+| `FlushCacheEndpoint.cs` | `DELETE /api/cache/flush` — admin role required; `204` |
 
 #### Key Design Decisions
 
-1. **Parallel cache lookups** — all cache reads issued concurrently via `Task.WhenAll` for maximum throughput
-2. **Provider fallback** — cache misses fall back to `IAddressValidationProvider.ValidateAsync` in parallel per address
-3. **`inputIndex` ordering** — results array always matches input array order regardless of async completion order
-4. **HTTP 207 Multi-Status** — returned when at least one address fails; all results included in body
-5. **`X-Batch-Summary` header** — serialised JSON with `total`, `validated`, `failed`, `cacheHits`, `cacheMisses`, `durationMs`
-6. **Audit events** — `AddressValidated`, `AddressValidationFailed`, `CacheEntryCreated` emitted fire-and-forget per address
-7. **Write-through** — provider hits written back to L1+L2 via `CacheOrchestrator<ValidationResponse>.SetAsync`
+1. **Non-generic management interface** — `ICacheManagementService` is layer-scoped and non-generic, separate from `ICacheService<T>`, so it can be iterated polymorphically across L1 and L2
+2. **SRS flush semantics** — `DELETE /api/cache/flush` only removes Redis (L1) entries; CosmosDB (L2) data is intentionally retained per SRS FR-003
+3. **Stale-marking for L2 invalidation** — CosmosDB entries are invalidated by patching `ttl` to 1 second (near-immediate expiry), preserving audit history rather than hard-deleting
+4. **`/flush` registered before `/{key}`** — ensures the literal route wins over the parameterised route in Minimal API routing
+5. **API key RBAC** — lightweight `X-Api-Key` header auth; role (`readonly` / `admin`) stored per key in `Security:ApiKeys` config; DELETE endpoints require `admin`
+6. **Audit events** — `CacheEntryInvalidated` and `CacheFlushed` reuse existing T5 domain events
 
 #### DI Registration (`Program.cs`)
 
 ```csharp
-builder.Services.AddScoped<ValidateBatchHandler>();
-builder.Services.AddScoped<IValidator<ValidateBatchRequest>, ValidateBatchRequestValidator>();
-app.MapValidateBatch();
+builder.Services.AddCacheManagement(configuration);
+builder.Services.AddApiKeyAuthentication();
+builder.Services.AddSingleton<CacheStatsHandler>();
+builder.Services.AddScoped<InvalidateCacheHandler>();
+builder.Services.AddScoped<FlushCacheHandler>();
+
+app.MapFlushCache();        // DELETE /api/cache/flush  (literal first)
+app.MapInvalidateCache();   // DELETE /api/cache/{key}
+app.MapCacheStats();        // GET    /api/cache/stats
 ```
 
-#### Unit Tests (`tests/Unit/AddressValidation.Tests.Unit/Features/Validation/ValidateBatch/`)
+#### Unit Tests (`tests/Unit/AddressValidation.Tests.Unit/Features/Cache/`)
 
 | File | Coverage |
 |------|---------|
-| `ValidateBatchRequestValidatorTests.cs` | Array size constraints, per-item street/state/ZIP/location rules |
-| `ValidateBatchModelsTests.cs` | `ToAddressInput()` mapping, ZIP+4 concatenation, `FromDomain()` round-trip, `Failed()` factory |
+| `CacheStatsHandlerTests.cs` | Multi-layer aggregation, hit ratio calculation, zero-hit edge case, `GeneratedAt` timestamp |
+| `InvalidateCacheHandlerTests.cs` | Key found in both/one/no layers, audit event emission, no-audit on not-found |
+| `FlushCacheHandlerTests.cs` | Entry count reporting, flush called on all layers, `CacheFlushed` audit event, empty cache case |
 
 ### Acceptance Criteria Status
 
-- [x] `POST /api/addresses/validate/batch` accepts up to 100 addresses
-- [x] Validation errors return `400 Bad Request` with RFC 7807 body
-- [x] Parallel Redis lookups (L1 cache)
-- [x] CosmosDB batch lookup for Redis misses (L2 cache via `CacheOrchestrator`)
-- [x] Smarty provider calls for full cache misses
-- [x] Result merge maintaining `inputIndex` order
-- [x] `207 Multi-Status` when at least one address fails
-- [x] `200 OK` when all addresses succeed
-- [x] Batch summary stats (total, validated, failed, cacheHits, cacheMisses, durationMs)
-- [x] `X-Batch-Summary` response header
-- [ ] Handler unit tests (in progress)
+- [x] `GET /api/cache/stats` returns hit/miss ratios and entry counts per layer
+- [x] `DELETE /api/cache/{key}` removes from Redis and marks stale in CosmosDB
+- [x] `DELETE /api/cache/flush` flushes Redis only; CosmosDB retained
+- [x] Non-admin `DELETE` requests return `403 Forbidden`
+- [x] Unauthenticated requests return `401 Unauthorized`
+- [x] `CacheEntryInvalidated` domain event emitted on per-key invalidation
+- [x] `CacheFlushed` domain event emitted on flush
+- [x] Unit tests: 12 new tests, all passing (187 total)
+- [ ] PR created and merged to `main`
+- [ ] GitHub issues #73–#79 and parent #9 closed
 
 ---
 
-## T5: Infrastructure — Event Sourcing & Audit — ✅ COMPLETED
+## T7: FR-002 Validate Batch Addresses — ✅ COMPLETED
+
+**Branch**: `feat/t7-validate-batch-endpoint` → merged to `main`
+**Completion Date**: 2026-05-09
+**GitHub Issues Closed**: #65–#72, parent #8
 
 **Branch**: `feat/t5-event-sourcing-audit` → merged to `main`
 **Completion Date**: 2026-05-08

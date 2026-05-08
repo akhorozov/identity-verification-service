@@ -8,12 +8,14 @@ This document outlines the architecture, design patterns, and infrastructure set
 
 1. [Solution Structure](#solution-structure)
 2. [Architectural Patterns](#architectural-patterns)
-3. [Central Package Management (CPM)](#central-package-management-cpm)
-4. [YARP Reverse Proxy Gateway](#yarp-reverse-proxy-gateway)
-5. [Observability & Monitoring](#observability--monitoring)
-6. [Security & Resilience](#security--resilience)
-7. [Configuration Management](#configuration-management)
-8. [Deployment Architecture](#deployment-architecture)
+3. [API Versioning](#api-versioning)
+4. [Endpoint Reference](#endpoint-reference)
+5. [Central Package Management (CPM)](#central-package-management-cpm)
+6. [YARP Reverse Proxy Gateway](#yarp-reverse-proxy-gateway)
+7. [Observability & Monitoring](#observability--monitoring)
+8. [Security & Resilience](#security--resilience)
+9. [Configuration Management](#configuration-management)
+10. [Deployment Architecture](#deployment-architecture)
 
 ---
 
@@ -26,28 +28,93 @@ IdentityVerification.slnx
 ├── src/
 │   ├── AddressValidation.Api/               # Core validation service (port 5000)
 │   │   ├── Program.cs
-│   │   ├── Domain/                          # Domain models (flat, no slice folders yet)
+│   │   ├── Domain/                          # Shared domain models
 │   │   │   ├── AddressInput.cs
 │   │   │   ├── ValidatedAddress.cs
 │   │   │   ├── AddressAnalysis.cs
 │   │   │   ├── GeocodingResult.cs
 │   │   │   ├── ValidationMetadata.cs
 │   │   │   ├── ValidationResponse.cs
-│   │   │   └── AddressHashExtensions.cs
+│   │   │   ├── AddressHashExtensions.cs
+│   │   │   └── Events/                      # Domain event types (T5)
+│   │   │       ├── DomainEvent.cs
+│   │   │       ├── AddressValidated.cs
+│   │   │       ├── AddressValidationFailed.cs
+│   │   │       └── CacheEntryCreated.cs
+│   │   ├── Features/                        # Vertical Slice Architecture (VSA)
+│   │   │   └── Validation/
+│   │   │       ├── ValidateSingle/          # FR-001 — ✅ COMPLETED (T6)
+│   │   │       │   ├── Models.cs
+│   │   │       │   ├── Validator.cs
+│   │   │       │   ├── Handler.cs
+│   │   │       │   └── Endpoint.cs
+│   │   │       └── ValidateBatch/           # FR-002 — 🟡 IN PROGRESS (T7)
+│   │   │           ├── Models.cs
+│   │   │           ├── Validator.cs
+│   │   │           ├── Handler.cs
+│   │   │           └── Endpoint.cs
 │   │   ├── Infrastructure/
-│   │   │   ├── Caching/                     # Legacy IDistributedCache abstraction
-│   │   │   │   └── IDistributedCache.cs
-│   │   │   ├── CosmosDb/                    # Legacy CosmosDbCache (pre-T3)
-│   │   │   │   └── CosmosDbCache.cs
-│   │   │   ├── Redis/                       # Legacy RedisCache (pre-T3)
-│   │   │   │   └── RedisCache.cs
 │   │   │   ├── Services/
-│   │   │   │   └── Caching/                 # T3 multi-level cache services
-│   │   │   │       ├── ICacheService.cs
-│   │   │   │       ├── CacheOrchestrator.cs
-│   │   │   │       ├── RedisCacheService.cs
-│   │   │   │       ├── CosmosCacheService.cs
-│   │   │   │       ├── CacheWarmingService.cs
+│   │   │   │   ├── Caching/                 # T3 multi-level cache services
+│   │   │   │   │   ├── ICacheService.cs
+│   │   │   │   │   ├── CacheOrchestrator.cs
+│   │   │   │   │   ├── RedisCacheService.cs
+│   │   │   │   │   ├── CosmosCacheService.cs
+│   │   │   │   │   ├── CacheWarmingService.cs
+│   │   │   │   │   └── CosmosDbInitializationService.cs
+│   │   │   │   └── Audit/                   # T5 event sourcing
+│   │   │   │       ├── IAuditEventStore.cs
+│   │   │   │       ├── CosmosAuditEventStore.cs
+│   │   │   │       └── AuditContainerInitializationService.cs
+│   │   │   ├── Providers/                   # T4 external provider abstraction
+│   │   │   │   ├── IAddressValidationProvider.cs
+│   │   │   │   ├── SmartyProvider.cs
+│   │   │   │   └── ISmartyApi.cs
+│   │   │   ├── Middleware/
+│   │   │   │   ├── CorrelationIdMiddleware.cs
+│   │   │   │   ├── ExceptionHandlingMiddleware.cs
+│   │   │   │   └── SecurityHeadersMiddleware.cs
+│   │   │   ├── Configuration/
+│   │   │   │   └── AzureKeyVaultConfiguration.cs
+│   │   │   └── ServiceCollectionExtensions.cs
+│   │   └── appsettings*.json
+│   │
+│   └── AddressValidation.Gateway/           # YARP reverse proxy (port 5001)
+│       ├── Program.cs
+│       └── appsettings.json
+│
+├── AddressValidation.AppHost/               # Aspire orchestrator
+│   ├── AppHost.cs
+│   └── aspire.config.json
+│
+├── AddressValidation.ServiceDefaults/       # Shared telemetry & resilience defaults
+│   └── Extensions.cs
+│
+├── tests/
+│   ├── Unit/
+│   │   └── AddressValidation.Tests.Unit/
+│   │       ├── Features/
+│   │       │   └── Validation/
+│   │       │       ├── ValidateSingle/      # T6 unit tests
+│   │       │       │   ├── ValidateSingleRequestValidatorTests.cs
+│   │       │       │   ├── ValidateSingleModelsTests.cs
+│   │       │       │   └── ValidateSingleHandlerTests.cs
+│   │       │       └── ValidateBatch/       # T7 unit tests
+│   │       │           ├── ValidateBatchRequestValidatorTests.cs
+│   │       │           └── ValidateBatchModelsTests.cs
+│   │       └── Infrastructure/
+│   │           └── Services/Caching/
+│   │               └── CacheServiceTests.cs
+│   └── Integration/
+│       └── AddressValidation.Tests.Integration/
+│           └── Caching/
+│               └── CacheHierarchyIntegrationTests.cs
+│
+├── Directory.Packages.props                 # Central Package Management
+├── IdentityVerification.slnx
+├── README.md
+└── docs/
+```
 │   │   │   │       └── CosmosDbInitializationService.cs
 │   │   │   ├── Middleware/
 │   │   │   │   ├── CorrelationIdMiddleware.cs
@@ -93,11 +160,11 @@ IdentityVerification.slnx
 
 | Project | Purpose |
 |---------|---------|
-| **AddressValidation.Api** | Core validation service; domain models, T3 multi-level caching, middleware, resilience |
+| **AddressValidation.Api** | Core validation service; VSA feature slices, domain models, T3 multi-level caching, T5 audit/event sourcing, middleware, resilience |
 | **AddressValidation.Gateway** | YARP reverse proxy for traffic routing, security headers, and CORS |
 | **AddressValidation.AppHost** | Aspire orchestrator — wires Redis, CosmosDB emulator, Api, and Gateway for local dev |
 | **AddressValidation.ServiceDefaults** | Shared defaults for OpenTelemetry, health checks, and resilience across services |
-| **AddressValidation.Tests.Unit** | xUnit unit tests for domain models and caching services (NSubstitute mocks) |
+| **AddressValidation.Tests.Unit** | xUnit unit tests for domain models, feature slices, and caching services (NSubstitute mocks) |
 | **AddressValidation.Tests.Integration** | xUnit integration tests for cache hierarchy using Testcontainers |
 
 ---
@@ -106,34 +173,34 @@ IdentityVerification.slnx
 
 ### 1. Vertical Slice Architecture (VSA)
 
-Domain models are currently organized in a flat `Domain/` folder inside `AddressValidation.Api`. Future iterations will reorganize per-feature into vertical slices:
+Each feature is a self-contained vertical slice under `Features/Validation/` containing its endpoint, handler, validator, and request/response models. Shared domain types live in the flat `Domain/` folder.
 
 ```
-Features/                    ← planned; not yet implemented
-└── AddressValidation/
-    ├── Domain/           # Core business entities & value objects
-    ├── Application/      # Use cases, validators, business logic
-    ├── Endpoints/        # API route handlers
-    └── [Repositories, Services]
+Features/
+└── Validation/
+    ├── ValidateSingle/     ✅ FR-001 — POST /api/addresses/validate
+    │   ├── Models.cs       Request/Response DTOs + domain mapping
+    │   ├── Validator.cs    FluentValidation rules
+    │   ├── Handler.cs      Cache orchestration + audit events
+    │   └── Endpoint.cs     Minimal API route registration
+    └── ValidateBatch/      🟡 FR-002 — POST /api/addresses/validate/batch
+        ├── Models.cs
+        ├── Validator.cs
+        ├── Handler.cs
+        └── Endpoint.cs
 ```
 
-Current `Domain/` models (flat layout, all implemented):
+Shared domain models:
 
 | Model | Responsibility |
 |-------|---------------|
-| `AddressInput` | Client request with data annotations + cross-field validation |
+| `AddressInput` | Client request model; cross-field validation |
 | `ValidatedAddress` | USPS CASS-certified standardized address |
 | `AddressAnalysis` | DPV deliverability indicators |
 | `GeocodingResult` | Latitude, longitude, precision |
-| `ValidationMetadata` | Provider name, timing, cache source |
+| `ValidationMetadata` | Provider name, timing, cache source, correlation ID |
 | `ValidationResponse` | Aggregate response combining all models |
 | `AddressHashExtensions` | Deterministic SHA-256 hashing & cache key utilities (`addr:v1:{hash}`) |
-
-**Benefits of VSA (target state):**
-- Feature isolation and independent deployment
-- Clear feature ownership
-- Easier testing and maintenance
-- Minimal cross-cutting dependencies
 
 ### 2. Reverse Proxy Gateway Pattern (YARP)
 
@@ -159,8 +226,53 @@ Client Requests
 ### 3. Clean Architecture Principles
 
 - **Domain Layer**: No external dependencies
-- **Application Layer**: Business logic & use cases
-- **Infrastructure Layer**: Database, caching, external APIs
+- **Application Layer**: Business logic & use cases (Handlers, Validators)
+- **Infrastructure Layer**: Database, caching, external APIs (Providers, CacheServices, AuditStore)
+- **Presentation Layer**: Minimal API endpoints (Endpoints)
+
+---
+
+## API Versioning
+
+The API uses **header-based versioning exclusively** via `Asp.Versioning.Http` (SRS ADR-001).
+
+| Property | Value |
+|----------|-------|
+| Header name | `Api-Version` |
+| Current version | `1.0` |
+| Default behaviour | Defaults to v1.0 when header is omitted (`AssumeDefaultVersionWhenUnspecified = true`) |
+| Planned version | `2.0` — international address support (future) |
+| Implementation | `HeaderApiVersionReader("Api-Version")` |
+| Version reporting | `api-supported-versions` and `api-deprecated-versions` response headers |
+
+**URL paths contain no version prefix** — e.g. `/api/addresses/validate`, not `/api/v1/addresses/validate`.
+
+```csharp
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new HeaderApiVersionReader("Api-Version");
+});
+```
+
+---
+
+## Endpoint Reference
+
+| Method | Path | Feature | Status | Response Headers |
+|--------|------|---------|--------|-----------------|
+| `POST` | `/api/addresses/validate` | FR-001 ValidateSingle | ✅ Live | `X-Cache-Source`, `X-Cache-Stale` |
+| `POST` | `/api/addresses/validate/batch` | FR-002 ValidateBatch | 🟡 In Progress | `X-Batch-Summary` |
+| `GET` | `/api/cache/stats` | FR-003 Cache Stats | ⏳ Planned (T8) | — |
+| `DELETE` | `/api/cache/{key}` | FR-003 Cache Invalidate | ⏳ Planned (T8) | — |
+| `DELETE` | `/api/cache/flush` | FR-003 Cache Flush | ⏳ Planned (T8) | — |
+| `GET` | `/health/live` | FR-005 Health | ⏳ Planned (T9) | — |
+| `GET` | `/health/ready` | FR-005 Health | ⏳ Planned (T9) | — |
+| `GET` | `/metrics` | FR-006 Metrics | ⏳ Planned (T10) | — |
+
+
 - **Presentation Layer**: API endpoints via Minimal APIs
 
 ---

@@ -1,5 +1,143 @@
 # Implementation Status & Tracking
 
+---
+
+## T7: FR-002 Validate Batch Addresses — 🟡 IN PROGRESS
+
+**Branch**: `feat/t7-validate-batch-endpoint`
+**Build Status**: ✅ Successful (0 errors, 0 warnings)
+
+### What's Included
+
+#### Feature Slice (`src/AddressValidation.Api/Features/Validation/ValidateBatch/`)
+
+| File | Description |
+|------|-------------|
+| `Models.cs` | `ValidateBatchItem`, `ValidateBatchResultItem`, `ValidateBatchSummary`, `ValidateBatchRequest`, `ValidateBatchResponse` with domain mapping helpers |
+| `Validator.cs` | `ValidateBatchRequestValidator` — max 100 addresses, per-item field rules (street, state, ZIP, Plus4, location presence) |
+| `Handler.cs` | `ValidateBatchHandler` — parallel cache lookups (L1→L2), provider fallback, result merge preserving `inputIndex` order, audit event emission, batch summary stats |
+| `Endpoint.cs` | `POST /api/addresses/validate/batch` — 200 (all pass) / 207 Multi-Status (partial failure) / 400 (invalid request); `X-Batch-Summary` response header |
+
+#### Key Design Decisions
+
+1. **Parallel cache lookups** — all cache reads issued concurrently via `Task.WhenAll` for maximum throughput
+2. **Provider fallback** — cache misses fall back to `IAddressValidationProvider.ValidateAsync` in parallel per address
+3. **`inputIndex` ordering** — results array always matches input array order regardless of async completion order
+4. **HTTP 207 Multi-Status** — returned when at least one address fails; all results included in body
+5. **`X-Batch-Summary` header** — serialised JSON with `total`, `validated`, `failed`, `cacheHits`, `cacheMisses`, `durationMs`
+6. **Audit events** — `AddressValidated`, `AddressValidationFailed`, `CacheEntryCreated` emitted fire-and-forget per address
+7. **Write-through** — provider hits written back to L1+L2 via `CacheOrchestrator<ValidationResponse>.SetAsync`
+
+#### DI Registration (`Program.cs`)
+
+```csharp
+builder.Services.AddScoped<ValidateBatchHandler>();
+builder.Services.AddScoped<IValidator<ValidateBatchRequest>, ValidateBatchRequestValidator>();
+app.MapValidateBatch();
+```
+
+#### Unit Tests (`tests/Unit/AddressValidation.Tests.Unit/Features/Validation/ValidateBatch/`)
+
+| File | Coverage |
+|------|---------|
+| `ValidateBatchRequestValidatorTests.cs` | Array size constraints, per-item street/state/ZIP/location rules |
+| `ValidateBatchModelsTests.cs` | `ToAddressInput()` mapping, ZIP+4 concatenation, `FromDomain()` round-trip, `Failed()` factory |
+
+### Acceptance Criteria Status
+
+- [x] `POST /api/addresses/validate/batch` accepts up to 100 addresses
+- [x] Validation errors return `400 Bad Request` with RFC 7807 body
+- [x] Parallel Redis lookups (L1 cache)
+- [x] CosmosDB batch lookup for Redis misses (L2 cache via `CacheOrchestrator`)
+- [x] Smarty provider calls for full cache misses
+- [x] Result merge maintaining `inputIndex` order
+- [x] `207 Multi-Status` when at least one address fails
+- [x] `200 OK` when all addresses succeed
+- [x] Batch summary stats (total, validated, failed, cacheHits, cacheMisses, durationMs)
+- [x] `X-Batch-Summary` response header
+- [ ] Handler unit tests (in progress)
+
+---
+
+## T5: Infrastructure — Event Sourcing & Audit — ✅ COMPLETED
+
+**Branch**: `feat/t5-event-sourcing-audit` → merged to `main`
+**Completion Date**: 2026-05-08
+**GitHub Issues Closed**: #6, #52, and related subtasks
+
+### What's Included
+
+| File | Description |
+|------|-------------|
+| `Domain/Events/DomainEvent.cs` | Abstract base class with `AggregateId`, `OccurredAt`, `EventType`, `CorrelationId` |
+| `Domain/Events/AddressValidated.cs` | Emitted on successful address validation |
+| `Domain/Events/AddressValidationFailed.cs` | Emitted on provider failure, no-match, or undeliverable result |
+| `Domain/Events/CacheEntryCreated.cs` | Emitted when a new cache entry is written through to L1/L2 |
+| `Infrastructure/Services/Audit/IAuditEventStore.cs` | Abstraction: `AppendAsync(DomainEvent, CancellationToken)` |
+| `Infrastructure/Services/Audit/CosmosAuditEventStore.cs` | Cosmos DB–backed event store (audit container, per-aggregate partitioning) |
+| `Infrastructure/Services/Audit/AuditContainerInitializationService.cs` | Hosted service ensuring audit container exists at startup |
+
+---
+
+## T4: Infrastructure — Provider Integration — ✅ COMPLETED
+
+**Branch**: `feat/t4-provider-integration` → merged to `main`
+**Completion Date**: 2026-05-08
+**GitHub Issues Closed**: #44, and related subtasks
+
+### What's Included
+
+| File | Description |
+|------|-------------|
+| `Infrastructure/Providers/IAddressValidationProvider.cs` | Abstraction: `ProviderName`, `ValidateAsync(AddressInput, CancellationToken)` |
+| `Infrastructure/Providers/SmartyProvider.cs` | Smarty US Street API implementation with response mapping |
+| `Infrastructure/Providers/ISmartyApi.cs` | Refit interface for the Smarty REST API |
+| `Infrastructure/ServiceCollectionExtensions.cs` | `AddProviders()` — registers `ISmartyApi` (Refit) + `SmartyProvider` with resilience policies |
+
+---
+
+## T6: FR-001 Validate Single Address — ✅ COMPLETED
+
+**Branch**: `feat/t6-validate-single-endpoint` → merged to `main` via PR #155
+**Completion Date**: 2026-05-08
+**Build Status**: ✅ Successful (0 errors, 0 warnings)
+**Test Status**: ✅ 135/135 Tests Passing
+**GitHub Issues Closed**: #7, #58, #59, #60, #61, #62, #63, #64
+
+### What's Included
+
+#### Feature Slice (`src/AddressValidation.Api/Features/Validation/ValidateSingle/`)
+
+| File | Description |
+|------|-------------|
+| `Models.cs` | `ValidateSingleRequest` with `ToAddressInput()` and `ValidateSingleResponse` with `FromDomain()` |
+| `Validator.cs` | `ValidateSingleRequestValidator` — street, state (US abbreviations), ZIP (5-digit or 5+4), Plus4, location presence |
+| `Handler.cs` | `ValidateSingleHandler` — L1→L2→Provider cache flow via `CacheOrchestrator<ValidationResponse>`, audit events, `HandlerResult` |
+| `Endpoint.cs` | `POST /api/addresses/validate` — 200 / 404 (undeliverable) / 400; `X-Cache-Source`, `X-Cache-Stale` response headers |
+
+#### API Versioning
+
+- **Strategy**: Header-based (`Api-Version` header) via `Asp.Versioning.Http`
+- **Default**: v1.0 (`AssumeDefaultVersionWhenUnspecified = true`)
+- **Routes**: No version prefix in URL (e.g. `/api/addresses/validate`, not `/api/v1/addresses/validate`)
+
+#### Response Headers
+
+| Header | Values | Description |
+|--------|--------|-------------|
+| `X-Cache-Source` | `L1`, `L2`, `PROVIDER` | Where the result was served from |
+| `X-Cache-Stale` | `true` | Set only when circuit-breaker stale fallback is active |
+
+#### Unit Tests
+
+| File | Coverage |
+|------|---------|
+| `ValidateSingleRequestValidatorTests.cs` | All validation rules |
+| `ValidateSingleModelsTests.cs` | `ToAddressInput()` and `FromDomain()` mapping |
+| `ValidateSingleHandlerTests.cs` | Provider hit/miss, DPV S/D/N, null provider, exceptions, audit events |
+
+---
+
 ## T3: Multi-Level Cache Layer — ✅ COMPLETED
 
 **Branch**: `feat/t3-caching-layer`  

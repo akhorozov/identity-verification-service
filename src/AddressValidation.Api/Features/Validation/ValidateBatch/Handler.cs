@@ -3,6 +3,7 @@ namespace AddressValidation.Api.Features.Validation.ValidateBatch;
 using System.Diagnostics;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Domain.Events;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Services.Audit;
 using AddressValidation.Api.Infrastructure.Services.Caching;
@@ -20,22 +21,26 @@ public sealed class ValidateBatchHandler
     private readonly IAddressValidationProvider _provider;
     private readonly IAuditEventStore _audit;
     private readonly ILogger<ValidateBatchHandler> _logger;
+    private readonly AppMetrics _metrics;
 
     public ValidateBatchHandler(
         CacheOrchestrator<ValidationResponse> cache,
         IAddressValidationProvider provider,
         IAuditEventStore audit,
-        ILogger<ValidateBatchHandler> logger)
+        ILogger<ValidateBatchHandler> logger,
+        AppMetrics metrics)
     {
         ArgumentNullException.ThrowIfNull(cache);
         ArgumentNullException.ThrowIfNull(provider);
         ArgumentNullException.ThrowIfNull(audit);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(metrics);
 
         _cache    = cache;
         _provider = provider;
         _audit    = audit;
         _logger   = logger;
+        _metrics  = metrics;
     }
 
     /// <summary>
@@ -190,6 +195,13 @@ public sealed class ValidateBatchHandler
         }, TaskContinuationOptions.OnlyOnFaulted);
 
         sw.Stop();
+
+        // Update cache hit ratio gauge (FR-006) based on this batch's L1/L2 vs provider distribution
+        if (items.Length > 0)
+        {
+            var hitRatio = (double)cacheHits / items.Length;
+            _metrics.CacheHitRatio.WithLabels("L1-Redis").Set(hitRatio);
+        }
 
         var summary = new ValidateBatchSummary
         {

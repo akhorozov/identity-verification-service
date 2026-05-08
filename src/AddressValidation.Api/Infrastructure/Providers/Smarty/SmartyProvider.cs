@@ -1,6 +1,7 @@
 namespace AddressValidation.Api.Infrastructure.Providers.Smarty;
 
 using AddressValidation.Api.Domain;
+using AddressValidation.Api.Infrastructure.Metrics;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -12,16 +13,19 @@ public sealed class SmartyProvider : IAddressValidationProvider
 {
     private readonly ISmartyApi _api;
     private readonly ILogger<SmartyProvider> _logger;
+    private readonly AppMetrics _metrics;
 
     public string ProviderName => "Smarty";
 
-    public SmartyProvider(ISmartyApi api, ILogger<SmartyProvider> logger)
+    public SmartyProvider(ISmartyApi api, ILogger<SmartyProvider> logger, AppMetrics metrics)
     {
         ArgumentNullException.ThrowIfNull(api);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(metrics);
 
         _api = api;
         _logger = logger;
+        _metrics = metrics;
     }
 
     /// <inheritdoc />
@@ -33,15 +37,34 @@ public sealed class SmartyProvider : IAddressValidationProvider
 
         _logger.LogDebug("Calling Smarty provider for street={Street}", input.Street);
 
-        var candidates = await _api.ValidateAddressAsync(
-            street: input.Street,
-            street2: input.Street2,
-            city: input.City,
-            state: input.State,
-            zipcode: input.ZipCode,
-            addressee: input.Addressee,
-            candidates: 1,
-            cancellationToken: cancellationToken);
+        IReadOnlyList<SmartyCandidate> candidates;
+        try
+        {
+            candidates = await _api.ValidateAddressAsync(
+                street: input.Street,
+                street2: input.Street2,
+                city: input.City,
+                state: input.State,
+                zipcode: input.ZipCode,
+                addressee: input.Addressee,
+                candidates: 1,
+                cancellationToken: cancellationToken);
+
+            _metrics.SmartyApiCallsTotal.WithLabels("200").Inc();
+        }
+        catch (Refit.ApiException ex)
+        {
+            var statusCode = ((int)ex.StatusCode).ToString();
+            _metrics.SmartyApiCallsTotal.WithLabels(statusCode).Inc();
+            _metrics.SmartyApiErrorsTotal.WithLabels(ex.GetType().Name).Inc();
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _metrics.SmartyApiCallsTotal.WithLabels("0").Inc();
+            _metrics.SmartyApiErrorsTotal.WithLabels(ex.GetType().Name).Inc();
+            throw;
+        }
 
         if (candidates is not { Count: > 0 })
         {

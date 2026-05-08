@@ -3,6 +3,7 @@ namespace AddressValidation.Tests.Unit.Features.Validation.ValidateSingle;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Domain.Events;
 using AddressValidation.Api.Features.Validation.ValidateSingle;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Services.Audit;
 using AddressValidation.Api.Infrastructure.Services.Caching;
@@ -58,7 +59,7 @@ public class ValidateSingleHandlerTests
         _audit = Substitute.For<IAuditEventStore>();
 
         var handlerLogger = Substitute.For<ILogger<ValidateSingleHandler>>();
-        _sut = new ValidateSingleHandler(_cache, _provider, _audit, handlerLogger);
+        _sut = new ValidateSingleHandler(_cache, _provider, _audit, handlerLogger, new AppMetrics());
     }
 
     // ── Success paths ─────────────────────────────────────────────────────────
@@ -182,17 +183,17 @@ public class ValidateSingleHandlerTests
     public void Constructor_NullCache_Throws()
         => Assert.Throws<ArgumentNullException>(() =>
             new ValidateSingleHandler(null!, _provider, _audit,
-                Substitute.For<ILogger<ValidateSingleHandler>>()));
+                Substitute.For<ILogger<ValidateSingleHandler>>(), new AppMetrics()));
 
     [Fact]
     public void Constructor_NullProvider_Throws()
         => Assert.Throws<ArgumentNullException>(() =>
             new ValidateSingleHandler(_cache, null!, _audit,
-                Substitute.For<ILogger<ValidateSingleHandler>>()));
+                Substitute.For<ILogger<ValidateSingleHandler>>(), new AppMetrics()));
 
     [Fact]
     public void Constructor_NullAudit_Throws()
         => Assert.Throws<ArgumentNullException>(() =>
             new ValidateSingleHandler(_cache, _provider, null!,
-                Substitute.For<ILogger<ValidateSingleHandler>>()));
+                Substitute.For<ILogger<ValidateSingleHandler>>(), new AppMetrics()));
 }

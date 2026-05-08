@@ -3,6 +3,7 @@ namespace AddressValidation.Tests.Unit.Features.Validation.ValidateBatch;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Domain.Events;
 using AddressValidation.Api.Features.Validation.ValidateBatch;
+using AddressValidation.Api.Infrastructure.Metrics;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Services.Audit;
 using AddressValidation.Api.Infrastructure.Services.Caching;
@@ -65,7 +66,8 @@ public class ValidateBatchHandlerTests
             _cache,
             _provider,
             _audit,
-            Substitute.For<ILogger<ValidateBatchHandler>>());
+            Substitute.For<ILogger<ValidateBatchHandler>>(),
+            new AppMetrics());
     }
 
     // ── Constructor guards ───────────────────────────────────────────────────
@@ -77,7 +79,8 @@ public class ValidateBatchHandlerTests
             null!,
             _provider,
             _audit,
-            Substitute.For<ILogger<ValidateBatchHandler>>()));
+            Substitute.For<ILogger<ValidateBatchHandler>>(),
+            new AppMetrics()));
     }
 
     [Fact]
@@ -87,7 +90,8 @@ public class ValidateBatchHandlerTests
             _cache,
             null!,
             _audit,
-            Substitute.For<ILogger<ValidateBatchHandler>>()));
+            Substitute.For<ILogger<ValidateBatchHandler>>(),
+            new AppMetrics()));
     }
 
     [Fact]
@@ -97,7 +101,8 @@ public class ValidateBatchHandlerTests
             _cache,
             _provider,
             null!,
-            Substitute.For<ILogger<ValidateBatchHandler>>()));
+            Substitute.For<ILogger<ValidateBatchHandler>>(),
+            new AppMetrics()));
     }
 
     // ── All addresses validated via provider ─────────────────────────────────

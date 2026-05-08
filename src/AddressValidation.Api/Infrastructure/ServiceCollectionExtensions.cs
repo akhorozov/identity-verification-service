@@ -1,3 +1,4 @@
+using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AddressValidation.Api.Infrastructure.Caching;
@@ -5,6 +6,7 @@ using AddressValidation.Api.Infrastructure.CosmosDb;
 using AddressValidation.Api.Infrastructure.Providers;
 using AddressValidation.Api.Infrastructure.Providers.Smarty;
 using AddressValidation.Api.Infrastructure.Redis;
+using AddressValidation.Api.Infrastructure.Services.Audit;
 using Refit;
 using StackExchange.Redis;
 
@@ -65,6 +67,35 @@ public static class ServiceCollectionExtensions
             throw new InvalidOperationException(
                 "At least one cache provider (Redis or Cosmos DB) must be enabled");
         });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Registers the append-only audit event store and the startup service that ensures
+    /// the <c>audit-events</c> Cosmos DB container exists with the correct configuration.
+    /// </summary>
+    public static IServiceCollection AddAuditEventStore(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        // CosmosClient is expected to already be registered (by AddCachingServices or the AppHost wire-up).
+        // Register a singleton CosmosClient if one is not already present.
+        if (!services.Any(sd => sd.ServiceType == typeof(CosmosClient)))
+        {
+            var endpoint = configuration["Cosmos:Endpoint"]
+                ?? throw new InvalidOperationException("Cosmos:Endpoint configuration is required.");
+            var key = configuration["Cosmos:Key"]
+                ?? throw new InvalidOperationException("Cosmos:Key configuration is required.");
+
+            services.AddSingleton(_ => new CosmosClient(endpoint, key,
+                new CosmosClientOptions { ApplicationName = "AddressValidation.Api" }));
+        }
+
+        services.AddSingleton<IAuditEventStore, CosmosAuditEventStore>();
+        services.AddHostedService<AuditContainerInitializationService>();
 
         return services;
     }

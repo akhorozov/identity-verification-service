@@ -85,6 +85,7 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageVersion Include="Shouldly" Version="4.1.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Testcontainers" Version="3.10.0" />
     <PackageVersion Include="Testcontainers.Redis" Version="3.10.0" />
     <PackageVersion Include="Testcontainers.CosmosDb" Version="3.10.0" />

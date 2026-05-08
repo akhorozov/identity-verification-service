@@ -1,0 +1,96 @@
+# Address Validation API — Prometheus Alerting Rules
+# T12 / issues #108–#111
+#
+# Import into Prometheus by adding this file to your rule_files configuration:
+#   rule_files:
+#     - "docs/alerts/address-validation-alerts.yaml"
+#
+# Or import into Grafana Alerting via the UI / Terraform provider.
+
+groups:
+  - name: address-validation-api
+    interval: 1m
+    rules:
+
+      # ── Alert 1: High Error Rate (issue #108) ─────────────────────────────
+      # Fires when the 5-minute error rate (HTTP 5xx) exceeds 5 % of traffic.
+      - alert: AddressValidationHighErrorRate
+        expr: |
+          (
+            sum(rate(address_validation_requests_total{status=~"5.."}[5m]))
+            /
+            sum(rate(address_validation_requests_total[5m]))
+          ) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          team: platform
+          service: address-validation-api
+        annotations:
+          summary: "High 5xx error rate on Address Validation API"
+          description: >
+            The 5xx error rate is {{ humanizePercentage $value }} over the last 5 minutes
+            (threshold: 5 %). Investigate recent deployments, downstream provider health,
+            and application logs (filter by TraceId for distributed trace correlation).
+          runbook_url: "https://github.com/akhorozov/identity-verification-service/blob/main/docs/runbooks/high-error-rate.md"
+
+      # ── Alert 2: p95 Latency Breach (issue #109) ──────────────────────────
+      # Fires when the 95th-percentile validation latency exceeds 2 seconds.
+      - alert: AddressValidationHighP95Latency
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(address_validation_duration_seconds_bucket[5m])) by (le, operation)
+          ) > 2.0
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+          service: address-validation-api
+        annotations:
+          summary: "p95 validation latency exceeds 2 s (operation: {{ $labels.operation }})"
+          description: >
+            The p95 latency for operation '{{ $labels.operation }}' is {{ humanizeDuration $value }}
+            (threshold: 2 s). Check Smarty API response times, cache hit ratio, and Redis/CosmosDB
+            latency in the overview dashboard.
+          runbook_url: "https://github.com/akhorozov/identity-verification-service/blob/main/docs/runbooks/high-latency.md"
+
+      # ── Alert 3: Circuit Breaker Open (issue #110) ────────────────────────
+      # Fires when any circuit breaker has been open for more than 2 minutes.
+      - alert: AddressValidationCircuitBreakerOpen
+        expr: |
+          sum(address_validation_active_circuit_breakers) by (provider) > 0
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+          service: address-validation-api
+        annotations:
+          summary: "Circuit breaker is OPEN for provider '{{ $labels.provider }}'"
+          description: >
+            The resilience circuit breaker for '{{ $labels.provider }}' has been open for over
+            2 minutes. Requests to this provider are being rejected. Check provider health,
+            recent exceptions in logs, and consider manual reset if appropriate.
+          runbook_url: "https://github.com/akhorozov/identity-verification-service/blob/main/docs/runbooks/circuit-breaker-open.md"
+
+      # ── Alert 4: CosmosDB RU > 80 % (issue #111) ─────────────────────────
+      # Fires when CosmosDB RU consumption exceeds 80 % of provisioned throughput.
+      - alert: AddressValidationCosmosDbHighRu
+        expr: |
+          (
+            address_validation_cosmos_ru_consumed_total
+            /
+            address_validation_cosmos_ru_provisioned
+          ) > 0.80
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+          service: address-validation-api
+        annotations:
+          summary: "CosmosDB RU consumption above 80 %"
+          description: >
+            CosmosDB RU utilisation is {{ humanizePercentage $value }} (threshold: 80 %).
+            Consider increasing provisioned RU, reviewing cache hit ratio to reduce read pressure,
+            or enabling CosmosDB autoscale. Current cache hit ratio visible in the overview dashboard.
+          runbook_url: "https://github.com/akhorozov/identity-verification-service/blob/main/docs/runbooks/cosmos-high-ru.md"

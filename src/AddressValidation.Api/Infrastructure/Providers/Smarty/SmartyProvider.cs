@@ -1,7 +1,9 @@
 namespace AddressValidation.Api.Infrastructure.Providers.Smarty;
 
+using System.Diagnostics;
 using AddressValidation.Api.Domain;
 using AddressValidation.Api.Infrastructure.Metrics;
+using AddressValidation.Api.Infrastructure.Telemetry;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -37,6 +39,14 @@ public sealed class SmartyProvider : IAddressValidationProvider
 
         _logger.LogDebug("Calling Smarty provider for street={Street}", input.Street);
 
+        using var activity = AddressValidationActivitySource.ActivitySource.StartActivity(
+            AddressValidationActivitySource.SmartyValidate,
+            ActivityKind.Client);
+
+        activity?.SetTag(AddressValidationActivitySource.AttrProvider, ProviderName);
+        activity?.SetTag(AddressValidationActivitySource.AttrAddressCity, input.City);
+        activity?.SetTag(AddressValidationActivitySource.AttrAddressState, input.State);
+
         IReadOnlyList<SmartyCandidate> candidates;
         try
         {
@@ -57,12 +67,14 @@ public sealed class SmartyProvider : IAddressValidationProvider
             var statusCode = ((int)ex.StatusCode).ToString();
             _metrics.SmartyApiCallsTotal.WithLabels(statusCode).Inc();
             _metrics.SmartyApiErrorsTotal.WithLabels(ex.GetType().Name).Inc();
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
             throw;
         }
         catch (Exception ex)
         {
             _metrics.SmartyApiCallsTotal.WithLabels("0").Inc();
             _metrics.SmartyApiErrorsTotal.WithLabels(ex.GetType().Name).Inc();
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
             throw;
         }
 
@@ -73,6 +85,9 @@ public sealed class SmartyProvider : IAddressValidationProvider
         }
 
         var response = SmartyResponseMapper.MapToResponse(candidates[0], input, cacheSource: "PROVIDER");
+
+        activity?.SetTag(AddressValidationActivitySource.AttrDpvMatchCode, response.Analysis?.DpvMatchCode);
+        activity?.SetStatus(ActivityStatusCode.Ok);
 
         _logger.LogDebug(
             "Smarty validated street={Street} → dpv={DpvMatchCode}",
